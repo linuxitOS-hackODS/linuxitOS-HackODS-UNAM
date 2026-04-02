@@ -1,0 +1,21 @@
+# Entorno
+venv/
+.env
+__pycache__/
+
+# IDEs
+.vscode/
+.idea/
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# Quarto y render
+.quarto/
+_site/
+docs/
+
+# Archivos de SO
+.DS_Store
+Thumbs.db
