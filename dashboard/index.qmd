@@ -1,7 +1,6 @@
 ---
 title: "Agua y Pobreza: La Trampa Rural"
 subtitle: "Cruce ODS 1 (Fin de la Pobreza) y ODS 6 (Agua Limpia y Saneamiento)"
-author: "Equipo linuxitOS - HackODS UNAM 2026"
 format: dashboard
 ---
 
@@ -13,9 +12,8 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import os
 
-# Configurar renderer de Plotly para compatibilidad con Quarto
-# Documentación: https://quarto.org/docs/interactive/widgets/jupyter.html#plotly
-pio.renderers.default = "plotly_mimetype+notebook_connected"
+# Configurar renderer: Dejamos que Quarto maneje el widget nativamente.
+# Forzar pio.renderers rompe el ResizeObserver interno de Quarto Dashboards y causa leyendas encimadas.
 
 # Cargar dataset maestro
 data_path = os.path.join("..", "datos", "final_merged_data.csv")
@@ -28,31 +26,58 @@ COLOR_URBANO = '#3498db'
 
 # La Ilusión Nacional
 
-## Row {height=25%}
+## Column {.sidebar width=30%}
+
+### El Corazón de Nuestra Historia
+El cruce entre el *ODS 1 (Fin de la Pobreza)* y el *ODS 6 (Agua Limpia y Saneamiento)* no es una simple correlación estadística; es la radiografía de **una condena estructural**. 
+
+Nuestra premisa fundamental, respaldada por la ONU: **la pobreza va más allá de la falta de ingresos; es la carencia de los servicios básicos que permiten una vida digna.** 
+
+Quien carece de agua, está encadenado a la pobreza extrema.
+
+***
+
+### La Ilusión Nacional
+
+El Estado Mexicano reporta a la comunidad internacional que aproximadamente el [64% de la población cuenta con agua potable gestionada de forma segura para el año 2020 (SIODS)](https://agenda2030.mx/ODSind.html?ind=ODS006000050010&cveind=54&cveCob=99&lang=es#/Indicator){target="_blank"}. Sin embargo, cuando observamos los datos a nivel municipal, la estadística a gran escala se convierte en un **espejismo**.
+
+La sólida infraestructura de las zonas altamente urbanizadas "promedia hacia arriba", borrando estadísticamente a las comunidades rurales y periféricas. 
+
+> *"Cuando se discrimina o se ocultan los datos a gran escala, se invisibiliza la carencia y se violan derechos humanos fundamentales."*
+
+Para encontrar la verdad, rompimos la ilusión oficial y profundizamos en los **microdatos de 2,469 municipios**.
+
+::: {.callout-note appearance="simple" icon=false}
+**Nota metodológica:** Los datos de la gráfica adyacente provienen de cruzar los microdatos del Censo de Población y Vivienda (INEGI, 2020) para la clasificación sociodemográfica (Rural/Urbana), con los indicadores municipales de cobertura hídrica de la CONAGUA.
+:::
+
+## Column {width=70%}
+
+### Row {height=20%}
 
 ```{python}
 #| component: valuebox
-#| title: "Población con Agua (Reporte Oficial SIODS 6.1.1.a)"
+#| title: "Promedio Nacional Oficial (SIODS)"
 dict(
   icon = "droplet-fill",
-  color = "primary",
+  color = "#e3f2fd", # Azul muy suave (tema agua) para separarlo del fondo blanco
   value = "64%"
 )
 ```
 
 ```{python}
 #| component: valuebox
-#| title: "Nivel de Detalle Máximo (SIODS)"
+#| title: "Nivel de Detalle Oficial"
 dict(
   icon = "map",
-  color = "secondary",
+  color = "info",
   value = "Estatal"
 )
 ```
 
 ```{python}
 #| component: valuebox
-#| title: "Municipios Analizados (INEGI + CONEVAL)"
+#| title: "Municipios Analizados"
 dict(
   icon = "geo-alt-fill",
   color = "success",
@@ -60,26 +85,69 @@ dict(
 )
 ```
 
-## Row {height=75%}
+### Row {height=80%}
 
-### Column
+```{python}
+#| title: "El Espejismo Numérico: Promedio Oficial vs Realidad Municipal"
 
-::: {.card}
-#### El Punto Ciego del Reporte Oficial
+# Generar histograma de Carencia de Agua
+fig_espejismo = px.histogram(
+    df,
+    x='carencia_agua_conagua_pct',
+    color='clasificacion_rural',
+    category_orders={'clasificacion_rural': ['Rural', 'Urbano']},
+    color_discrete_map={'Urbano': COLOR_URBANO, 'Rural': COLOR_RURAL},
+    nbins=40,
+    labels={'carencia_agua_conagua_pct': '% de Habitantes Sin Agua Entubada', 'clasificacion_rural': 'Clasificación', 'count': 'Cantidad de Municipios'},
+    opacity=0.75
+)
 
-**[INSERTA TU NARRATIVA AQUÍ - Sección 1: La Ilusión]**
+_ = fig_espejismo.update_traces(xbins=dict(start=0, size=5))
 
-El Estado Mexicano reporta a la ONU que aproximadamente el 64% de la población cuenta con agua potable gestionada de forma segura (Indicador 6.1.1.a del SIODS). Sin embargo, el máximo nivel de desagregación de estos datos oficiales llega únicamente hasta la **Entidad Federativa** (estado).
+_ = fig_espejismo.update_layout(
+    font=dict(family="Inter, sans-serif", size=12),
+    yaxis_title="Cantidad de Municipios",
+    xaxis_title="Porcentaje de Población Sin Agua Entubada (CONAGUA)",
+    barmode='group',
+    bargap=0.1, # Espacio entre los grupos para mejor estética
+    legend=dict(
+        title_text="", # Elimina el título de la leyenda que causa conflictos
+        orientation="h", 
+        yanchor="bottom", 
+        y=1.02, 
+        xanchor="right", 
+        x=1,
+        entrywidth=50, # Fuerza el ancho de los elementos sin calcular BBox
+        bgcolor="rgba(255,255,255,0.8)"
+    ),
+    margin=dict(t=50, b=50)
+)
 
-Esta limitación crea un **"Punto Ciego Estatal"**: cuando se promedian los datos a nivel estatal, la pobreza extrema de comunidades rurales aisladas queda diluida al mezclarse con la infraestructura urbana de las capitales estatales.
+# Añadir línea del promedio de la "Ilusión Nacional"
+# Si 64% tiene agua segura, significa que 36% carece.
+carencia_oficial = 36.0 
+_ = fig_espejismo.add_vline(
+    x=carencia_oficial, 
+    line_width=3, 
+    line_dash="dash", 
+    line_color="black"
+)
 
-Para responder a nuestra pregunta central sobre las diferencias entre zonas rurales y urbanas, fue necesario profundizar en los microdatos del INEGI y CONEVAL a nivel municipal.
+_ = fig_espejismo.add_annotation(
+    x=carencia_oficial, 
+    y=1.0, 
+    yref="paper",
+    text=f"Promedio Oficial Equivalente (~{carencia_oficial}% Sin Agua)",
+    showarrow=False, 
+    yshift=20,
+    font=dict(size=12, color="black", family="Inter, sans-serif"),
+    bgcolor="rgba(255, 255, 255, 0.9)",
+    bordercolor="black",
+    borderwidth=1
+)
 
-::: {.column-margin}
-**Nota metodológica:** Los datos del Sistema de Información de los Objetivos de Desarrollo Sostenible (SIODS) fueron extraídos mediante su API oficial en abril de 2026.
-:::
-
-:::
+fig_espejismo
+```
 
 # La Realidad Demográfica
 
@@ -90,11 +158,13 @@ Para responder a nuestra pregunta central sobre las diferencias entre zonas rura
 ::: {.card}
 #### La Dispersión Geográfica como Barrera
 
-**[INSERTA TU NARRATIVA AQUÍ - Sección 2: La Dispersión]**
+**ACTO 2: La Realidad Demográfica (La Condena de la Distancia)**
 
-El Censo de Población y Vivienda 2020 del INEGI revela un dato crucial: aunque solo el 21.6% de los mexicanos vive en localidades rurales (menos de 2,500 habitantes), **más del 55% de los municipios del país** son predominantemente rurales.
+Tomamos en cuenta el Censo de Población y Vivienda del año 2020, el cual revela una dualidad paralizante: aunque solo una minoría de los mexicanos vive en zonas rurales, *más del 55% de los municipios del país* tienen esta clasificación. Esta realidad demuestra la desigualdad abrumadora basada en la posición geográfica.
 
-Esta inmensa dispersión geográfica representa el verdadero obstáculo logístico para la implementación de infraestructura hídrica del ODS 6. Llevar agua potable y saneamiento a 1,360 municipios dispersos requiere inversiones exponencialmente mayores que atender a los 1,109 municipios urbanos concentrados.
+Esta inmensa dispersión y separación geográfica representa el verdadero obstáculo logístico y político. El problema principal en estas zonas no sería el agua en sí, sino su distribución. No es lo mismo entubar agua para 10,000 personas agrupadas en una sola colonia urbana, que llevar agua a 50 comunidades con inmensas distancias entre ellas en la sierra. Esto último requiere una inversión y voluntad política diametralmente mayores, derivando en que la lejanía se transforme en un castigo para los municipios rurales.
+
+Esto da paso a un dilema central: **¿Rentabilidad Política o Equidad Social?**
 
 ::: {.column-margin}
 **Clasificación:** Un municipio se considera "Rural" si más del 50% de su población vive en localidades con menos de 2,500 habitantes (definición oficial INEGI).
@@ -132,7 +202,16 @@ _ = fig.update_traces(
 _ = fig.update_layout(
     font=dict(family="Inter, sans-serif", size=14),
     showlegend=True,
-    height=500
+    height=500,
+    legend=dict(
+        title_text="",
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="center",
+        x=0.5,
+        entrywidth=100
+    )
 )
 
 fig
@@ -169,24 +248,28 @@ fig_scatter = px.scatter(
 prom_agua_rural = df[df['clasificacion_rural'] == 'Rural']['carencia_agua_conagua_pct'].mean()
 prom_agua_urbano = df[df['clasificacion_rural'] == 'Urbano']['carencia_agua_conagua_pct'].mean()
 
-# Agregar líneas de referencia usando shapes (método seguro)
+# Agregar líneas de referencia usando shapes
 _ = fig_scatter.update_layout(
     xaxis_title="% Sin Agua Entubada (CONAGUA)",
     yaxis_title="% en Pobreza Extrema (CONEVAL)",
-    font=dict(family="Inter, sans-serif", size=12),
-    legend=dict(title="", orientation="v", yanchor="top", y=0.98, xanchor="left", x=0.02, bgcolor="rgba(255, 255, 255, 0.8)"),
-    height=450,
+    font=dict(size=12),
+    showlegend=False,
     shapes=[
         dict(type='line', x0=prom_agua_rural, x1=prom_agua_rural, y0=0, y1=1, yref='paper',
              line=dict(color=COLOR_RURAL, width=2, dash='dash')),
         dict(type='line', x0=prom_agua_urbano, x1=prom_agua_urbano, y0=0, y1=1, yref='paper',
              line=dict(color=COLOR_URBANO, width=2, dash='dash'))
     ],
+    # Anotaciones en coordenadas de DATOS (no paper) — inmunes al overflow de Quarto
     annotations=[
-        dict(x=prom_agua_rural, y=0.98, yref='paper', text=f"Rural: {prom_agua_rural:.1f}%",
-             showarrow=False, font=dict(color=COLOR_RURAL, size=10)),
-        dict(x=prom_agua_urbano, y=0.02, yref='paper', text=f"Urbano: {prom_agua_urbano:.1f}%",
-             showarrow=False, font=dict(color=COLOR_URBANO, size=10))
+        dict(x=prom_agua_rural + 1, y=85, text=f"Rural: {prom_agua_rural:.1f}%",
+             showarrow=False, font=dict(color=COLOR_RURAL, size=11),
+             xanchor="left",
+             bgcolor="rgba(255,255,255,0.8)", borderpad=2),
+        dict(x=prom_agua_urbano + 1, y=5, text=f"Urbano: {prom_agua_urbano:.1f}%",
+             showarrow=False, font=dict(color=COLOR_URBANO, size=11),
+             xanchor="left",
+             bgcolor="rgba(255,255,255,0.8)", borderpad=2)
     ]
 )
 
@@ -224,7 +307,16 @@ _ = fig_barras.update_layout(
     yaxis_title="Porcentaje (%)",
     xaxis_title="",
     font=dict(family="Inter, sans-serif", size=11),
-    legend=dict(title="", orientation="v", yanchor="top", y=0.98, xanchor="left", x=0.02, bgcolor="rgba(255, 255, 255, 0.8)"),
+    legend=dict(
+        title_text="", 
+        orientation="h", 
+        yanchor="bottom", 
+        y=1.02, 
+        xanchor="center", 
+        x=0.5, 
+        entrywidth=80, 
+        bgcolor="rgba(255, 255, 255, 0.8)"
+    ),
     height=450,
     showlegend=True
 )
