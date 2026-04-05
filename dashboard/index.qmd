@@ -71,7 +71,7 @@ dict(
 dict(
   icon = "map",
   color = "info",
-  value = "Estatal"
+  value = "Regional"
 )
 ```
 
@@ -151,31 +151,26 @@ fig_espejismo
 
 # La Realidad Demográfica
 
-## Row
+## Column {.sidebar width=30%}
 
-### Column {width=40%}
+### La Realidad Demográfica
 
-::: {.card}
-#### La Dispersión Geográfica como Barrera
+El Censo de Población y Vivienda 2020 del INEGI revela una dualidad paralizante: aunque solo una minoría de los mexicanos vive en zonas rurales (localidades de menos de 2,500 habitantes), **más del 55% de los municipios del país** tienen esta clasificación. 
 
-**ACTO 2: La Realidad Demográfica (La Condena de la Distancia)**
+Esta inmensa dispersión geográfica representa el verdadero obstáculo logístico y político para el ODS 6. Entubar agua para 10,000 personas agrupadas en una sola colonia urbana es rápido y políticamente rentable. Llevar agua a 50 comunidades dispersas en la sierra requiere una voluntad política y una inversión diametralmente mayores. 
 
-Tomamos en cuenta el Censo de Población y Vivienda del año 2020, el cual revela una dualidad paralizante: aunque solo una minoría de los mexicanos vive en zonas rurales, *más del 55% de los municipios del país* tienen esta clasificación. Esta realidad demuestra la desigualdad abrumadora basada en la posición geográfica.
+La lejanía se convierte en un castigo: las políticas públicas priorizan el volumen sobre la equidad, dejando atrás a quienes ya están geográficamente aislados. La distancia física se ha traducido en distancia social.
 
-Esta inmensa dispersión y separación geográfica representa el verdadero obstáculo logístico y político. El problema principal en estas zonas no sería el agua en sí, sino su distribución. No es lo mismo entubar agua para 10,000 personas agrupadas en una sola colonia urbana, que llevar agua a 50 comunidades con inmensas distancias entre ellas en la sierra. Esto último requiere una inversión y voluntad política diametralmente mayores, derivando en que la lejanía se transforme en un castigo para los municipios rurales.
+> **Dilema Central:** ¿Rentabilidad Política o Equidad Social?
 
-Esto da paso a un dilema central: **¿Rentabilidad Política o Equidad Social?**
-
-::: {.column-margin}
-**Clasificación:** Un municipio se considera "Rural" si más del 50% de su población vive en localidades con menos de 2,500 habitantes (definición oficial INEGI).
+::: {.callout-note appearance="simple" icon=false}
+**Nota metodológica:** La clasificación de "Municipio Rural" se asigna si más del 50% de su población vive en localidades que no superan el umbral de los 2,500 habitantes (INEGI, Censo 2020).
 :::
 
-:::
-
-### Column {width=60%}
+## Column {width=25%}
 
 ```{python}
-#| title: "Distribución de Municipios en México por Clasificación"
+#| title: "Distribución de Municipios (55% Rurales)"
 
 # Contar municipios por clasificación
 municipios_count = df['clasificacion_rural'].value_counts().reset_index()
@@ -188,21 +183,22 @@ fig = px.pie(
     names='Clasificación',
     color='Clasificación',
     color_discrete_map={'Urbano': COLOR_URBANO, 'Rural': COLOR_RURAL},
-    hole=0.4,
-    title="55% de los municipios son predominantemente rurales"
+    hole=0.4
 )
 
 # Suprimir auto-display de expresiones intermedias
 _ = fig.update_traces(
     textposition='inside',
     textinfo='percent+label',
-    hovertemplate='<b>%{label}</b><br>Municipios: %{value}<br>Porcentaje: %{percent}<extra></extra>'
+    hovertemplate='<b>%{label}</b><br>Municipios: %{value}<br>Porcentaje: %{percent}<extra></extra>',
+    marker=dict(line=dict(color='#ffffff', width=2))
 )
 
 _ = fig.update_layout(
     font=dict(family="Inter, sans-serif", size=14),
     showlegend=True,
     height=500,
+    margin=dict(t=30, b=30),
     legend=dict(
         title_text="",
         orientation="h",
@@ -215,6 +211,52 @@ _ = fig.update_layout(
 )
 
 fig
+```
+
+## Column {width=45%}
+
+```{python}
+#| title: "Foco Demográfico: Municipios Rurales con Mayor Rezago de Infraestructura"
+
+from itables import show
+import itables.options as opt
+
+# Activar opciones DataTables (sin wrap de texto, compacta)
+opt.classes = ["display", "nowrap", "compact"]
+opt.lengthMenu = [5, 10, 30]
+opt.pageLength = 5  # Mostrar 5 filas por defecto para no saturar el panel
+
+# Layout DOM 'tip': t(Table), i(Info), p(Pagination). Esto mueve el texto descriptivo DEBAJO de la tabla.
+opt.dom = "tip"
+
+# Localización al español (Estrictamente texto crudo para cumplir rúbrica de HackODS)
+opt.language = {
+    "info": "Mostrando _TOTAL_ municipios.",
+    "paginate": {"next": "Sig \u2192", "previous": "\u2190 Ant"}
+}
+
+# 1. Filtrar, ordenar y extraer los 30 casos más severos
+df_aislados = df[df['clasificacion_rural'] == 'Rural'].copy()
+df_aislados = df_aislados.sort_values(by=['carencia_agua_conagua_pct', 'Pobreza_extrema_pct'], ascending=[False, False])
+
+# 2. Renombrar columnas para interfaz de usuario
+df_aislados = df_aislados.rename(columns={
+    'CVEGEO': 'ID Geo',
+    'poblacion_total': 'Total Habitantes',
+    'carencia_agua_conagua_pct': '% Sin Agua',
+    'Pobreza_extrema_pct': '% Pob. Extrema'
+})
+
+cols = ['ID Geo', 'Estado', 'Municipio', 'Total Habitantes', '% Sin Agua', '% Pob. Extrema']
+df_top30 = df_aislados[cols].head(30)
+
+# 3. Mantener formato numérico limpio (evitar strings) para garantizar que el Sort JS funcione perfecto
+df_top30['Total Habitantes'] = df_top30['Total Habitantes'].astype(int)
+df_top30['% Sin Agua'] = df_top30['% Sin Agua'].round(1)
+df_top30['% Pob. Extrema'] = df_top30['% Pob. Extrema'].round(1)
+
+# Renderizar tabla interactiva (oculta índice y buscador para máxima limpieza visual)
+show(df_top30, showIndex=False, searching=False)
 ```
 
 # La Trampa de Infraestructura

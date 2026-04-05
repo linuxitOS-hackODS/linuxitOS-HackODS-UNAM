@@ -7,7 +7,7 @@ def procesar_inegi():
     file_path = "../datos/iter_00_cpv2020_csv/iter_00_cpv2020/conjunto_de_datos/conjunto_de_datos_iter_00CSV20.csv"
     
     # Leemos solo las columnas necesarias para ahorrar memoria
-    df = pd.read_csv(file_path, usecols=['ENTIDAD', 'MUN', 'LOC', 'POBTOT'], dtype=str)
+    df = pd.read_csv(file_path, usecols=['ENTIDAD', 'NOM_ENT', 'MUN', 'LOC', 'POBTOT'], dtype=str)
     
     # Filtros: quitar totales estatales (MUN='000') y totales municipales (LOC='0000')
     df = df[df['MUN'] != '000']
@@ -24,6 +24,7 @@ def procesar_inegi():
     df_loc['CVEGEO'] = df_loc['ENTIDAD'] + df_loc['MUN']
     
     agrupado = df_loc.groupby('CVEGEO').agg(
+        Estado=('NOM_ENT', 'first'),
         poblacion_total=('POBTOT', 'sum'),
         poblacion_rural=('pob_rural', 'sum')
     ).reset_index()
@@ -35,7 +36,7 @@ def procesar_inegi():
     # Clasificación principal para el storytelling
     agrupado['clasificacion_rural'] = np.where(agrupado['pct_rural'] > 50, 'Rural', 'Urbano')
     
-    return agrupado[['CVEGEO', 'poblacion_total', 'pct_rural', 'clasificacion_rural']]
+    return agrupado[['CVEGEO', 'Estado', 'poblacion_total', 'pct_rural', 'clasificacion_rural']]
 
 def merge_datos():
     inegi_df = procesar_inegi()

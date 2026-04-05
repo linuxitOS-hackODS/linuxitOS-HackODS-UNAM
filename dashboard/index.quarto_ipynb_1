@@ -10,7 +10,7 @@
         "format: dashboard\n",
         "---"
       ],
-      "id": "8dc362b1"
+      "id": "d8f43242"
     },
     {
       "cell_type": "code",
@@ -34,7 +34,7 @@
         "COLOR_RURAL = '#e74c3c'\n",
         "COLOR_URBANO = '#3498db'"
       ],
-      "id": "30a1b6c9",
+      "id": "153e9369",
       "execution_count": null,
       "outputs": []
     },
@@ -73,7 +73,7 @@
         "\n",
         "### Row {height=20%}"
       ],
-      "id": "e82ec523"
+      "id": "698b0b6d"
     },
     {
       "cell_type": "code",
@@ -88,7 +88,7 @@
         "  value = \"64%\"\n",
         ")"
       ],
-      "id": "7d19b1d4",
+      "id": "25ee67d4",
       "execution_count": null,
       "outputs": []
     },
@@ -102,10 +102,10 @@
         "dict(\n",
         "  icon = \"map\",\n",
         "  color = \"info\",\n",
-        "  value = \"Estatal\"\n",
+        "  value = \"Regional\"\n",
         ")"
       ],
-      "id": "ebef5988",
+      "id": "9af66118",
       "execution_count": null,
       "outputs": []
     },
@@ -122,7 +122,7 @@
         "  value = \"2,469\"\n",
         ")"
       ],
-      "id": "3b470b5e",
+      "id": "069563b3",
       "execution_count": null,
       "outputs": []
     },
@@ -132,7 +132,7 @@
       "source": [
         "### Row {height=80%}"
       ],
-      "id": "e43e5ccf"
+      "id": "30602298"
     },
     {
       "cell_type": "code",
@@ -198,7 +198,7 @@
         "\n",
         "fig_espejismo"
       ],
-      "id": "088f03f0",
+      "id": "fc57829a",
       "execution_count": null,
       "outputs": []
     },
@@ -208,35 +208,30 @@
       "source": [
         "# La Realidad Demográfica\n",
         "\n",
-        "## Row\n",
+        "## Column {.sidebar width=30%}\n",
         "\n",
-        "### Column {width=40%}\n",
+        "### La Realidad Demográfica\n",
         "\n",
-        "::: {.card}\n",
-        "#### La Dispersión Geográfica como Barrera\n",
+        "El Censo de Población y Vivienda 2020 del INEGI revela una dualidad paralizante: aunque solo una minoría de los mexicanos vive en zonas rurales (localidades de menos de 2,500 habitantes), **más del 55% de los municipios del país** tienen esta clasificación. \n",
         "\n",
-        "**ACTO 2: La Realidad Demográfica (La Condena de la Distancia)**\n",
+        "Esta inmensa dispersión geográfica representa el verdadero obstáculo logístico y político para el ODS 6. Entubar agua para 10,000 personas agrupadas en una sola colonia urbana es rápido y políticamente rentable. Llevar agua a 50 comunidades dispersas en la sierra requiere una voluntad política y una inversión diametralmente mayores. \n",
         "\n",
-        "Tomamos en cuenta el Censo de Población y Vivienda del año 2020, el cual revela una dualidad paralizante: aunque solo una minoría de los mexicanos vive en zonas rurales, *más del 55% de los municipios del país* tienen esta clasificación. Esta realidad demuestra la desigualdad abrumadora basada en la posición geográfica.\n",
+        "La lejanía se convierte en un castigo: las políticas públicas priorizan el volumen sobre la equidad, dejando atrás a quienes ya están geográficamente aislados. La distancia física se ha traducido en distancia social.\n",
         "\n",
-        "Esta inmensa dispersión y separación geográfica representa el verdadero obstáculo logístico y político. El problema principal en estas zonas no sería el agua en sí, sino su distribución. No es lo mismo entubar agua para 10,000 personas agrupadas en una sola colonia urbana, que llevar agua a 50 comunidades con inmensas distancias entre ellas en la sierra. Esto último requiere una inversión y voluntad política diametralmente mayores, derivando en que la lejanía se transforme en un castigo para los municipios rurales.\n",
+        "> **Dilema Central:** ¿Rentabilidad Política o Equidad Social?\n",
         "\n",
-        "Esto da paso a un dilema central: **¿Rentabilidad Política o Equidad Social?**\n",
-        "\n",
-        "::: {.column-margin}\n",
-        "**Clasificación:** Un municipio se considera \"Rural\" si más del 50% de su población vive en localidades con menos de 2,500 habitantes (definición oficial INEGI).\n",
+        "::: {.callout-note appearance=\"simple\" icon=false}\n",
+        "**Nota metodológica:** La clasificación de \"Municipio Rural\" se asigna si más del 50% de su población vive en localidades que no superan el umbral de los 2,500 habitantes (INEGI, Censo 2020).\n",
         ":::\n",
         "\n",
-        ":::\n",
-        "\n",
-        "### Column {width=60%}"
+        "## Column {width=25%}"
       ],
-      "id": "06822dd8"
+      "id": "c3b4801f"
     },
     {
       "cell_type": "code",
       "metadata": {
-        "title": "Distribución de Municipios en México por Clasificación"
+        "title": "Distribución de Municipios (55% Rurales)"
       },
       "source": [
         "# Contar municipios por clasificación\n",
@@ -250,21 +245,22 @@
         "    names='Clasificación',\n",
         "    color='Clasificación',\n",
         "    color_discrete_map={'Urbano': COLOR_URBANO, 'Rural': COLOR_RURAL},\n",
-        "    hole=0.4,\n",
-        "    title=\"55% de los municipios son predominantemente rurales\"\n",
+        "    hole=0.4\n",
         ")\n",
         "\n",
         "# Suprimir auto-display de expresiones intermedias\n",
         "_ = fig.update_traces(\n",
         "    textposition='inside',\n",
         "    textinfo='percent+label',\n",
-        "    hovertemplate='<b>%{label}</b><br>Municipios: %{value}<br>Porcentaje: %{percent}<extra></extra>'\n",
+        "    hovertemplate='<b>%{label}</b><br>Municipios: %{value}<br>Porcentaje: %{percent}<extra></extra>',\n",
+        "    marker=dict(line=dict(color='#ffffff', width=2))\n",
         ")\n",
         "\n",
         "_ = fig.update_layout(\n",
         "    font=dict(family=\"Inter, sans-serif\", size=14),\n",
         "    showlegend=True,\n",
         "    height=500,\n",
+        "    margin=dict(t=30, b=30),\n",
         "    legend=dict(\n",
         "        title_text=\"\",\n",
         "        orientation=\"h\",\n",
@@ -278,7 +274,65 @@
         "\n",
         "fig"
       ],
-      "id": "f4c7adc0",
+      "id": "ec24ba1f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Column {width=45%}"
+      ],
+      "id": "aa43395d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Foco Demográfico: Municipios Rurales con Mayor Rezago de Infraestructura"
+      },
+      "source": [
+        "from itables import show\n",
+        "import itables.options as opt\n",
+        "\n",
+        "# Activar opciones DataTables (sin wrap de texto, compacta)\n",
+        "opt.classes = [\"display\", \"nowrap\", \"compact\"]\n",
+        "opt.lengthMenu = [5, 10, 30]\n",
+        "opt.pageLength = 5  # Mostrar 5 filas por defecto para no saturar el panel\n",
+        "\n",
+        "# Layout DOM 'tip': t(Table), i(Info), p(Pagination). Esto mueve el texto descriptivo DEBAJO de la tabla.\n",
+        "opt.dom = \"tip\"\n",
+        "\n",
+        "# Localización al español (Estrictamente texto crudo para cumplir rúbrica de HackODS)\n",
+        "opt.language = {\n",
+        "    \"info\": \"Mostrando _TOTAL_ municipios.\",\n",
+        "    \"paginate\": {\"next\": \"Sig \\u2192\", \"previous\": \"\\u2190 Ant\"}\n",
+        "}\n",
+        "\n",
+        "# 1. Filtrar, ordenar y extraer los 30 casos más severos\n",
+        "df_aislados = df[df['clasificacion_rural'] == 'Rural'].copy()\n",
+        "df_aislados = df_aislados.sort_values(by=['carencia_agua_conagua_pct', 'Pobreza_extrema_pct'], ascending=[False, False])\n",
+        "\n",
+        "# 2. Renombrar columnas para interfaz de usuario\n",
+        "df_aislados = df_aislados.rename(columns={\n",
+        "    'CVEGEO': 'ID Geo',\n",
+        "    'poblacion_total': 'Total Habitantes',\n",
+        "    'carencia_agua_conagua_pct': '% Sin Agua',\n",
+        "    'Pobreza_extrema_pct': '% Pob. Extrema'\n",
+        "})\n",
+        "\n",
+        "cols = ['ID Geo', 'Estado', 'Municipio', 'Total Habitantes', '% Sin Agua', '% Pob. Extrema']\n",
+        "df_top30 = df_aislados[cols].head(30)\n",
+        "\n",
+        "# 3. Mantener formato numérico limpio (evitar strings) para garantizar que el Sort JS funcione perfecto\n",
+        "df_top30['Total Habitantes'] = df_top30['Total Habitantes'].astype(int)\n",
+        "df_top30['% Sin Agua'] = df_top30['% Sin Agua'].round(1)\n",
+        "df_top30['% Pob. Extrema'] = df_top30['% Pob. Extrema'].round(1)\n",
+        "\n",
+        "# Renderizar tabla interactiva (oculta índice y buscador para máxima limpieza visual)\n",
+        "show(df_top30, showIndex=False, searching=False)"
+      ],
+      "id": "25130cea",
       "execution_count": null,
       "outputs": []
     },
@@ -292,7 +346,7 @@
         "\n",
         "### Column {width=70%}"
       ],
-      "id": "3ba73832"
+      "id": "15c1006b"
     },
     {
       "cell_type": "code",
@@ -349,7 +403,7 @@
         "\n",
         "fig_scatter"
       ],
-      "id": "2acc9f0c",
+      "id": "24a04f15",
       "execution_count": null,
       "outputs": []
     },
@@ -359,7 +413,7 @@
       "source": [
         "### Column {width=30%}"
       ],
-      "id": "69086091"
+      "id": "427ff16e"
     },
     {
       "cell_type": "code",
@@ -411,7 +465,7 @@
         "\n",
         "fig_barras"
       ],
-      "id": "211507db",
+      "id": "bee144b3",
       "execution_count": null,
       "outputs": []
     },
@@ -423,7 +477,7 @@
         "\n",
         "### Column {width=50%}"
       ],
-      "id": "b9e40cb8"
+      "id": "87d37254"
     },
     {
       "cell_type": "code",
@@ -461,7 +515,7 @@
         "\n",
         "fig_rha"
       ],
-      "id": "36b8284b",
+      "id": "38abbe36",
       "execution_count": null,
       "outputs": []
     },
@@ -518,7 +572,7 @@
         "\n",
         "## Row"
       ],
-      "id": "64e3fe88"
+      "id": "acc9683f"
     },
     {
       "cell_type": "code",
@@ -562,7 +616,7 @@
         "# Mostrar tabla con formato\n",
         "anomalias_display"
       ],
-      "id": "574c720c",
+      "id": "79d51e95",
       "execution_count": null,
       "outputs": []
     },
@@ -574,7 +628,7 @@
         "**Total de casos identificados:** Los 10 únicos municipios que presentan esta característica extrema en el año 2020 a nivel nacional, superando los $22 MDP en conjunto.\n",
         ":::"
       ],
-      "id": "9c6b29a7"
+      "id": "6dc34ed0"
     }
   ],
   "metadata": {

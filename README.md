@@ -1,6 +1,6 @@
-# linuxitOS - HackODS UNAM 2026
+# linuxitOS - HackODS UNAM
 
-[![HackODS UNAM 2026](https://img.shields.io/badge/HackODS-UNAM_2026-blue.svg)](https://hackods.github.io/)
+[![HackODS UNAM](https://img.shields.io/badge/HackODS-UNAM-blue.svg)](https://www.hackods.unam.mx/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Quarto](https://img.shields.io/badge/Quarto-Dashboard-9cf.svg)](https://quarto.org/)
 
@@ -16,9 +16,9 @@
 
 ## 2. Descripción y Planteamiento del Problema
 **Pregunta Central:**  
-*¿Cómo el déficit de infraestructura hídrica profundiza sistemáticamente la pobreza multidimensional en el México rural frente a los grandes centros urbanos?*
+*¿Cómo el déficit de infraestructura hídrica profundiza sistemáticamente la pobreza en el México rural frente a los grandes centros urbanos?*
 
-Este proyecto demuestra estadísticamente que el "promedio" estatal o nacional de acceso al agua es un "espejismo". A través del análisis exploratorio y cruce espacial de microdatos censales, evidenciamos cómo la dispersión sociodemográfica rural castiga a miles de municipios desconectados de las grandes redes de infraestructura pública, convirtiendo la carencia de agua en el ancla principal de la pobreza extrema en México.
+Este proyecto demuestra estadísticamente que el "promedio" estatal o nacional de acceso al agua es un "espejismo". A través del análisis exploratorio y cruce espacial de microdatos censales, evidenciamos cómo la dispersión sociodemográfica rural castiga a miles de municipios desconectados de las grandes redes de infraestructura pública, convirtiendo la carencia de agua en el ancla principal de la pobreza en México.
 
 ---
 

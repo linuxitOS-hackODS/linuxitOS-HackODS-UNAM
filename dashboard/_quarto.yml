@@ -3,13 +3,16 @@ project:
   output-dir: _site
 
 website:
-  title: "HackODS"
+  search: false
+  title: "HackODS UNAM 2026"
   navbar:
     logo: hackodslogo.png
     background: primary
     left:
+      - text: "Radiografía Nacional de Infraestructura Hídrica y Pobreza"
+    right:
       - text: "Equipo linuxitOS"
-        href: https://github.com/itsebasvz/linuxitOS-HackODS2026
+        href: https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM
         target: _blank
 
 format:
@@ -19,5 +22,5 @@ format:
       - styles.css
     nav-buttons:
       - icon: github
-        href: https://github.com/itsebasvz/linuxitOS-HackODS2026
+        href: https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM
         target: _blank
