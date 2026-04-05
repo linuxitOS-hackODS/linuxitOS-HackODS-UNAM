@@ -216,7 +216,7 @@ fig
 ## Column {width=45%}
 
 ```{python}
-#| title: "Foco Demográfico: Municipios Rurales con Mayor Rezago de Infraestructura"
+#| title: "Foco Demográfico: Municipios con Mayor Rezago de Infraestructura"
 
 from itables import show
 import itables.options as opt
