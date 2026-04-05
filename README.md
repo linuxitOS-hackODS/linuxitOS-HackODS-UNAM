@@ -58,6 +58,7 @@ python scripts/clean_coneval.py
 python scripts/merge_inegi_coneval.py
 python scripts/merge_shcp.py
 python scripts/merge_conagua.py
+python scripts/simplify_geojson.py
 
 # 5. Procesar y visualizar el Dashboard Analítico (En vivo)
 quarto preview dashboard/index.qmd

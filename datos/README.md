@@ -62,7 +62,23 @@ En esta carpeta (`datos/`) guardamos todos los datasets utilizados en crudo y pr
 
 ---
 
-### 6. Dataset Maestro (Elaboración Propia - Reproducibilidad)
+### 6. Geometría y Disponibilidad Hídrica de Cuencas (SINA - CONAGUA)
+- **Nombre de archivo:** `Disponibilidad_Cuencas_2020.json` (Crudo de 18MB), `Disponibilidad_Cuencas_2020_lite.json` (Optimizado) y `Disponibilidad_Cuencas_2020.csv` (Diccionario tabular)
+- **Descripción de las variables (Data Dictionary):** 
+  - `clvcuenca`: Clave alfanumérica única de identificación de la Cuenca Hidrológica (Ej. "0101").
+  - `cuenca`: Nombre geográfico y oficial de la cuenca (Ej. "Tijuana").
+  - `clvrha`: Clave romana de la Región Hidrológico-Administrativa a la que pertenece (Ej. "I").
+  - `clvrh`: Clave interna hidro-geográfica complementaria.
+  - `clasificacion`: Estado dictaminado oficialmente para la cuenca ("Con disponibilidad" o "Sin disponibilidad").
+  - `d`: Disponibilidad volumétrica.
+  - `geometry`: Fronteras espaciales topológicas (GeoJSON Polygons / Multipolygons).
+- **Fuente:** Sistema Nacional de Información del Agua (SINA) - CONAGUA. Módulo Temático de Cuencas Hidrológicas. [Consulta e Interfaz del Mapa](https://sinav30.conagua.gob.mx:8080/SINA/?opcion=cuencas).
+- **Fecha de descarga:** 05 de abril de 2026.
+- **Licencia:** [Datos Abiertos de México (Libre Uso)](https://app.conagua.gob.mx/datosabiertoscna/index.html#:~:text=Los%20datos%20abiertos%20son%20datos%20que%20pueden,de%20la%20misma%20manera%20en%20que%20aparecen).
+
+---
+
+### 7. Dataset Maestro (Elaboración Propia - Reproducibilidad)
 - **Nombre de archivo:** `final_merged_data.csv`
 - **Descripción de las variables (Data Dictionary):** Unificación consolidada de los microdatos de INEGI, CONEVAL, SHCP y CONAGUA. Las variables principales incluyen:
   - `CVEGEO`, `Municipio`, `poblacion_total`, `pct_rural`, `clasificacion_rural` (INEGI / Cálculo propio de ruralidad).
@@ -70,6 +86,6 @@ En esta carpeta (`datos/`) guardamos todos los datasets utilizados en crudo y pr
   - `monto_agua`, `tomas_pagadas`, `monto_recaudado_percapita` (SHCP).
   - `RHA`, `cobertura_agua_conagua_pct`, `carencia_agua_conagua_pct` (CONAGUA).
 - **Fuente:** Elaboración propia (Equipo linuxitOS).
-- **Reproducibilidad:** Este archivo asegura el rigor metodológico del Módulo A. Se genera de manera automatizada y secuencial ejecutando los scripts de limpieza y cruce ubicados en la carpeta `scripts/` (tales como `scripts/merge_shcp.py` y `scripts/merge_conagua.py`). Esto garantiza la trazabilidad total desde las fuentes primarias oficiales hasta el cruce final sin manipulación manual.
-- **Fecha de última actualización:** 03 de abril de 2026.
+- **Reproducibilidad:** Este archivo asegura el rigor metodológico del Módulo A. Se genera de manera automatizada y secuencial ejecutando los scripts de limpieza y cruce ubicados en la carpeta `scripts/` (tales como `scripts/merge_shcp.py` y `scripts/merge_conagua.py`). Además, la optimización topológica del JSON se garantiza mediante `scripts/simplify_geojson.py`. Esto garantiza la trazabilidad total desde las fuentes primarias oficiales hasta el cruce final sin manipulación manual.
+- **Fecha de última actualización:** 05 de abril de 2026.
 - **Licencia:** CC BY-SA 4.0 (Licencia general de este repositorio).
