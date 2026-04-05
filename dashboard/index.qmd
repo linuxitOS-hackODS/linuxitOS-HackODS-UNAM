@@ -259,14 +259,91 @@ df_top30['% Pob. Extrema'] = df_top30['% Pob. Extrema'].round(1)
 show(df_top30, showIndex=False, searching=False)
 ```
 
-# La Trampa de Infraestructura
+# El mapa de la invisibilidad
 
-## Row {height=100%}
+## Column {.sidebar width=30%}
 
-### Column {width=70%}
+### La Trampa de Infraestructura y la Deuda de Justicia Social en México
+
+México se visualiza como un país con un camino firme al desarrollo. Sin embargo, detrás de los promedios nacionales o incluso estatales se esconde una factura profunda. Se invisibilizan a los municipios que más carecen del recurso del agua potable.
+
+Los números oficiales son brutales e irrefutables. Existe una **brecha de desigualdad de 4.6x**: un municipio rural tiene casi cinco veces más probabilidades de no tener agua entubada que uno urbano.
+
+Al cruzar la infraestructura hídrica (CONAGUA) con las mediciones multidimensionales de pobreza (CONEVAL), surge un patrón innegable: **a mayor carencia de agua, mayor pobreza extrema**. Esta es "La Trampa Rural". 
+
+La falta de agua es, a la vez, síntoma y causa de la miseria. El tiempo que dedican las familias rurales (históricamente mujeres y niñas) a acarrear agua, es tiempo robado a la educación o al trabajo remunerado. Las enfermedades gastrointestinales merman la precaria economía familiar. Es matemáticamente imposible salir de la pobreza extrema cargando cubetas.
+
+## Column {width=70%}
+
+### Row {height=20%}
 
 ```{python}
-#| title: "Déficit de Agua vs Pobreza Extrema (2,469 Municipios)"
+#| component: valuebox
+#| title: "Población con acceso seguro al agua"
+dict(color="blue", value="65%", icon="water")
+```
+
+```{python}
+#| component: valuebox
+#| title: "Población sin acceso a agua potable"
+dict(color="danger", value="35%", icon="droplet-half")
+```
+
+### Row {height=45%}
+
+```{python}
+#| title: "Disponibilidad Hídrica Nacional (757 Cuencas CONAGUA)"
+import json
+
+# Forzar clvcuenca a string para que no pierda los ceros a la izquierda (ej. "0101")
+df_cuencas = pd.read_csv('../datos/Disponibilidad Cuencas_2020.csv', dtype={'clvcuenca': str})
+
+with open('../datos/Disponibilidad_Cuencas_2020_lite.json', 'r', encoding='utf-8') as f:
+    geojson_cuencas = json.load(f)
+
+# Mapa Coropleta de las Cuencas Hidrológicas
+fig_map = px.choropleth(
+    df_cuencas,
+    geojson=geojson_cuencas,
+    locations='clvcuenca',
+    featureidkey='properties.clvcuenca',
+    color='clasificacion',
+    hover_name='cuenca',
+    hover_data={'clvrha': True, 'clvrh': True, 'clvcuenca': False},
+    color_discrete_map={
+        'Con disponibilidad': 'rgba(52, 152, 219, 0.7)', 
+        'Sin disponibilidad': 'rgba(231, 76, 60, 0.8)'
+    },
+    labels={
+        'clasificacion': 'Estado Hídrico',
+        'clvrha': 'Región (RHA)',
+        'clvrh': 'Clave RH'
+    }
+)
+
+_ = fig_map.update_geos(fitbounds="locations", visible=False)
+_ = fig_map.update_layout(
+    margin={"r":0,"t":0,"l":0,"b":0},
+    font=dict(family="Inter, sans-serif", size=11),
+    legend=dict(
+        title_text="",
+        orientation="h",
+        yanchor="bottom",
+        y=0.95,
+        xanchor="center",
+        x=0.5,
+        bgcolor="rgba(255, 255, 255, 0.8)"
+    ),
+    dragmode=False # Desactivar zoom pesado en un json tan grande
+)
+
+fig_map
+```
+
+### Row {height=35%}
+
+```{python}
+#| title: "A mayor carencia de agua, mayor pobreza extrema (2,469 Municipios)"
 
 # Scatter plot limpio usando Plotly Express
 fig_scatter = px.scatter(
@@ -275,12 +352,12 @@ fig_scatter = px.scatter(
     y='Pobreza_extrema_pct',
     color='clasificacion_rural',
     hover_name='Municipio',
-    hover_data=['RHA', 'poblacion_total'],
+    hover_data=['Estado', 'RHA', 'poblacion_total'],
     color_discrete_map={'Urbano': COLOR_URBANO, 'Rural': COLOR_RURAL},
     labels={
-        'carencia_agua_conagua_pct': '% Sin Agua Entubada (CONAGUA)',
-        'Pobreza_extrema_pct': '% Pobreza Extrema (CONEVAL)',
-        'RHA': 'Cuenca',
+        'carencia_agua_conagua_pct': '% Sin Agua Entubada',
+        'Pobreza_extrema_pct': '% Pobreza Extrema',
+        'RHA': 'RHA',
         'poblacion_total': 'Población'
     },
     opacity=0.7
@@ -294,15 +371,23 @@ prom_agua_urbano = df[df['clasificacion_rural'] == 'Urbano']['carencia_agua_cona
 _ = fig_scatter.update_layout(
     xaxis_title="% Sin Agua Entubada (CONAGUA)",
     yaxis_title="% en Pobreza Extrema (CONEVAL)",
-    font=dict(size=12),
-    showlegend=False,
+    font=dict(family="Inter, sans-serif", size=11),
+    showlegend=True,
+    legend=dict(
+        title_text="", 
+        orientation="v", 
+        yanchor="top", 
+        y=0.99, 
+        xanchor="left", 
+        x=0.01, 
+        bgcolor="rgba(255, 255, 255, 0.8)"
+    ),
     shapes=[
         dict(type='line', x0=prom_agua_rural, x1=prom_agua_rural, y0=0, y1=1, yref='paper',
              line=dict(color=COLOR_RURAL, width=2, dash='dash')),
         dict(type='line', x0=prom_agua_urbano, x1=prom_agua_urbano, y0=0, y1=1, yref='paper',
              line=dict(color=COLOR_URBANO, width=2, dash='dash'))
     ],
-    # Anotaciones en coordenadas de DATOS (no paper) — inmunes al overflow de Quarto
     annotations=[
         dict(x=prom_agua_rural + 1, y=85, text=f"Rural: {prom_agua_rural:.1f}%",
              showarrow=False, font=dict(color=COLOR_RURAL, size=11),
@@ -318,104 +403,12 @@ _ = fig_scatter.update_layout(
 fig_scatter
 ```
 
-### Column {width=30%}
-
-```{python}
-#| title: "Comparativa de Promedios"
-
-# Preparar datos para gráfica de barras
-comparativa_data = pd.DataFrame({
-    'Tipo': ['Rural', 'Urbano', 'Rural', 'Urbano'],
-    'Indicador': ['Sin Agua', 'Sin Agua', 'Pobreza Extrema', 'Pobreza Extrema'],
-    'Porcentaje': [
-        df[df['clasificacion_rural'] == 'Rural']['carencia_agua_conagua_pct'].mean(),
-        df[df['clasificacion_rural'] == 'Urbano']['carencia_agua_conagua_pct'].mean(),
-        df[df['clasificacion_rural'] == 'Rural']['Pobreza_extrema_pct'].mean(),
-        df[df['clasificacion_rural'] == 'Urbano']['Pobreza_extrema_pct'].mean()
-    ]
-})
-
-fig_barras = px.bar(
-    comparativa_data,
-    x='Indicador',
-    y='Porcentaje',
-    color='Tipo',
-    barmode='group',
-    color_discrete_map={'Urbano': COLOR_URBANO, 'Rural': COLOR_RURAL},
-    text_auto='.1f'
-)
-
-_ = fig_barras.update_layout(
-    yaxis_title="Porcentaje (%)",
-    xaxis_title="",
-    font=dict(family="Inter, sans-serif", size=11),
-    legend=dict(
-        title_text="", 
-        orientation="h", 
-        yanchor="bottom", 
-        y=1.02, 
-        xanchor="center", 
-        x=0.5, 
-        entrywidth=80, 
-        bgcolor="rgba(255, 255, 255, 0.8)"
-    ),
-    height=450,
-    showlegend=True
-)
-
-_ = fig_barras.update_traces(texttemplate='%{text}%', textposition='outside')
-
-fig_barras
-```
-
-## Row {height=40%}
-
-### Column {width=50%}
-
-```{python}
-#| title: "Déficit Hídrico por Cuenca Hidrológica (RHA)"
-
-# Agregar datos geográficos por RHA (simulación simplificada)
-rha_stats = df.groupby('RHA').agg({
-    'carencia_agua_conagua_pct': 'mean',
-    'Municipio': 'count'
-}).reset_index()
-rha_stats.columns = ['RHA', 'Carencia_Agua_Promedio', 'Num_Municipios']
-
-fig_rha = px.bar(
-    rha_stats.sort_values('Carencia_Agua_Promedio', ascending=False),
-    x='Carencia_Agua_Promedio',
-    y='RHA',
-    orientation='h',
-    color='Carencia_Agua_Promedio',
-    color_continuous_scale='Reds',
-    labels={
-        'Carencia_Agua_Promedio': '% Promedio Sin Agua',
-        'RHA': 'Región Hidrológica'
-    },
-    hover_data=['Num_Municipios']
-)
-
-_ = fig_rha.update_layout(
-    font=dict(family="Inter, sans-serif", size=10),
-    height=400,
-    yaxis={'categoryorder':'total ascending'},
-    showlegend=False
-)
-
-fig_rha
-```
-
-### Column {width=50%}
+### Row {height=15%}
 
 ::: {.card}
-#### La Comprobación Matemática
+#### La Comprobación Matemática (El Veredicto Final)
 
-**[INSERTA TU NARRATIVA AQUÍ - Sección 3: El Impacto]**
-
-Al cruzar los datos del Censo INEGI 2020 con los datos específicos de agua de CONAGUA y pobreza de CONEVAL, la "Ilusión Nacional" queda completamente desmentida.
-
-Los gráficos revelan con claridad cómo los municipios rurales sufren una **doble trampa estructural**: mayor carencia de agua entubada y mayor pobreza extrema.
+Al agrupar los datos y cruzar el Censo INEGI 2020 con la carencia de agua de CONAGUA y la pobreza de CONEVAL, la "Ilusión Nacional" queda completamente desmentida. Los municipios rurales sufren una **doble trampa estructural**: mayor carencia de agua entubada y mayor pobreza extrema.
 
 **Los números son irrefutables:**
 
@@ -424,10 +417,7 @@ Los gráficos revelan con claridad cómo los municipios rurales sufren una **dob
 | **Urbano** (1,109 municipios) | 2.1% | 11.8% |
 | **Rural** (1,360 municipios) | **9.6%** | **21.6%** |
 
-**La carencia de agua entubada es 4.6 VECES MAYOR en el México rural, y la pobreza extrema el doble.** El análisis por cuencas hidrológicas (RHA) demuestra que esta crisis no respeta fronteras estatales: son los sistemas hídricos naturales los que determinan el acceso al agua.
-
-El déficit hídrico no es solo una cuestión de tuberías faltantes; es una **trampa estructural** que perpetúa la pobreza multidimensional en las zonas rurales del país.
-
+**La carencia de agua entubada es 4.6 VECES MAYOR en el México rural, y la pobreza extrema el doble.** Ninguna transferencia de efectivo erradicará la pobreza si no hay una llave de agua en casa. Visibilizar esta trampa es el primer paso para exigir políticas públicas que dejen de promediar y empiecen a focalizar.
 :::
 
 # Contrastes de Recaudación
