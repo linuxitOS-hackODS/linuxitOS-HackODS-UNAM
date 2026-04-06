@@ -420,71 +420,155 @@ Al agrupar los datos y cruzar el Censo INEGI 2020 con la carencia de agua de CON
 **La carencia de agua entubada es 4.6 VECES MAYOR en el México rural, y la pobreza extrema el doble.** Ninguna transferencia de efectivo erradicará la pobreza si no hay una llave de agua en casa. Visibilizar esta trampa es el primer paso para exigir políticas públicas que dejen de promediar y empiecen a focalizar.
 :::
 
-# Contrastes de Recaudación
+# Acción Positiva
 
-## Row
+## Column {.sidebar width=30%}
 
-### Column
+Pero la estadística no es destino. Hay quienes están cambiando el mapa.
 
-::: {.card}
-#### Anomalías Financieras en la Gestión del Agua
+Donde el presupuesto oficial no ha llegado, la sociedad civil y la innovación social han levantado la mano. No estamos esperando a que el futuro llegue; lo estamos construyendo pozo a pozo, tanque a tanque, gota a gota.
 
-**[INSERTA TU NARRATIVA AQUÍ - Sección 4: Las Anomalías]**
+***
 
-Al integrar los datos de la Secretaría de Hacienda y Crédito Público (SHCP) sobre derechos de agua municipales, emerge un patrón que merece análisis profundo.
+### ![](img/fundacion.png){width="40px" fig-align="left"} Fundación Gonzalo Río Arronte: 
+**El Motor de la Infraestructura**
 
-La siguiente tabla presenta a los únicos **10 municipios en México donde a más del 50% de su población les falta agua entubada** (según CONAGUA), pero que simultáneamente reportan millones de pesos de ingresos formales por derechos de agua y tomas registradas ante la SHCP.
+Son el músculo financiero y estratégico detrás de cientos de proyectos de agua en México. Su enfoque no es solo dar el recurso, sino asegurar que la infraestructura sea sostenible y técnica, cerrando la brecha que el presupuesto público ha dejado abierta en las zonas de mayor estrés hídrico.
 
-Los datos están presentados sin interpretaciones, permitiendo que cada observador saque sus propias conclusiones sobre las posibles causas de estas discrepancias (ej. cobro de pipas registrado como derecho, monopolio en las cabeceras municipales, o errores contables).
+**Su impacto:** Transforman grandes donaciones en soluciones reales de ingeniería para quienes el mapa había olvidado.
 
-::: {.column-margin}
-**Fuente de datos:** Secretaría de Hacienda y Crédito Público (SHCP), Derechos de Agua Municipal 2020.
-:::
+***
 
-:::
+### ![](img/cemda.png){width="40px" fig-align="left"} CEMDA:
+**La Voz de la Justicia**
 
-## Row
+Porque la infraestructura sin derechos es frágil. CEMDA defiende el patrimonio natural y el derecho humano al agua desde el marco legal. Ellos aseguran que las comunidades rurales tengan una defensa jurídica contra la sobreexplotación y la contaminación, garantizando que el agua sea de la gente y para la gente.
+
+**Su impacto:** Convierten el "Derecho al Agua" de una frase en la constitución a una realidad legal protegida.
+
+***
+
+### ![](img/cantaroazul.jpg){width="40px" fig-align="left"} Cántaro Azul: 
+**Innovación desde la raíz**
+
+Especialistas en transformar la realidad de las comunidades más excluidas. Mediante ecotecnias de purificación y gestión comunitaria, logran que las escuelas y hogares tengan agua segura sin depender de mega-obras inalcanzables.
+
+**Su impacto:** Devuelven la Dignidad y el tiempo a mujeres y niños, rompiendo la trampa de la pobreza desde el centro de la comunidad.
+
+***
+
+### ![](img/pnud.png){width="40px" fig-align="left"} Alianza PNUD y FEMSA:
+**La Alianza por la Resiliencia**
+
+Un esfuerzo multiactor que une la fuerza de las Naciones Unidas con la inversión social para llevar justicia hídrica al sureste mexicano. Su enfoque es la "Recuperación Resiliente", instalando ecotecnias que permiten a las comunidades indígenas ser autosuficientes frente a crisis climáticas y sanitarias. Para esto se diseñaron estrategias para que las mismas personas de estas localidades tuvieran el conocimiento técnico para instalar, mantener y reparar toda esta infraestructura.
+
+**Su impacto:** Han logrado que más de 23,000 personas pasen de la escasez a tener 200 litros de agua diarios en sus hogares.
+
+## Column {width=70%}
+
+### Row {height=100%}
 
 ```{python}
-#| title: "Municipios con >50% Falta de Agua pero con Recaudación por Agua (2020)"
+#| title: "El Nuevo Mapa: ONGs de Resiliencia Hídrica en México"
 
-# Filtrar municipios con alta carencia pero con recaudación positiva
-anomalias = df[(df['carencia_agua_conagua_pct'] >= 50.0) & (df['monto_agua'] > 0)].copy()
+# 1. Cargar el Catálogo Nacional de Estados
+df_estados = pd.read_csv('../datos/Estado.csv', dtype={'clvedo': str})
 
-# Seleccionar columnas relevantes
-anomalias_display = anomalias[[
-    'Municipio', 
-    'carencia_agua_conagua_pct', 
-    'Pobreza_extrema_pct',
-    'monto_agua', 
-    'tomas_pagadas',
-    'monto_recaudado_percapita'
-]].copy()
+# 2. Cargar los Datos de Proyectos Sociales
+df_proyectos = pd.read_csv('../datos/proyectos_agua.csv')
 
-# Renombrar columnas para mejor presentación
-anomalias_display.columns = [
-    'Municipio',
-    '% Sin Agua Entubada',
-    '% Pobreza Extrema',
-    'Ingreso Total por Agua (MXN)',
-    'Tomas Pagadas',
-    'Recaudación Per Cápita (MXN)'
-]
+# Homologar nombres de estados para cruzar correctamente
+estandarizacion_estados = {
+    'Coahuila': 'Coahuila de Zaragoza',
+    'Estado de México': 'México',
+    'Veracruz': 'Veracruz de Ignacio de la Llave'
+}
+df_proyectos['Estado'] = df_proyectos['Estado'].replace(estandarizacion_estados)
 
-# Ordenar por monto de agua (descendente)
-anomalias_display = anomalias_display.sort_values('Ingreso Total por Agua (MXN)', ascending=False)
+# 3. Agrupar la presencia de ONGs por estado
+df_agregado = df_proyectos.groupby('Estado').agg(
+    Num_ONGs=('Fundacion', 'count'),
+    Fundaciones=('Fundacion', lambda x: '<br>• ' + '<br>• '.join(x)),
+    Impactos=('Tipo_de_Impacto', lambda x: '<br>- ' + '<br>- '.join(x))
+).reset_index()
 
-# Formatear números
-anomalias_display['Ingreso Total por Agua (MXN)'] = anomalias_display['Ingreso Total por Agua (MXN)'].apply(lambda x: f'${x:,.0f}')
-anomalias_display['Tomas Pagadas'] = anomalias_display['Tomas Pagadas'].apply(lambda x: f'{int(x):,}')
-anomalias_display['Recaudación Per Cápita (MXN)'] = anomalias_display['Recaudación Per Cápita (MXN)'].apply(lambda x: f'${x:,.0f}')
-anomalias_display['% Sin Agua Entubada'] = anomalias_display['% Sin Agua Entubada'].apply(lambda x: f'{x:.1f}%')
-anomalias_display['% Pobreza Extrema'] = anomalias_display['% Pobreza Extrema'].apply(lambda x: f'{x:.1f}%')
+# 4. Generar el dataframe final uniendo ambos con un LEFT JOIN
+df_mapa = pd.merge(df_estados, df_agregado, left_on='estado', right_on='Estado', how='left')
 
-# Mostrar tabla con formato
-anomalias_display
+df_mapa['Num_ONGs'] = df_mapa['Num_ONGs'].fillna(0).astype(int)
+df_mapa['Fundaciones'] = df_mapa['Fundaciones'].fillna('Sin Organizaciones Registradas')
+df_mapa['Impactos'] = df_mapa['Impactos'].fillna('Sin Intervención')
+
+# Crear la leyenda categórica (0 Blanco, 1-2 Claro, 3-4 Oscuro)
+def clasificar_intensidad(ong_count):
+    if ong_count == 0:
+        return 'Sin Registro (0)'
+    elif ong_count <= 2:
+        return 'Impacto Regional (1-2)'
+    else:
+        return 'Alto Impacto (3+)'
+
+df_mapa['Nivel_Impacto'] = df_mapa['Num_ONGs'].apply(clasificar_intensidad)
+
+# Custom color map para el diseño orgánico
+color_map_ongs = {
+    'Sin Registro (0)': '#ffffff',            # Blanco puro
+    'Impacto Regional (1-2)': '#a9cce3',      # Azul claro
+    'Alto Impacto (3+)': '#2471a3'            # Azul obscuro
+}
+
+# 5. Cargar GeoJSON de Estados
+with open('../datos/Estado_lite.json', 'r', encoding='utf-8') as f:
+    geojson_estados = json.load(f)
+
+# 6. Renderizar Mapa Choropleth
+fig_ongs = px.choropleth(
+    df_mapa,
+    geojson=geojson_estados,
+    locations='clvedo',
+    featureidkey='properties.clvedo', 
+    color='Nivel_Impacto',
+    category_orders={'Nivel_Impacto': ['Sin Registro (0)', 'Impacto Regional (1-2)', 'Alto Impacto (3+)']},
+    color_discrete_map=color_map_ongs,
+    hover_name='estado',
+    custom_data=['Fundaciones', 'Impactos', 'Num_ONGs']
+)
+
+# Custom Hover Text
+_ = fig_ongs.update_traces(
+    hovertemplate="<b>%{hovertext}</b><br><br>" +
+    "Organizaciones Activas: %{customdata[2]}<br>" +
+    "<b>Fundaciones:</b>%{customdata[0]}<br><br>" +
+    "<b>Impactos:</b>%{customdata[1]}" +
+    "<extra></extra>"
+)
+
+# Bordes definidos (gris claro) 
+_ = fig_ongs.update_traces(marker_line_color='#bdc3c7', marker_line_width=0.5)
+
+# _ = fig_ongs.update_geos(fitbounds="locations", visible=False)
+_ = fig_ongs.update_geos(
+    fitbounds="locations",
+    visible=False,
+    projection_type="mercator"
+)
+
+_ = fig_ongs.update_layout(
+    margin={"r":0,"t":0,"l":0,"b":0},
+    font=dict(family="Inter, sans-serif", size=12),
+    legend=dict(
+        title_text="Presencia por Estado",
+        orientation="v",
+        yanchor="top",
+        y=0.9,
+        xanchor="left",
+        x=0.01,
+        bgcolor="rgba(255, 255, 255, 0.9)",
+        bordercolor="black",
+        borderwidth=1
+    ),
+    dragmode=False
+)
+
+fig_ongs
 ```
-
-::: {.column-margin}
-**Total de casos identificados:** Los 10 únicos municipios que presentan esta característica extrema en el año 2020 a nivel nacional, superando los $22 MDP en conjunto.
-:::
