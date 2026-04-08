@@ -60,8 +60,6 @@ En esta carpeta (`datos/`) guardamos todos los datasets utilizados en crudo y pr
 - **Fecha de descarga:** 03 de abril de 2026.
 - **Licencia:** [Datos Abiertos de México (Libre Uso)](https://app.conagua.gob.mx/datosabiertoscna/index.html#:~:text=Los%20datos%20abiertos%20son%20datos%20que%20pueden,de%20la%20misma%20manera%20en%20que%20aparecen).
 
----
-
 ### 6. Geometría y Disponibilidad Hídrica de Cuencas (SINA - CONAGUA)
 - **Nombre de archivo:** `Disponibilidad_Cuencas_2020.json` (Crudo de 18MB), `Disponibilidad_Cuencas_2020_lite.json` (Optimizado) y `Disponibilidad_Cuencas_2020.csv` (Diccionario tabular)
 - **Descripción de las variables (Data Dictionary):** 

@@ -259,23 +259,31 @@ df_top30['% Pob. Extrema'] = df_top30['% Pob. Extrema'].round(1)
 show(df_top30, showIndex=False, searching=False)
 ```
 
-# El mapa de la invisibilidad
+# El mapa de la invisibilidad {.scrolling}
 
 ## Column {.sidebar width=30%}
 
 ### La Trampa de Infraestructura y la Deuda de Justicia Social en México
 
-México se visualiza como un país con un camino firme al desarrollo. Sin embargo, detrás de los promedios nacionales o incluso estatales se esconde una factura profunda. Se invisibilizan a los municipios que más carecen del recurso del agua potable.
+México se visualiza como un país con un camino firme al desarrollo. Sin embargo, detrás de los promedios nacionales o incluso estatales se esconde una factura profunda. **Se invisibilizan a los municipios que más carecen del recurso del agua potable.**
 
-Los números oficiales son brutales e irrefutables. Existe una **brecha de desigualdad de 4.6x**: un municipio rural tiene casi cinco veces más probabilidades de no tener agua entubada que uno urbano.
+Los datos de CONEVAL y CONAGUA no mienten, existe una correlación entre la causa de la pobreza con la falta del agua.
+La falta de infraestructura no es solo un problema técnico; es un ladrón de tiempo. **El tiempo que mujeres y niñes dedican a acarrear agua es tiempo robado a la educación y al trabajo remunerado.**
 
-Al cruzar la infraestructura hídrica (CONAGUA) con las mediciones multidimensionales de pobreza (CONEVAL), surge un patrón innegable: **a mayor carencia de agua, mayor pobreza extrema**. Esta es "La Trampa Rural". 
+Para entender por qué en la actualidad una llave de agua sigue siendo un privilegio, debemos elevar la mirada del municipio al sistema. Al pasar del dato municipal a la administración por cuencas, la correlación se vuelve veredicto: **La pobreza en México tiene una dirección postal olvidada por el presupuesto nacional.**
 
-La falta de agua es, a la vez, síntoma y causa de la miseria. El tiempo que dedican las familias rurales (históricamente mujeres y niñas) a acarrear agua, es tiempo robado a la educación o al trabajo remunerado. Las enfermedades gastrointestinales merman la precaria economía familiar. Es matemáticamente imposible salir de la pobreza extrema cargando cubetas.
+Al agrupar los datos por Región Hidrológico-Administrativa (RHA), el desarrollo del país se desmorona . Sin importar la zona, sea el árido norte o el lluvioso sur, el abandono de las zonas rurales es una constante sistémica.
+**La intersección de los ODS 1 y 6 nos dicta una verdad incómoda: ninguna transferencia de efectivo ni programa social erradicará la pobreza si no hay una llave de agua potable en casa.** La infraestructura hídrica no es solo ingeniería; es el pilar más básico de la justicia social.
+
+**Justicia social es infraestructura. El agua es un derecho.**
+
+> *"Si el tiempo perdido es el síntoma, la infraestructura ausente es la sentencia."*
+
+
 
 ## Column {width=70%}
 
-### Row {height=20%}
+### Row {height=175px}
 
 ```{python}
 #| component: valuebox
@@ -289,7 +297,7 @@ dict(color="blue", value="65%", icon="water")
 dict(color="danger", value="35%", icon="droplet-half")
 ```
 
-### Row {height=45%}
+### Row {height=600px}
 
 ```{python}
 #| title: "Disponibilidad Hídrica Nacional (757 Cuencas CONAGUA)"
@@ -323,15 +331,16 @@ fig_map = px.choropleth(
 
 _ = fig_map.update_geos(fitbounds="locations", visible=False)
 _ = fig_map.update_layout(
-    margin={"r":0,"t":0,"l":0,"b":0},
-    font=dict(family="Inter, sans-serif", size=11),
+    margin={"r":0,"t":0,"l":0,"b":40},
+    font=dict(family="Inter, sans-serif", size=15),
     legend=dict(
         title_text="",
         orientation="h",
-        yanchor="bottom",
-        y=0.95,
-        xanchor="center",
-        x=0.5,
+        yanchor="top",
+        y=0.0,
+        xanchor="left",
+        x=0.0,
+        entrywidth=170,
         bgcolor="rgba(255, 255, 255, 0.8)"
     ),
     dragmode=False # Desactivar zoom pesado en un json tan grande
@@ -340,7 +349,7 @@ _ = fig_map.update_layout(
 fig_map
 ```
 
-### Row {height=35%}
+### Row {height=800px}
 
 ```{python}
 #| title: "A mayor carencia de agua, mayor pobreza extrema (2,469 Municipios)"
@@ -374,12 +383,13 @@ _ = fig_scatter.update_layout(
     font=dict(family="Inter, sans-serif", size=11),
     showlegend=True,
     legend=dict(
-        title_text="", 
-        orientation="v", 
-        yanchor="top", 
-        y=0.99, 
-        xanchor="left", 
-        x=0.01, 
+        title_text="",
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="center",
+        x=0.51,
+        entrywidth=100,
         bgcolor="rgba(255, 255, 255, 0.8)"
     ),
     shapes=[
@@ -390,20 +400,21 @@ _ = fig_scatter.update_layout(
     ],
     annotations=[
         dict(x=prom_agua_rural + 1, y=85, text=f"Rural: {prom_agua_rural:.1f}%",
-             showarrow=False, font=dict(color=COLOR_RURAL, size=11),
+             showarrow=False, font=dict(color=COLOR_RURAL, size=15),
              xanchor="left",
              bgcolor="rgba(255,255,255,0.8)", borderpad=2),
         dict(x=prom_agua_urbano + 1, y=5, text=f"Urbano: {prom_agua_urbano:.1f}%",
-             showarrow=False, font=dict(color=COLOR_URBANO, size=11),
+             showarrow=False, font=dict(color=COLOR_URBANO, size=15),
              xanchor="left",
              bgcolor="rgba(255,255,255,0.8)", borderpad=2)
     ]
 )
 
+
 fig_scatter
 ```
 
-### Row {height=15%}
+### Row {height=800px}
 
 ::: {.card}
 #### La Comprobación Matemática (El Veredicto Final)

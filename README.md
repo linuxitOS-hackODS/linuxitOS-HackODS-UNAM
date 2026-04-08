@@ -1,6 +1,6 @@
 # linuxitOS - HackODS UNAM
 
-[![HackODS UNAM](https://img.shields.io/badge/HackODS-UNAM-blue.svg)](https://www.hackods.unam.mx/)
+[![HackODS UNAM](https://img.shields.io/badge/HackODS-UNAM-gold.svg)](https://www.hackods.unam.mx/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Quarto](https://img.shields.io/badge/Quarto-Dashboard-9cf.svg)](https://quarto.org/)
 
