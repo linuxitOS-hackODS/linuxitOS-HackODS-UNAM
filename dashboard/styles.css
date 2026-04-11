@@ -115,5 +115,24 @@ table tbody td {
   .card {
     margin-bottom: 1rem;
   }
+}
+
+/* --- Ajuste Especial Dinámico para Laptops --- */
+@media (max-width: 1440px) {
+  /* Escalar dinámicamente el texto de las métricas principales (ValueBoxes) */
+  .valuebox .value-box-title {
+    font-size: clamp(0.70rem, 1.1vw, 1rem) !important;
+    white-space: normal !important;
+    line-height: 1.2 !important;
+    padding-bottom: 5px;
+  }
   
+  .valuebox .value-box-value {
+    font-size: clamp(1.4rem, 2.3vw, 2.5rem) !important;
+  }
+
+  .valuebox i {
+    /* Ajustar el tamaño del ícono nativo de bootstrap-icons */
+    font-size: clamp(1.8rem, 3vw, 3.5rem) !important;
+  }
 }

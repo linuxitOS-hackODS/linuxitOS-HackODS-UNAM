@@ -51,7 +51,7 @@ Para encontrar la verdad profundizamos en los **microdatos de 2,469 municipios**
 
 ## Column {width=70%}
 
-### Row {height=20%}
+### Row
 
 ```{python}
 #| component: valuebox
