@@ -344,6 +344,16 @@ _ = fig_map.update_layout(
     dragmode=False # Desactivar zoom pesado en un json tan grande
 )
 
+# Hover tooltip color = color de cada categoría
+hover_colors_cuencas = {
+    'Con disponibilidad': 'rgba(52, 152, 219, 0.9)',
+    'Sin disponibilidad': 'rgba(231, 76, 60, 0.9)'
+}
+for trace in fig_map.data:
+    cat = trace.name
+    if cat in hover_colors_cuencas:
+        trace.hoverlabel = dict(bgcolor=hover_colors_cuencas[cat], font_color='white')
+
 fig_map
 ```
 
@@ -433,52 +443,48 @@ Al agrupar los datos y cruzar el Censo INEGI 2020 con la carencia de agua de CON
 
 ## Column {.sidebar width=30%}
 
-Pero la estadística no es destino. Hay quienes están cambiando el mapa.
+### El Agua como Motor de Cambio
 
-Donde el presupuesto oficial no ha llegado, la sociedad civil y la innovación social han levantado la mano. No estamos esperando a que el futuro llegue; lo estamos construyendo pozo a pozo, tanque a tanque, gota a gota.
+Pero la estadística no es destino. **Hay quienes están cambiando el mapa.** Donde el presupuesto oficial no ha llegado, la sociedad civil y la innovación social han dado un paso al frente. No estamos esperando a que el futuro llegue; lo estamos construyendo: **pozo a pozo, tanque a tanque, gota a gota.**
 
 ***
 
-### ![](img/fundacion.png){width="40px" fig-align="left"} Fundación Gonzalo Río Arronte: 
+### Fundación Gonzalo Río Arronte
 **El Motor de la Infraestructura**
 
-Son el músculo financiero y estratégico detrás de cientos de proyectos de agua en México. Su enfoque no es solo dar el recurso, sino asegurar que la infraestructura sea sostenible y técnica, cerrando la brecha que el presupuesto público ha dejado abierta en las zonas de mayor estrés hídrico.
-
-**Su impacto:** Transforman grandes donaciones en soluciones reales de ingeniería para quienes el mapa había olvidado.
+Es el músculo financiero y estratégico detrás de cientos de proyectos de agua en México. Su enfoque no se limita a aportar recursos, sino a asegurar que la infraestructura sea sostenible y técnicamente sólida, cerrando la brecha que el presupuesto público ha dejado abierta en las zonas de mayor estrés hídrico.
 
 ***
 
-### ![](img/cemda.png){width="40px" fig-align="left"} CEMDA:
+### CEMDA
 **La Voz de la Justicia**
 
-Porque la infraestructura sin derechos es frágil. CEMDA defiende el patrimonio natural y el derecho humano al agua desde el marco legal. Ellos aseguran que las comunidades rurales tengan una defensa jurídica contra la sobreexplotación y la contaminación, garantizando que el agua sea de la gente y para la gente.
-
-**Su impacto:** Convierten el "Derecho al Agua" de una frase en la constitución a una realidad legal protegida.
+Porque la infraestructura sin derechos es frágil. CEMDA defiende el patrimonio natural y el derecho humano al agua desde el marco legal. Su labor garantiza que las comunidades rurales cuenten con defensa jurídica frente a la sobreexplotación y la contaminación, asegurando que el agua sea de la gente y para la gente.
 
 ***
 
-### ![](img/cantaroazul.jpg){width="40px" fig-align="left"} Cántaro Azul: 
-**Innovación desde la raíz**
+### Cántaro Azul
+**Innovación desde la Raíz**
 
-Especialistas en transformar la realidad de las comunidades más excluidas. Mediante ecotecnias de purificación y gestión comunitaria, logran que las escuelas y hogares tengan agua segura sin depender de mega-obras inalcanzables.
-
-**Su impacto:** Devuelven la Dignidad y el tiempo a mujeres y niños, rompiendo la trampa de la pobreza desde el centro de la comunidad.
+Especialistas en transformar la realidad de las comunidades más excluidas. Mediante ecotecnias de purificación y modelos de gestión comunitaria, logran que escuelas y hogares tengan acceso a agua segura sin depender de megaobras inalcanzables.
 
 ***
 
-### ![](img/pnud.png){width="40px" fig-align="left"} Alianza PNUD y FEMSA:
+### Alianza PNUD y FEMSA
 **La Alianza por la Resiliencia**
 
-Un esfuerzo multiactor que une la fuerza de las Naciones Unidas con la inversión social para llevar justicia hídrica al sureste mexicano. Su enfoque es la "Recuperación Resiliente", instalando ecotecnias que permiten a las comunidades indígenas ser autosuficientes frente a crisis climáticas y sanitarias. Para esto se diseñaron estrategias para que las mismas personas de estas localidades tuvieran el conocimiento técnico para instalar, mantener y reparar toda esta infraestructura.
+Un esfuerzo multiactor que une la capacidad de las Naciones Unidas con la inversión social para llevar justicia hídrica al sureste mexicano. Su enfoque se basa en la "recuperación resiliente", instalando ecotecnias que permiten a las comunidades indígenas ser autosuficientes frente a crisis climáticas y sanitarias.
 
-**Su impacto:** Han logrado que más de 23,000 personas pasen de la escasez a tener 200 litros de agua diarios en sus hogares.
+::: {.callout-note appearance="simple" icon=false}
+**En conjunto**, estas organizaciones han demostrado que la acción social focalizada puede cerrar la brecha que el presupuesto público ha dejado abierta. El mapa muestra dónde están actuando.
+:::
 
 ## Column {width=70%}
 
-### Row {height=100%}
+### Row {height=70%}
 
 ```{python}
-#| title: "El Nuevo Mapa: ONGs de Resiliencia Hídrica en México"
+#| title: "ONGs con impacto en infraestructura hídrica en México"
 
 # 1. Cargar el Catálogo Nacional de Estados
 df_estados = pd.read_csv('../datos/Estado.csv', dtype={'clvedo': str})
@@ -508,22 +514,25 @@ df_mapa['Num_ONGs'] = df_mapa['Num_ONGs'].fillna(0).astype(int)
 df_mapa['Fundaciones'] = df_mapa['Fundaciones'].fillna('Sin Organizaciones Registradas')
 df_mapa['Impactos'] = df_mapa['Impactos'].fillna('Sin Intervención')
 
-# Crear la leyenda categórica (0 Blanco, 1-2 Claro, 3-4 Oscuro)
+# Crear la leyenda categórica (0, 1, 2, 3+)
 def clasificar_intensidad(ong_count):
     if ong_count == 0:
         return 'Sin Registro (0)'
-    elif ong_count <= 2:
-        return 'Impacto Regional (1-2)'
+    elif ong_count == 1:
+        return 'Presencia (1)'
+    elif ong_count == 2:
+        return 'Impacto Regional (2)'
     else:
         return 'Alto Impacto (3+)'
 
 df_mapa['Nivel_Impacto'] = df_mapa['Num_ONGs'].apply(clasificar_intensidad)
 
-# Custom color map para el diseño orgánico
+# Custom color map — gradiente de 4 niveles para tema oscuro
 color_map_ongs = {
-    'Sin Registro (0)': '#ffffff',            # Blanco puro
-    'Impacto Regional (1-2)': '#a9cce3',      # Azul claro
-    'Alto Impacto (3+)': '#2471a3'            # Azul obscuro
+    'Sin Registro (0)': '#ffffff',            # Arena cálida
+    'Presencia (1)': '#aed6f1',               # Azul claro suave
+    'Impacto Regional (2)': '#3498db',        # Azul medio vibrante
+    'Alto Impacto (3+)': '#1a5276'            # Azul profundo institucional
 }
 
 # 5. Cargar GeoJSON de Estados
@@ -537,7 +546,7 @@ fig_ongs = px.choropleth(
     locations='clvedo',
     featureidkey='properties.clvedo', 
     color='Nivel_Impacto',
-    category_orders={'Nivel_Impacto': ['Sin Registro (0)', 'Impacto Regional (1-2)', 'Alto Impacto (3+)']},
+    category_orders={'Nivel_Impacto': ['Sin Registro (0)', 'Presencia (1)', 'Impacto Regional (2)', 'Alto Impacto (3+)']},
     color_discrete_map=color_map_ongs,
     hover_name='estado',
     custom_data=['Fundaciones', 'Impactos', 'Num_ONGs']
@@ -552,10 +561,21 @@ _ = fig_ongs.update_traces(
     "<extra></extra>"
 )
 
-# Bordes definidos (gris claro) 
-_ = fig_ongs.update_traces(marker_line_color='#bdc3c7', marker_line_width=0.5)
+# Bordes definidos para distinguir estados
+_ = fig_ongs.update_traces(marker_line_color='#566573', marker_line_width=0.8)
 
-# _ = fig_ongs.update_geos(fitbounds="locations", visible=False)
+# Hover tooltip color = color de cada categoría
+hover_colors = {
+    'Sin Registro (0)': '#95a5a6',
+    'Presencia (1)': '#5dade2',
+    'Impacto Regional (2)': '#2471a3',
+    'Alto Impacto (3+)': '#1a5276'
+}
+for trace in fig_ongs.data:
+    cat = trace.name
+    if cat in hover_colors:
+        trace.hoverlabel = dict(bgcolor=hover_colors[cat], font_color='white')
+
 _ = fig_ongs.update_geos(
     fitbounds="locations",
     visible=False,
@@ -566,15 +586,14 @@ _ = fig_ongs.update_layout(
     margin={"r":0,"t":0,"l":0,"b":0},
     font=dict(family="Inter, sans-serif", size=12),
     legend=dict(
-        title_text="Presencia por Estado",
-        orientation="v",
+        title_text="",
+        orientation="h",
         yanchor="top",
-        y=0.9,
+        y=0.0,
         xanchor="left",
-        x=0.01,
-        bgcolor="rgba(255, 255, 255, 0.9)",
-        bordercolor="black",
-        borderwidth=1
+        x=0.0,
+        entrywidth=170,
+        bgcolor="rgba(255, 255, 255, 0.8)"
     ),
     dragmode=False
 )
@@ -582,12 +601,33 @@ _ = fig_ongs.update_layout(
 fig_ongs
 ```
 
+### Row {height=30%}
+
+::: {.card}
+
+::: {.ong-logos}
+
+[![Fundación Gonzalo Río Arronte](img/fundacion.png)](https://fundaciongonzalorioarronte.org/){target="_blank"}
+
+[![CEMDA](img/cemda.png)](https://cemda.org.mx/){target="_blank"}
+
+[![Cántaro Azul](img/cantaroazul.jpg)](https://www.cantaroazul.org/){target="_blank"}
+
+::: {.ong-alianza}
+[![PNUD](img/pnud.png)](https://www.undp.org/es){target="_blank"}
+[![FEMSA](img/femsa.webp)](https://www.femsa.com/es/){target="_blank"}
+
+Alianza PNUD y FEMSA
+:::
+
+:::
+:::
+
 # Explorador de Datos
 
-Consulta la base completa de 2,469 municipios para el analisis ODS 1 x ODS 6. En el [Repositorio de datos](https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM/tree/main/datos) encontraras tambien las licencias y las fuentes oficiales: INEGI, SHCP, CONEVAL, CONAGUA y SIODS.
+Microdatos de los municipios de la República Mexicana. Basada en fuentes oficiales. Para más información consulta nuestro [repositorio de datos](https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM/tree/main/datos){target="_blank"}.
 
 ```{python}
-#| title: "Base de Datos Completa: ODS 1 × ODS 6"
 
 from itables import show
 import pandas as pd

@@ -10,21 +10,27 @@
   - Jesús Sebastián Vázquez Zarco
   - Alejandra Naomi Muciño Hernández
   - Victor Federico Caldera Arellano
-- **ODS Elegidos:** ODS 6 (Agua limpia y saneamiento) interconectado de manera transveral con el ODS 1 (Fin de la pobreza).
+- **ODS Elegidos:** 
+  - ODS 6 de "Agua limpia y saneamiento" interconectado de manera transveral con el ODS 1 de "Fin de la pobreza".
 
----
+--- 
 
 ## 2. Descripción y Planteamiento del Problema
 **Pregunta Central:**  
 *¿Cómo el déficit de infraestructura hídrica profundiza sistemáticamente la pobreza en el México rural frente a los grandes centros urbanos?*
 
-Este proyecto demuestra estadísticamente que el "promedio" estatal o nacional de acceso al agua es un "espejismo". A través del análisis exploratorio y cruce espacial de microdatos censales, evidenciamos cómo la dispersión sociodemográfica rural castiga a miles de municipios desconectados de las grandes redes de infraestructura pública, convirtiendo la carencia de agua en el ancla principal de la pobreza en México.
+En México, el acceso al agua suele evaluarse con promedios nacionales que ocultan profundas desigualdades territoriales. Al analizar los datos a nivel municipal, se revela que muchas comunidades rurales permanecen rezagadas, fuera del alcance de la infraestructura hídrica.
+
+Esta brecha no es solo técnica, sino estructural: la dispersión geográfica influye en cómo se asignan los recursos, dejando a ciertos territorios sistemáticamente excluidos. En consecuencia, la falta de agua no solo refleja la pobreza, sino que contribuye a perpetuarla.
+
+Este proyecto explora estas desigualdades mediante el cruce de microdatos, con el objetivo de visibilizar patrones que permanecen ocultos en las estadísticas agregadas.
 
 ---
 
 ## 3. Fuentes de Datos Oficiales
 
 > **[Consultar Metadatos y Diccionarios de Datos aquí](datos/README.md)**
+
 > *Nota: Toda la información técnica de los datasets (diccionario de variables, fechas de extracción, enlaces primarios y licencias de uso) se encuentra documentada a detalle en el README de la carpeta de datos.*
 
 ---
@@ -32,8 +38,9 @@ Este proyecto demuestra estadísticamente que el "promedio" estatal o nacional d
 ## 4. Guía de Reproducibilidad Técnica
 
 **Entorno de Ejecución:**
+- **Git:** Instalado a nivel sistema operativo.
 - **Python:** `>= 3.10`
-- **Quarto CLI:** Instalado a nivel sistema operativo.
+- **Quarto CLI:** `>= 1.4`
 
 ### Comandos de Instalación y Pipeline ETL
 Ejecutar los siguientes comandos en terminal:
