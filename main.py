@@ -19,9 +19,14 @@ def run_script(script_path):
 def main():
     print("Iniciando Pipeline Automatizado de Datos (ETL): HackODS UNAM 2026 - linuxitOS\n")
     
-    # Asegurar el contexto de ejecución desde el directorio raíz
-    if not os.path.exists('scripts'):
-         print("[ERROR] El script debe ser invocado desde la raíz del repositorio (linuxitOS-HackODS2026)")
+    # Ajuste dinámico del directorio de trabajo (soporte para Terminal vs Jupyter Notebooks)
+    # Si Jupyter lanza la libreta desde la carpeta 'notebooks/', bajamos un nivel para poder ver 'scripts/'.
+    if not os.path.exists('scripts') and os.path.exists(os.path.join('..', 'scripts')):
+        os.chdir('..')
+        print("[INFO] Entorno Jupyter Notebook detectado. El directorio de trabajo se ajustó a la raíz del proyecto.\n")
+    elif not os.path.exists('scripts'):
+         print("[ERROR] El entorno no pudo localizar la carpeta 'scripts/'.")
+         print("        Asegúrate de ejecutar desde la raíz del repositorio o dentro de la carpeta 'notebooks/'.")
          sys.exit(1)
 
     # Orden secuencial de ejecución para la integración del dataset maestro

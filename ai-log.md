@@ -59,6 +59,14 @@ Decidimos usar IA exclusivamente para tareas mecánicas y de estructuración ini
 
 ---
 
+### 2026-04-13 | OpenCode / Claude / Gemini | Integración del Pipeline ETL a Jupyter Notebook
+- **Tarea**: Migrar secuencialmente los 7 scripts Python aislados hacia un único `.ipynb` consolidado que facilite la evaluación de los jurados del HackODS, asegurando coherencia narrativa.
+- **Prompt**: "Necesito que me ayudes a escribir un script en python que cree la base de un .ipnyb (libreta de Jupiter). Necesito que facilitemos la colaboración y reproducibilidad del proyecto creando un Notebook ordenado, profesional y robusto. Vamos a planear la integración paso a paso para hacer una correcta integración de lo solicitado."
+- **Resultado**: Se desarrolló el script automático `scripts/build_notebook.py` que lee los `.py` originales y los ensambla estructuralmente dentro de un formato `.ipynb` nativo, preservando la organización oficial dentro del directorio `notebooks/`.
+- **Decisión**: El equipo tomó la decisión estratégica de alinear la arquitectura del proyecto con los repositorios de ejemplo de los organizadores (`NombreEquipo_ejemplo`), facilitando la experiencia del jurado al aglutinar todas las reglas de negocio y limpieza de datos en un solo cuaderno reproducible.
+
+---
+
 ### NO usamos IA para hacer lo siguiente:
 - Formular la pregunta central y definir el rumbo de nuestro storytelling.
 - Definir la narrativa del tablero y las conclusiones cruzando el ODS 1 y el ODS 6.
