@@ -93,5 +93,16 @@ def ejecutar_pipeline():
 
 
 if __name__ == "__main__":
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    # Ajuste de directorio de trabajo para soportar ejecución en Terminal y Notebooks
+    if "__file__" in globals():
+        # Estamos ejecutando como script (.py)
+        # Si el script se ejecuta desde la carpeta scripts/, subimos un nivel a la raíz
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        if os.path.basename(script_dir) == 'scripts':
+            os.chdir(os.path.join(script_dir, ".."))
+    else:
+        # Estamos en un entorno interactivo (Jupyter)
+        if not os.path.exists('scripts') and os.path.exists(os.path.join('..', 'scripts')):
+            os.chdir('..')
+
     ejecutar_pipeline()

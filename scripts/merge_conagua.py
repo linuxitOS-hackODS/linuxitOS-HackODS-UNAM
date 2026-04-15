@@ -1,6 +1,10 @@
 import pandas as pd
 
 def main():
+    import os
+    if not os.path.exists('scripts') and os.path.exists(os.path.join('..', 'scripts')):
+        os.chdir('..')
+
     print("[INFO] Leyendo base: final_merged_data.csv")
     df_main = pd.read_csv("datos/final_merged_data.csv")
     

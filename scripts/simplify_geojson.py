@@ -7,7 +7,12 @@ except ImportError:
 
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if "__file__" in globals():
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+else:
+    BASE_DIR = os.getcwd()
+    if not os.path.exists(os.path.join(BASE_DIR, 'scripts')):
+        BASE_DIR = os.path.dirname(BASE_DIR)
 
 files_to_process = [
     ('Disponibilidad_Cuencas_2020.json', 'Disponibilidad_Cuencas_2020_lite.json'),

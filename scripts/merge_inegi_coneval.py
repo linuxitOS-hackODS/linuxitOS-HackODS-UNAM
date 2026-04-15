@@ -4,7 +4,7 @@ import os
 
 def procesar_inegi():
     print("[INFO] 1. Agregando y calculando matriz de ruralidad municipal (Censo INEGI 2020)")
-    file_path = "../datos/conjunto_de_datos_iter_00CSV20.csv.gz"
+    file_path = "datos/conjunto_de_datos_iter_00CSV20.csv.gz"
     
     # Leemos solo las columnas necesarias para ahorrar memoria
     df = pd.read_csv(file_path, usecols=['ENTIDAD', 'NOM_ENT', 'MUN', 'LOC', 'POBTOT'], dtype=str)
@@ -41,7 +41,7 @@ def procesar_inegi():
 def merge_datos():
     inegi_df = procesar_inegi()
     
-    coneval_path = "../datos/coneval_clean_2020.csv"
+    coneval_path = "datos/coneval_clean_2020.csv"
     print(f"[INFO] 2. Incorporando vector de pobreza multidimensional CONEVAL: {coneval_path}")
     coneval_df = pd.read_csv(coneval_path, dtype={'CVEGEO': str})
     
@@ -53,7 +53,7 @@ def merge_datos():
     # Inner merge para conservar solo los municipios que existen en ambas fuentes
     merged_df = pd.merge(coneval_df, inegi_df, on='CVEGEO', how='inner')
     
-    out_path = "../datos/final_merged_data.csv"
+    out_path = "datos/final_merged_data.csv"
     merged_df.to_csv(out_path, index=False)
     
     print(f"\n[ÉXITO] Matriz transaccional generada en: {out_path}")
@@ -71,6 +71,13 @@ def merge_datos():
     print(resumen.to_string())
 
 if __name__ == "__main__":
-    # Asegurar rutas relativas correctas
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    # Ajuste de directorio de trabajo para soportar ejecución en Terminal y Notebooks
+    if "__file__" in globals():
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        if os.path.basename(script_dir) == 'scripts':
+            os.chdir(os.path.join(script_dir, ".."))
+    else:
+        if not os.path.exists('scripts') and os.path.exists(os.path.join('..', 'scripts')):
+            os.chdir('..')
+
     merge_datos()

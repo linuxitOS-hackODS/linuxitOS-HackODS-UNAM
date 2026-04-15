@@ -1,6 +1,10 @@
 import pandas as pd
 
 def process_coneval():
+    import os
+    if not os.path.exists('scripts') and os.path.exists(os.path.join('..', 'scripts')):
+        os.chdir('..')
+
     file_path = "datos/Concentrado_indicadores_de_pobreza_2020.xlsx"
     print(f"[INFO] Leyendo matriz CONEVAL: {file_path}")
     

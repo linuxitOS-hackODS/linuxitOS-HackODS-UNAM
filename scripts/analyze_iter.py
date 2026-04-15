@@ -1,5 +1,10 @@
 import pandas as pd
 import numpy as np
+import os
+
+# Ajuste de directorio de trabajo para soportar ejecución en Terminal y Notebooks
+if not os.path.exists('scripts') and os.path.exists(os.path.join('..', 'scripts')):
+    os.chdir('..')
 
 file_path = "datos/conjunto_de_datos_iter_00CSV20.csv.gz"
 

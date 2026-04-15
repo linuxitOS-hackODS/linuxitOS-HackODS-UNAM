@@ -4,7 +4,13 @@ import os
 
 def main():
     # Definir rutas absolutas basadas en la estructura del proyecto
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if "__file__" in globals():
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    else:
+        base_dir = os.getcwd()
+        if not os.path.exists(os.path.join(base_dir, 'scripts')):
+            base_dir = os.path.dirname(base_dir)
+
     merged_path = os.path.join(base_dir, "datos", "final_merged_data.csv")
     shcp_path = os.path.join(base_dir, "datos", "derecho_agua_municipal.csv")
 
