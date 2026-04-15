@@ -38,44 +38,49 @@ Este proyecto explora estas desigualdades mediante el cruce de microdatos, con e
 ## 4. Guía de Reproducibilidad Técnica
 
 **Entorno de Ejecución:**
-- **Git:** Instalado a nivel sistema operativo.
 - **Python:** `>= 3.10`
+- **Gestor de Dependencias:** [uv](https://docs.astral.sh/uv/getting-started/installation/) (Astral)
 - **Quarto CLI:** `>= 1.4`
+- **Control de Versiones:** `Git`
 
-### Estructura Narrativa y Evidencia Técnica
-En cumplimiento con el **Módulo D** de la rúbrica oficial, este repositorio integra una narrativa técnica que detalla la metodología de extracción, limpieza y procesamiento de datos.
+### Evidencia Técnica y Narrativa
+Este repositorio implementa una estrategia de **"Documentación Multinivel"** para garantizar la transparencia metodológica:
 
-*   **Documentación del Pipeline:** La explicación detallada y el flujo lógico del proyecto se encuentran en la libreta [`notebooks/001_Pipeline_ETL_ODS.ipynb`](notebooks/001_Pipeline_ETL_ODS.ipynb).
-*   **Orquestación:** La libreta de Jupyter sirve como auditoría del script orquestador central (`main.py`), permitiendo una revisión transparente del cumplimiento técnico.
+*   **Narrativa Estratégica ([`001_Pipeline_ETL_ODS.ipynb`](notebooks/001_Pipeline_ETL_ODS.ipynb)):** Es el documento principal de revisión. Presenta el flujo lógico, la interconexión entre ODS y los resultados analíticos finales de forma orquestada.
+*   **Auditoría Técnica Detallada ([`002_Pipeline_Datos_Detallado.ipynb`](notebooks/002_Pipeline_Datos_Detallado.ipynb)):** Expone el código fuente íntegro de los 7 módulos del pipeline, permitiendo una inspección profunda de los algoritmos de limpieza, normalización y optimización geoespacial.
 
 ---
 
 ## 5. Guía de Reproducción y Auditoría
 
-Para replicar el entorno de desarrollo y verificar la integridad del pipeline, se utiliza el estándar `uv`.
+Para replicar el entorno de desarrollo y verificar la integridad del pipeline, se utiliza el estándar **`uv`**. Este gestor garantiza que las dependencias instaladas en su sistema coincidan exactamente con las utilizadas durante la investigación.
 
-### Instrucciones de Ejecución (CLI)
-Ejecutar los siguientes comandos en la terminal desde la raíz del proyecto:
+### Instalación de `uv` (si es necesario)
+- **Windows (PowerShell):** `powershell -c "irm https://astral.sh/uv/install.ps1 | iex"`
+- **Linux/macOS (Terminal):** `curl -LsSf https://astral.sh/uv/install.sh | sh`
+
+### Protocolo de Ejecución (CLI)
+Ejecutar los siguientes comandos desde la raíz del proyecto para reconstruir la evidencia técnica:
 
 ```bash
 # 1. Clonar el repositorio
 git clone https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM.git
 cd linuxitOS-HackODS-UNAM
 
-# 2. Sincronización del entorno virtual y empaquetado
-# El gestor `uv` (Rust) lee nuestro pyproject.toml y crea automáticamente el entorno.
+# 2. Sincronización determinista del entorno virtual
+# uv lee el archivo pyproject.toml y levanta el entorno de manera aislada.
 uv sync
 
 # 3. Compilar Pipeline de Datos Automatizado (Orquestador ETL)
 uv run main.py
 
-# 5. Procesar e instanciar el Dashboard Analítico
-quarto preview dashboard/index.qmd
+# 4. Procesar e instanciar el Dashboard Analítico (Preview)
+uv run quarto preview dashboard/index.qmd
 ```
 
 ---
 
-## 5. Arquitectura del Proyecto
+## 6. Arquitectura del Proyecto
 - `datos/`: Repositorio inmutable para los datasets en crudo (*raw*) y salida del dataset unificado (`final_merged_data.csv`).
 - `scripts/`: Módulos de Python responsables del flujo ETL (Extract, Transform, Load) bajo estándares de código limpio.
 - `dashboard/`: Código fuente del tablero analítico (`index.qmd`), configuraciones topológicas (`_quarto.yml`) y UI/CSS personalizado (`styles.css`).
