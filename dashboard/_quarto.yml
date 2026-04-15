@@ -9,7 +9,7 @@ website:
     logo: img/hackodslogo.png
     background: primary
     left:
-      - text: "Radiografía Nacional de Infraestructura Hídrica y Pobreza"
+      - text: "Infraestructura Hídrica y Pobreza: Una Relación Sistémica en México"
     right:
       - text: "Equipo linuxitOS"
         href: https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM

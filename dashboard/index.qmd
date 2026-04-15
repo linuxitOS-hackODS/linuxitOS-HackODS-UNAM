@@ -41,9 +41,9 @@ Nuestra premisa fundamental, respaldada por la ONU: **la pobreza va más allá d
 
 ### La Ilusión Nacional
 
-El Estado Mexicano reporta a la comunidad internacional que aproximadamente el [64% de la población cuenta con agua potable gestionada de forma segura para el año 2020 (SIODS)](https://agenda2030.mx/ODSind.html?ind=ODS006000050010&cveind=54&cveCob=99&lang=es#/Indicator){target="_blank"}. Sin embargo, cuando observamos los datos a nivel municipal, la estadística a gran escala se convierte en un **espejismo**.
+La Republica Mexicana reporta a la comunidad internacional que aproximadamente el [64% de la población cuenta con agua potable gestionada de forma segura para el año 2020 (SIODS)](https://agenda2030.mx/ODSind.html?ind=ODS006000050010&cveind=54&cveCob=99&lang=es#/Indicator){target="_blank"}. Sin embargo, cuando observamos los datos a nivel municipal, la estadística a gran escala se convierte en un **espejismo**.
 
-La sólida infraestructura de las zonas altamente urbanizadas "promedia hacia arriba", borrando estadísticamente a las comunidades rurales y periféricas. Véase en la gráfica "Promedio Oficial vs Realidad Municipal".
+La sólida infraestructura de las zonas altamente urbanizadas "promedia hacia arriba", borrando estadísticamente a las comunidades rurales y periféricas. Véase en la gráfica "Promedio Oficial vs Realidad Municipal de la República Mexicana".
 
 > *"Cuando se discrimina o se ocultan los datos a gran escala, se invisibiliza la carencia y se violan derechos humanos fundamentales."*
 
@@ -90,7 +90,7 @@ dict(
 ### Row {height=80%}
 
 ```{python}
-#| title: "Promedio Oficial vs Realidad Municipal"
+#| title: "Promedio Oficial vs Realidad Municipal de la República Mexicana"
 
 # Generar histograma de Carencia de Agua
 fig_espejismo = px.histogram(
@@ -117,8 +117,8 @@ _ = fig_espejismo.update_layout(
         orientation="h", 
         yanchor="bottom", 
         y=1.02, 
-        xanchor="right", 
-        x=1,
+        xanchor="left", 
+        x=0.6,
         entrywidth=50, # Fuerza el ancho de los elementos sin calcular BBox
         bgcolor="rgba(255,255,255,0.8)"
     ),
@@ -155,7 +155,7 @@ fig_espejismo
 
 ## Column {.sidebar width=30%}
 
-### La Realidad Demográfica
+### La Realidad Demográfica de México
 
 El Censo de Población y Vivienda 2020 del INEGI revela una dualidad paralizante: aunque solo una minoría de los mexicanos vive en zonas rurales (localidades de menos de 2,500 habitantes), **más del 55% de los municipios del país** tienen esta clasificación. 
 
@@ -172,7 +172,7 @@ La lejanía se convierte en un castigo: las políticas públicas priorizan el vo
 ## Column {width=25%}
 
 ```{python}
-#| title: "Distribución de Municipios"
+#| title: "Distribución de Municipios de México"
 
 # Contar municipios por clasificación
 municipios_count = df['clasificacion_rural'].value_counts().reset_index()
@@ -235,12 +235,12 @@ df_aislados = df_aislados.sort_values(by=['carencia_agua_conagua_pct', 'Pobreza_
 # 2. Renombrar columnas para interfaz de usuario
 df_aislados = df_aislados.rename(columns={
     'CVEGEO': 'ID Geo',
-    'poblacion_total': 'Total Habitantes',
     'carencia_agua_conagua_pct': '% Sin Agua',
+    'poblacion_total': 'Total Habitantes',
     'Pobreza_extrema_pct': '% Pob. Extrema'
 })
 
-cols = ['ID Geo', 'Estado', 'Municipio', 'Total Habitantes', '% Sin Agua', '% Pob. Extrema']
+cols = ['ID Geo', 'Estado', 'Municipio', '% Sin Agua','Total Habitantes', '% Pob. Extrema']
 df_top30 = df_aislados[cols].head(30)
 
 # 3. Mantener formato numérico limpio (evitar strings) para garantizar que el Sort JS funcione perfecto
@@ -275,7 +275,7 @@ La falta de infraestructura no es solo un problema técnico; es un ladrón de ti
 Para entender por qué en la actualidad una llave de agua sigue siendo un privilegio, debemos elevar la mirada del municipio al sistema. Al pasar del dato municipal a la administración por cuencas, la correlación se vuelve veredicto: **La pobreza en México tiene una dirección postal olvidada por el presupuesto nacional.**
 
 Al agrupar los datos por Región Hidrológico-Administrativa (RHA), el desarrollo del país se desmorona. Sin importar la zona, sea el árido norte o el lluvioso sur, el abandono de las zonas rurales es una constante sistémica.
-**La intersección de los ODS 1 y 6 nos dicta una verdad incómoda: ningún apoyo económico ni programa social erradicará la pobreza si no hay una llave de agua potable en casa.** La infraestructura hídrica no es solo ingeniería; es el pilar más básico de la justicia social.
+**La intersección de los ODS 1 y 6 nos dicta una verdad incómoda: ningún apoyo económico ni programa social erradicará la pobreza si no hay una llave de agua en casa.** La infraestructura hídrica no es solo ingeniería; es el pilar más básico de la justicia social.
 
 **Justicia social es infraestructura. El agua es un derecho.**
 
@@ -299,9 +299,7 @@ dict(color="blue", value="64%", icon="water")
 dict(color="danger", value="36%", icon="droplet-half")
 ```
 
-### Row {height=600px}
-
-#### Column {width=50%}
+### Row {height=500px}
 
 ```{python}
 #| title: "Cobertura de Agua(%) por Estado"
@@ -347,11 +345,11 @@ df_estados_mapa['Pob_Agua_Fmt'] = df_estados_mapa['Pob_Agua'].fillna(0).apply(la
 # 5. Asignar Categorías de Riesgo
 def clasificar_vulnerabilidad(cantidad):
     if cantidad == 0:
-        return 'Óptimo o Sin Registro Crítico (0)'
+        return 'Gran cobertura de agua'
     elif 1 <= cantidad <= 3:
-        return 'Alerta Moderada (1 a 3)'
+        return 'Cobertura media de agua'
     else:
-        return 'Atención Prioritaria (4+)'
+        return 'Baja cobertura de agua'
 
 df_estados_mapa['Categoría'] = df_estados_mapa['Municipios <= 50%'].apply(clasificar_vulnerabilidad)
 
@@ -361,9 +359,9 @@ with open('../datos/Estado_lite.json', 'r', encoding='utf-8') as f:
 
 # Colores en tonos azules
 color_map_azules = {
-    'Óptimo o Sin Registro Crítico (0)': '#d4e6f1',
-    'Alerta Moderada (1 a 3)': '#3498db',
-    'Atención Prioritaria (4+)': '#154360'
+    'Gran cobertura de agua': '#154360',   # azul profundo (abundancia)
+    'Cobertura media de agua': '#5dade2',  # azul equilibrado (normal)
+    'Baja cobertura de agua': '#d6eaf8',   # azul muy claro (escasez)
 }
 
 # 7. Renderizar Mapa Choropleth
@@ -412,9 +410,9 @@ _ = fig_map.update_layout(
 
 # Hover tooltip color
 hover_colors_azules = {
-    'Óptimo o Sin Registro Crítico (0)': '#85c1e9',
-    'Alerta Moderada (1 a 3)': '#2874a6',
-    'Atención Prioritaria (4+)': '#154360'
+    'Gran cobertura de agua': '#154360',
+    'Cobertura media de agua': '#2874a6',
+    'Baja cobertura de agua': '#85c1e9',
 }
 for trace in fig_map.data:
     cat = trace.name
@@ -424,36 +422,31 @@ for trace in fig_map.data:
 fig_map
 ```
 
-#### Column {width=50%}
+### Row {height=450px}
 
 ```{python}
 #| title: "Detalle Municipal con acceso al agua"
 from itables import show
+import pandas as pd
 
-# 1. Seleccionamos datos e instanciamos copia
-df_detalle = df_cobertura[[
-    'Entidad', 
-    'Municipio', 
-    'Población', 
-    'Población Rural', 
-    'Población Urbana', 
-    'Población  con agua entubada en vivienda o predio'
-]].copy()
+# Preparar el dataframe seleccionando Entidad y Municipio
+df_municipios = df_cobertura[['Entidad', 'Municipio', 'Población Cobertura(%)']].copy()
 
-# 2. Orden Alfabético Ascendente (Estado y después Municipio)
-df_detalle = df_detalle.sort_values(by=['Entidad', 'Municipio'], ascending=[True, True])
+# Nos aseguramos de que sea numérico y eliminamos vacíos
+df_municipios['Población Cobertura(%)'] = pd.to_numeric(df_municipios['Población Cobertura(%)'], errors='coerce')
+df_municipios = df_municipios.dropna(subset=['Población Cobertura(%)'])
 
-# 3. Renombrar para mayor legibilidad UI
-df_detalle.columns = [
-    'Estado', 'Municipio', 'Pobl. Total', 'Pobl. Rural', 'Pobl. Urbana', 'Pobl. con Agua'
-]
+# Ordenamos de forma ascendente basado en la cobertura
+df_municipios = df_municipios.sort_values(by='Población Cobertura(%)', ascending=True)
 
-# 4. Formato numérico seguro (sin NaN que rompan el sort de itables)
-columnas_numericas = ['Pobl. Total', 'Pobl. Rural', 'Pobl. Urbana', 'Pobl. con Agua']
-for col in columnas_numericas:
-    df_detalle[col] = df_detalle[col].fillna(0).astype(int)
+# Redondeamos a un decimal para mayor limpieza en la UI
+df_municipios['Población Cobertura(%)'] = df_municipios['Población Cobertura(%)'].round(1)
 
-# Localización al español (Estrictamente texto crudo para cumplir rúbrica de HackODS)
+# Filtramos las columnas a mostrar y renombrar
+df_interactivo = df_municipios[['Entidad', 'Municipio', 'Población Cobertura(%)']]
+df_interactivo.columns = ['Estado', 'Municipio', 'Cobertura (%)']
+
+# Localización al español
 language_detalle = {
     "search": "Buscar:",
     "info": "Mostrando _TOTAL_ municipios.",
@@ -464,16 +457,19 @@ language_detalle = {
     "paginate": {"next": "Sig \u2192", "previous": "\u2190 Ant"}
 }
 
-# 5. Renderizar tabla interactiva
+# Renderizar la tabla interactiva
 show(
-    df_detalle,
+    df_interactivo,
     showIndex=False,
     searching=True,
-    classes=["display", "nowrap", "compact"],
-    lengthMenu=[10, 25, 50],
-    pageLength=14,
+    classes=["display", "cell-border", "stripe", "compact", "nowrap"],
+    lengthMenu=[10, 25, 50, 100],
+    pageLength=10,
     dom="ftip",
     language=language_detalle,
+    columnDefs=[
+        {"className": "dt-center", "targets": [2]}  # Centrar el porcentaje
+    ]
 )
 ```
 
@@ -547,7 +543,7 @@ fig_scatter
 ::: {.card}
 #### La Comprobación Matemática (El Veredicto Final)
 
-Al agrupar los datos y cruzar el Censo INEGI 2020 con la carencia de agua de CONAGUA y la pobreza de CONEVAL, la "Ilusión Nacional" queda completamente desmentida. Los municipios rurales sufren una **doble trampa estructural**: mayor carencia de agua entubada y mayor pobreza extrema.
+Al agrupar los datos y cruzar el Censo INEGI 2020 con la carencia de agua de CONAGUA y la pobreza multidimensional de CONEVAL, la "Ilusión Nacional" queda completamente desmentida. Los municipios rurales sufren una **doble trampa estructural**: mayor carencia de agua entubada y mayor pobreza extrema.
 
 **Los números son irrefutables:**
 
@@ -631,28 +627,31 @@ df_agregado = df_proyectos.groupby('Estado').agg(
 df_mapa = pd.merge(df_estados, df_agregado, left_on='estado', right_on='Estado', how='left')
 
 df_mapa['Num_ONGs'] = df_mapa['Num_ONGs'].fillna(0).astype(int)
-df_mapa['Fundaciones'] = df_mapa['Fundaciones'].fillna('Sin Organizaciones Registradas')
-df_mapa['Impactos'] = df_mapa['Impactos'].fillna('Sin Intervención')
+df_mapa['Fundaciones'] = df_mapa['Fundaciones'].fillna('Otras organizaciones')
+df_mapa['Impactos'] = df_mapa['Impactos'].fillna('Otros')
+
+# Columna de texto para hover: "Otras organizaciones" cuando es 0
+df_mapa['ONGs_Texto'] = df_mapa['Num_ONGs'].apply(lambda x: 'Otras organizaciones' if x == 0 else str(x))
 
 # Crear la leyenda categórica (0, 1, 2, 3+)
 def clasificar_intensidad(ong_count):
     if ong_count == 0:
-        return 'Sin Registro (0)'
+        return 'Otras organizaciones'
     elif ong_count == 1:
-        return 'Presencia (1)'
+        return 'Una organización'
     elif ong_count == 2:
-        return 'Impacto Regional (2)'
+        return 'Dos organizaciones'
     else:
-        return 'Alto Impacto (3+)'
+        return 'Tres o más organizaciones'
 
 df_mapa['Nivel_Impacto'] = df_mapa['Num_ONGs'].apply(clasificar_intensidad)
 
 # Custom color map — gradiente de 4 niveles para tema oscuro
 color_map_ongs = {
-    'Sin Registro (0)': '#ffffff',            # Arena cálida
-    'Presencia (1)': '#aed6f1',               # Azul claro suave
-    'Impacto Regional (2)': '#3498db',        # Azul medio vibrante
-    'Alto Impacto (3+)': '#1a5276'            # Azul profundo institucional
+    'Otras organizaciones': '#ffffff',            # Arena cálida
+    'Una organización': '#aed6f1',               # Azul claro suave
+    'Dos organizaciones': '#3498db',        # Azul medio vibrante
+    'Tres o más organizaciones': '#1a5276'            # Azul profundo institucional
 }
 
 # 5. Cargar GeoJSON de Estados
@@ -666,10 +665,10 @@ fig_ongs = px.choropleth(
     locations='clvedo',
     featureidkey='properties.clvedo', 
     color='Nivel_Impacto',
-    category_orders={'Nivel_Impacto': ['Sin Registro (0)', 'Presencia (1)', 'Impacto Regional (2)', 'Alto Impacto (3+)']},
+    category_orders={'Nivel_Impacto': ['Otras organizaciones', 'Una organización', 'Dos organizaciones', 'Tres o más organizaciones']},
     color_discrete_map=color_map_ongs,
     hover_name='estado',
-    custom_data=['Fundaciones', 'Impactos', 'Num_ONGs']
+    custom_data=['Fundaciones', 'Impactos', 'ONGs_Texto']
 )
 
 # Custom Hover Text
@@ -686,10 +685,10 @@ _ = fig_ongs.update_traces(marker_line_color='#566573', marker_line_width=0.8)
 
 # Hover tooltip color = color de cada categoría
 hover_colors = {
-    'Sin Registro (0)': '#95a5a6',
-    'Presencia (1)': '#5dade2',
-    'Impacto Regional (2)': '#2471a3',
-    'Alto Impacto (3+)': '#1a5276'
+    'Otras organizaciones': '#95a5a6',
+    'Una organización': '#5dade2',
+    'Dos organizaciones': '#2471a3',
+    'Tres o más organizaciones': '#1a5276'
 }
 for trace in fig_ongs.data:
     cat = trace.name
