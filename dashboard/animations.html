@@ -1,0 +1,52 @@
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  /* ── Animaciones al hacer Scroll (Intersection Observer) ── */
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        e.target.querySelectorAll('[data-count]').forEach(countUp);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  // Observar todos los elementos con la clase fade-up
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+  /* ── Animación Dinámica de Contadores numéricos ── */
+  function countUp(el) {
+    if (el.dataset.counted) return;
+    el.dataset.counted = '1';
+    
+    const raw  = el.dataset.count;
+    const pre  = el.dataset.pre || '';
+    const suf  = el.dataset.suf || '';
+    const isFloat = raw.includes('.');
+    const end  = parseFloat(raw);
+    const dur  = 2000; // Duración en milisegundos
+    const t0   = performance.now();
+    
+    (function tick(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      // Función de "ease-out-quint" para que frene suavemente al final
+      const v = end * (1 - Math.pow(1 - p, 5));
+      
+      // Formateo visual (con comas si es un número muy grande, o con 1 decimal si es float)
+      let displayValue;
+      if (isFloat) {
+        displayValue = v.toFixed(1);
+      } else {
+        displayValue = Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+      
+      el.textContent = pre + displayValue + suf;
+      
+      if (p < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        el.classList.add('counted');
+      }
+    })(t0);
+  }
+});
+</script>

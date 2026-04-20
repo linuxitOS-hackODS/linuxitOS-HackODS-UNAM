@@ -1,7 +1,9 @@
 ---
 title: "Agua y Pobreza: La Trampa Rural"
 subtitle: "Cruce ODS 1 (Fin de la Pobreza) y ODS 6 (Agua Limpia y Saneamiento)"
-format: dashboard
+format: 
+  dashboard:
+    include-after-body: animations.html
 listing:
   id: ongs-directorio
   contents: ../datos_ongs.yml
@@ -107,6 +109,7 @@ Para encontrar la verdad profundizamos en los **microdatos de 2,469 municipios**
 
 ```{python}
 #| title: "Promedio Oficial vs Realidad Municipal"
+import numpy as np
 
 # Generar histograma de Carencia de Agua
 fig_espejismo = px.histogram(
@@ -124,9 +127,37 @@ fig_espejismo = px.histogram(
 
 _ = fig_espejismo.update_traces(
     xbins=dict(start=0, size=5),
-    hovertemplate="Clasificación=%{data.name}<br>% de Habitantes Sin Agua Entubada=%{x}<br>No. de municipios=%{y}<extra></extra>",
     selector=dict(type="histogram")
 )
+
+# Post-procesamiento: inyectar población total por bin en cada trace del histograma
+bin_size = 5
+for trace in fig_espejismo.data:
+    if trace.type != 'histogram':
+        continue
+    clasif = trace.name  # 'Rural' o 'Urbano'
+    subset = df[df['clasificacion_rural'] == clasif]
+    # Calcular bins idénticos a los del histograma (start=0, size=5)
+    bin_edges = np.arange(0, df['carencia_agua_conagua_pct'].max() + bin_size, bin_size)
+    bin_idx = np.digitize(subset['carencia_agua_conagua_pct'].values, bin_edges) - 1
+    # Sumar población por bin
+    pob_por_bin = {}
+    for i, pob in zip(bin_idx, subset['poblacion_total'].values):
+        pob_por_bin[i] = pob_por_bin.get(i, 0) + (int(pob) if pd.notna(pob) else 0)
+    # Crear array de población formateada alineada con los bin centers
+    max_bin = max(pob_por_bin.keys()) if pob_por_bin else 0
+    pob_labels = []
+    for i in range(max_bin + 1):
+        val = pob_por_bin.get(i, 0)
+        pob_labels.append(f"{val:,}")
+    trace.customdata = [[p] for p in pob_labels]
+    trace.hovertemplate = (
+        "Clasificación=%{data.name}<br>"
+        "% de Habitantes Sin Agua Entubada=%{x}<br>"
+        "No. de municipios=%{y}<br>"
+        "Habitantes totales=%{customdata[0]}"
+        "<extra></extra>"
+    )
 
 _ = fig_espejismo.update_layout(
     font=dict(family="Inter, sans-serif", size=12),
@@ -201,7 +232,7 @@ La lejanía se convierte en un castigo: las políticas públicas priorizan el vo
 <div class="sidebar-note">
   <p><strong>Nota metodológica:</strong></p>
   <p>En este análisis, la clasificación de municipios como rurales no se realiza de manera individual, sino a partir de un criterio agregado a nivel estatal. Se considera que un estado es predominantemente rural cuando más del 50% de sus municipios tienen menos de 2,500 habitantes; en ese caso, todos los municipios del estado se clasifican como rurales, independientemente de su tamaño poblacional individual.</p>
-  <p>Este enfoque busca <strong>visibilizar la predominancia territorial de lo rural</strong>, que a menudo queda oculta cuando el análisis se basa únicamente en el volumen de población. Aunque la población rural representa una proporción minoritaria del total nacional, la estructura municipal del país muestra que lo rural sigue siendo mayoritario en términos territoriales, lo que plantea desafíos distintos en materia de infraestructura y acceso a servicios.</p>
+  <p>Este enfoque busca <strong>visibilizar la predominancia territorial de lo rural</strong>, una realidad que a menudo queda oculta cuando el análisis se centra únicamente en las zonas de alta densidad geográfica. Si bien los grandes centros urbanos tienen un gran volumen de habitantes, la estructura municipal del país demuestra que la vida rural abarca la mayor parte del territorio nacional. Esta inmensa presencia territorial exige replantear los desafíos en la infraestructura y acceso a servicios desde la equidad, no desde la densidad.</p>
 </div>
 ```
 
@@ -569,62 +600,104 @@ show(
 ```{python}
 #| title: "A mayor carencia de agua, mayor pobreza extrema (2,469 Municipios)"
 
-# Scatter plot limpio usando Plotly Express
+# Crear índice de severidad (suma normalizada de ambos ejes)
+df_scatter = df.copy()
+df_scatter['severidad'] = df_scatter['carencia_agua_conagua_pct'] + df_scatter['Pobreza_extrema_pct']
+
+# Escala de color continua: verde (bienestar) → ámbar (alerta) → rojo oscuro (crisis)
+escala_severidad = [
+    [0, '#27ae60'],      # Verde — baja carencia, baja pobreza
+    [0.35, '#f39c12'],   # Ámbar — zona media
+    [0.65, '#e74c3c'],   # Rojo — alta severidad
+    [1, '#7f1d1d']       # Rojo oscuro — crisis extrema
+]
+
+# Scatter con burbujas de tamaño fijo para visibilizar los casos extremos
 fig_scatter = px.scatter(
-    df,
+    df_scatter,
     x='carencia_agua_conagua_pct',
     y='Pobreza_extrema_pct',
-    color='clasificacion_rural',
+    color='severidad',
     hover_name='Municipio',
-    hover_data=['Estado', 'RHA', 'poblacion_total'],
-    color_discrete_map={'Urbano': COLOR_URBANO, 'Rural': COLOR_RURAL},
+    hover_data={
+        'Estado': True,
+        'RHA': True,
+        'poblacion_total': ':,',
+        'clasificacion_rural': True,
+        'severidad': ':.1f',
+        'carencia_agua_conagua_pct': ':.1f',
+        'Pobreza_extrema_pct': ':.1f'
+    },
+    color_continuous_scale=escala_severidad,
     labels={
         'carencia_agua_conagua_pct': '% Sin Agua Entubada',
         'Pobreza_extrema_pct': '% Pobreza Extrema',
-        'RHA': 'RHA',
-        'poblacion_total': 'Población'
+        'poblacion_total': 'Población',
+        'clasificacion_rural': 'Clasificación',
+        'severidad': 'Índice de Severidad',
+        'RHA': 'RHA'
     },
-    opacity=0.7
+    opacity=0.8
 )
 
-# Calcular promedios para líneas de referencia
-prom_agua_rural = df[df['clasificacion_rural'] == 'Rural']['carencia_agua_conagua_pct'].mean()
-prom_agua_urbano = df[df['clasificacion_rural'] == 'Urbano']['carencia_agua_conagua_pct'].mean()
+# Estética premium: tamaño fijo y borde blanco semitransparente
+_ = fig_scatter.update_traces(
+    marker=dict(
+        size=8,  # Todas las burbujas del mismo tamaño
+        line=dict(width=1, color='rgba(255,255,255,0.4)')
+    ),
+    selector=dict(mode='markers')
+)
 
-# Agregar líneas de referencia usando shapes
+# Anotar los Top 5 municipios más severos con flechas para evitar encimarse
+top5 = df_scatter.nlargest(5, 'severidad')
+offsets = [
+    (0, -45),   # San José Tenango: arriba
+    (-30, -50), # Chalchihuitán: arriba izquierda
+    (40, -10),  # Oxchuc: derecha
+    (-40, 20),  # Santa María Chilchotla: abajo izquierda
+    (10, 40)    # Copalillo: abajo
+]
+
+for i, (_, row) in enumerate(top5.iterrows()):
+    ax, ay = offsets[i % len(offsets)]
+    _ = fig_scatter.add_annotation(
+        x=row['carencia_agua_conagua_pct'],
+        y=row['Pobreza_extrema_pct'],
+        text=f"<b>{row['Municipio']}</b><br>{row['Estado']}",
+        showarrow=True,
+        arrowhead=0,
+        arrowwidth=1,
+        arrowcolor='#888',
+        ax=ax,
+        ay=ay,
+        font=dict(size=10, color='#2c3e50', family='Inter, sans-serif'),
+        align='center',
+        bgcolor='rgba(255,255,255,0.9)',
+        bordercolor='#ddd',
+        borderwidth=1,
+        borderpad=3
+    )
+
+# Layout final y limpieza visual
 _ = fig_scatter.update_layout(
+    template='plotly_white',  # Fondo limpio para resaltar los colores
     xaxis_title="% Sin Agua Entubada (CONAGUA)",
     yaxis_title="% en Pobreza Extrema (CONEVAL)",
-    font=dict(family="Inter, sans-serif", size=11),
-    showlegend=True,
-    legend=dict(
-        title_text="",
-        orientation="h",
-        yanchor="bottom",
-        y=1.02,
-        xanchor="center",
-        x=0.51,
-        entrywidth=100,
-        bgcolor="rgba(255, 255, 255, 0.8)"
+    font=dict(family="Inter, sans-serif", size=11, color='#2c3e50'),
+    coloraxis_colorbar=dict(
+    title=dict(
+        text="Índice de Severidad",
+        side="right"          # ← aquí, dentro de title=dict(...)
     ),
-    shapes=[
-        dict(type='line', x0=prom_agua_rural, x1=prom_agua_rural, y0=0, y1=1, yref='paper',
-             line=dict(color=COLOR_RURAL, width=2, dash='dash')),
-        dict(type='line', x0=prom_agua_urbano, x1=prom_agua_urbano, y0=0, y1=1, yref='paper',
-             line=dict(color=COLOR_URBANO, width=2, dash='dash'))
-    ],
-    annotations=[
-        dict(x=prom_agua_rural + 1, y=85, text=f"Rural: {prom_agua_rural:.1f}%",
-             showarrow=False, font=dict(color=COLOR_RURAL, size=15),
-             xanchor="left",
-             bgcolor="rgba(255,255,255,0.8)", borderpad=2),
-        dict(x=prom_agua_urbano + 1, y=5, text=f"Urbano: {prom_agua_urbano:.1f}%",
-             showarrow=False, font=dict(color=COLOR_URBANO, size=15),
-             xanchor="left",
-             bgcolor="rgba(255,255,255,0.8)", borderpad=2)
-    ]
+    thickness=12,
+    len=0.5,
+    yanchor="middle",
+    y=0.5,
+    x=1.02
+    ),
+    margin=dict(t=20, b=50, l=60, r=40)
 )
-
 
 fig_scatter
 ```
@@ -817,7 +890,8 @@ fig_ongs
 
 :::
 
-# Explorador de Datos {.scrolling}
+
+# Explorador de Datos
 
 Microdatos de los municipios de la República Mexicana. Basada en fuentes oficiales. Para más información consulta nuestro [repositorio de datos](https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM/tree/main/datos){target="_blank"}.
 
@@ -830,7 +904,7 @@ import pandas as pd
 language_explorador = {
     "search": "Buscar:",
     "lengthMenu": "Mostrar _MENU_ registros",
-    "info": "Mostrando _START_ a _END_ de _TOTAL_ municipios",
+    "info": "Mostrando de _START_ a _END_ municipios",
     "infoEmpty": "0 municipios",
     "infoFiltered": "(filtrados de _MAX_ total)",
     "paginate": {
@@ -916,57 +990,4 @@ show(
 )
 ```
 
-```{=html}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  /* ── Animaciones al hacer Scroll (Intersection Observer) ── */
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        e.target.querySelectorAll('[data-count]').forEach(countUp);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-  // Observar todos los elementos con la clase fade-up
-  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
-
-  /* ── Animación Dinámica de Contadores numéricos ── */
-  function countUp(el) {
-    if (el.dataset.counted) return;
-    el.dataset.counted = '1';
-    
-    const raw  = el.dataset.count;
-    const pre  = el.dataset.pre || '';
-    const suf  = el.dataset.suf || '';
-    const isFloat = raw.includes('.');
-    const end  = parseFloat(raw);
-    const dur  = 2000; // Duración en milisegundos
-    const t0   = performance.now();
-    
-    (function tick(now) {
-      const p = Math.min((now - t0) / dur, 1);
-      // Función de "ease-out-quint" para que frene suavemente al final
-      const v = end * (1 - Math.pow(1 - p, 5));
-      
-      // Formateo visual (con comas si es un número muy grande, o con 1 decimal si es float)
-      let displayValue;
-      if (isFloat) {
-        displayValue = v.toFixed(1);
-      } else {
-        displayValue = Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      }
-      
-      el.textContent = pre + displayValue + suf;
-      
-      if (p < 1) {
-        requestAnimationFrame(tick);
-      } else {
-        el.classList.add('counted');
-      }
-    })(t0);
-  }
-});
-</script>
-```
