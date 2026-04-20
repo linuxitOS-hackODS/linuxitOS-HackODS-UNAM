@@ -1,7 +1,7 @@
 /*-- scss:rules --*/
 
-/* Importar fuentes de Google Fonts (permitido en CSS) */
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Inter:wght@400;500;600&display=swap');
+/* Importar fuentes de Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Inter:wght@400;500;600&family=Libre+Baskerville:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
 
 /* Tipografía personalizada */
 h1,
@@ -199,4 +199,386 @@ table tbody td {
   text-align: center;
   font-size: 0.85em;
   margin: 0.25rem 0 0 0;
+}
+
+/* ═══════════════════════════════════════
+   UI/UX PREMIUM UPGRADES (GLASSMORPHISM & ANIMATIONS)
+   ═══════════════════════════════════════ */
+
+/* Tarjetas Glassmorphism (Modo Claro Profesional) */
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Contenedores de Estadísticas (Reemplazo Premium de ValueBoxes) */
+.stat-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+  margin: 0;
+}
+
+.stat-value {
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 900;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--color-dark);
+}
+
+.stat-value.text-blue { color: var(--color-urbano); }
+.stat-value.text-red { color: var(--color-rural); }
+.stat-value.text-green { color: #27ae60; }
+
+/* ── Stat Cards v2 (Icon + Accent + Color) ── */
+.stat-card-v2 {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 1.25rem;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+}
+
+
+.stat-card-v2:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Card color variants - Premium Gradients */
+.stat-card-v2.accent-blue {
+  background: linear-gradient(135deg, rgba(227, 242, 253, 0.9) 0%, rgba(187, 222, 251, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.stat-card-v2.accent-slate {
+  background: linear-gradient(135deg, rgba(44, 62, 80, 0.9) 0%, rgba(26, 37, 47, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+}
+
+.stat-card-v2.accent-green {
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.85) 0%, rgba(30, 132, 73, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Icon circle with premium inner shadows */
+.stat-card-icon {
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.6rem;
+  box-shadow: inset 0 2px 5px rgba(255,255,255,0.5), 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.accent-blue  .stat-card-icon { background: linear-gradient(135deg, #ffffff, #e3f2fd); color: var(--color-dark); }
+.accent-slate .stat-card-icon { background: linear-gradient(135deg, #4b6584, #2c3e50); color: #fff; border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 2px 5px rgba(255,255,255,0.1), 0 4px 10px rgba(0,0,0,0.2); }
+.accent-green .stat-card-icon { background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; box-shadow: inset 0 2px 5px rgba(255,255,255,0.3); }
+
+/* Card body */
+.stat-card-body {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+  min-width: 0;
+}
+
+/* Label text color adapts to background */
+.stat-card-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+}
+
+.accent-blue  .stat-card-label { color: #34495e; opacity: 0.85; }
+.accent-slate .stat-card-label { color: #ecf0f1; opacity: 0.85; }
+.accent-green .stat-card-label { color: #ecf0f1; opacity: 0.9; }
+
+/* Value text color adapts to background */
+.stat-card-v2 .stat-value {
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.accent-blue  .stat-value { color: var(--color-dark) !important; }
+.accent-slate .stat-value { color: #fff !important; }
+.accent-green .stat-value { color: #fff !important; }
+
+/* Efecto de resplandor para los contadores al terminar */
+.stat-value.counted {
+  text-shadow: 0 0 20px rgba(0,0,0,0.05);
+  transition: text-shadow 0.8s ease;
+}
+
+/* Animaciones al Hacer Scroll */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Retrasos en Cascada (Stagger) */
+.delay-1 { transition-delay: 0.15s; }
+.delay-2 { transition-delay: 0.3s; }
+.delay-3 { transition-delay: 0.45s; }
+
+/* Tipografía de Liderazgo */
+.hero-title {
+  font-size: clamp(2.2rem, 3.5vw, 3rem);
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.15rem;
+  color: #7f8c8d;
+  font-weight: 400;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════
+   PREMIUM SIDEBAR — EDITORIAL STYLE
+   ═══════════════════════════════════════ */
+
+/* Sidebar body text: editorial style (dark, legible) */
+.dashboard-sidebar p {
+  font-family: 'Lora', Georgia, serif !important;
+  font-size: 0.95rem !important;
+  line-height: 1.75 !important;
+  color: #1a1a1a !important;
+  font-weight: 500 !important;
+}
+
+.dashboard-sidebar strong {
+  color: #000 !important;
+  font-weight: 700 !important;
+}
+
+.dashboard-sidebar em {
+  font-family: 'Lora', Georgia, serif !important;
+  font-style: italic !important;
+  color: #1a1a1a !important;
+}
+
+/* Drop cap on first paragraph after the header */
+.sidebar-header + p::first-letter {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 3.2em;
+  float: left;
+  line-height: 0.85;
+  margin: 0.05em 0.1em 0 0;
+  color: #000;
+  font-weight: 800;
+}
+
+/* Header block */
+.sidebar-header {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.sidebar-title {
+  font-size: 1.4rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  color: #000 !important;
+  margin: 0 0 0.6rem 0 !important;
+  letter-spacing: -0.02em;
+  font-family: 'Libre Baskerville', Georgia, serif !important;
+}
+
+.sidebar-subtitle {
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  color: #000 !important;
+  margin: 0 0 0.5rem 0 !important;
+  letter-spacing: -0.01em;
+  font-family: 'Libre Baskerville', Georgia, serif !important;
+}
+
+/* ODS Tag Badges */
+.ods-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.ods-tag {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  font-family: 'Inter', sans-serif;
+  border: 1.5px solid;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.ods-tag.ods1 {
+  color: var(--color-rural);
+  border-color: rgba(231, 76, 60, 0.3);
+}
+
+.ods-tag.ods6 {
+  color: var(--color-urbano);
+  border-color: rgba(52, 152, 219, 0.3);
+}
+
+/* Elegant Divider */
+.sidebar-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-dark), transparent);
+  opacity: 0.1;
+  margin: 1.5rem 0 1.25rem 0;
+}
+
+/* Pull Quote — terracota accent (urgency: hidden data, human rights) */
+.sidebar-quote {
+  position: relative;
+  font-family: 'Lora', Georgia, serif;
+  font-size: 0.93rem;
+  font-style: italic;
+  color: #1a1a1a;
+  padding: 1.25rem 1rem 1.25rem 1.5rem;
+  margin: 0.5rem 0 1.5rem 0; /* Reduced top margin to bring it closer to text */
+  background: rgba(231, 76, 60, 0.03);
+  border-left: 3px solid var(--color-rural);
+  border-radius: 0 8px 8px 0;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+.sidebar-quote p:first-child,
+.sidebar-note p:first-child {
+  margin-top: 0;
+}
+
+.sidebar-quote p:last-child,
+.sidebar-note p:last-child {
+  margin-bottom: 0;
+}
+
+.sidebar-quote::before {
+  content: '\201C';
+  position: absolute;
+  top: -0.1rem;
+  left: 0.35rem;
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 3rem;
+  color: var(--color-rural);
+  opacity: 0.2;
+  line-height: 1;
+}
+
+/* Methodology Note — slate accent (credibility, authority) */
+.sidebar-note {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.8rem !important;
+  color: #1a1a1a !important;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  background: rgba(44, 62, 80, 0.04);
+  border-radius: 6px;
+  border-left: 3px solid #5d6d7e;
+  line-height: 1.55;
+}
+
+.sidebar-note strong {
+  color: #000;
+  font-weight: 700;
+}
+
+/* Inline Citation — footnote style */
+.sidebar-cite {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7em;
+  vertical-align: super;
+  line-height: 0;
+  margin-left: 1px;
+}
+
+.sidebar-ref {
+  color: var(--color-urbano) !important;
+  text-decoration: none !important;
+  font-weight: 600;
+  border-bottom: 1px dotted rgba(52, 152, 219, 0.4);
+  transition: border-color 0.2s ease;
+}
+
+.sidebar-ref:hover {
+  border-bottom-color: var(--color-urbano);
+}
+
+/* Elegant Footnote Block */
+.sidebar-footnote {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  color: #7f8c8d;
+  margin: 1rem 0 0.5rem 0;
+  padding-left: 0.75rem;
+  border-left: 2px solid rgba(127, 140, 141, 0.3);
+  line-height: 1.5;
+}
+
+.sidebar-footnote a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.sidebar-footnote a:hover {
+  color: var(--color-urbano);
+  border-bottom: 1px solid rgba(52, 152, 219, 0.4);
+}
+
+.sidebar-footnote sup {
+  font-weight: 700;
+  margin-right: 0.15rem;
 }

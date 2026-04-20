@@ -32,59 +32,75 @@ COLOR_URBANO = '#3498db'
 
 ## Column {.sidebar width=30%}
 
-### El Corazón de Nuestra Historia
-El cruce entre el *ODS 1 (Fin de la Pobreza)* y el *ODS 6 (Agua Limpia y Saneamiento)* no es una simple correlación estadística; es la radiografía de **una condena estructural**. 
+```{=html}
+<div class="sidebar-section sidebar-header">
+  <h3 class="sidebar-title"><b>El Corazón de Nuestra Historia</b></h3>
+  <div class="ods-tags">
+    <span class="ods-tag ods1">ODS 1. Fin de la Pobreza</span>
+    <span class="ods-tag ods6">ODS 6. Agua Limpia y Saneamiento</span>
+  </div>
+</div>
+```
 
-Nuestra premisa fundamental, respaldada por la ONU: **la pobreza va más allá de la falta de ingresos; es la carencia de los servicios básicos que permiten una vida digna.** 
+El cruce entre el *ODS 1 (Fin de la Pobreza)* y el *ODS 6 (Agua Limpia y Saneamiento)* no es una simple correlación estadística; es la radiografía de **una condena estructural**.
 
-***
+Nuestra premisa fundamental, respaldada por la ONU: **la pobreza va más allá de la falta de ingresos; es la carencia de los servicios básicos que permiten una vida digna.**
 
-### La Ilusión Nacional
+```{=html}
+<hr class="sidebar-divider">
+<h4 class="sidebar-subtitle"><b>La Ilusión Nacional</b></h4>
+```
 
-El Estado Mexicano reporta a la comunidad internacional que aproximadamente el [64% de la población cuenta con agua potable gestionada de forma segura para el año 2020 (SIODS)](https://agenda2030.mx/ODSind.html?ind=ODS006000050010&cveind=54&cveCob=99&lang=es#/Indicator){target="_blank"}. Sin embargo, cuando observamos los datos a nivel municipal, la estadística a gran escala se convierte en un **espejismo**.
+La Republica Mexicana reporta a la comunidad internacional que aproximadamente el **64% de la población** cuenta con agua potable gestionada de forma segura para el año 2020<sup class="sidebar-cite"><a href="https://agenda2030.mx/ODSind.html?ind=ODS006000050010&cveind=54&cveCob=99&lang=es#/Indicator" target="_blank" class="sidebar-ref">SIODS</a></sup>. Sin embargo, cuando observamos los datos a nivel municipal, la estadística a gran escala se convierte en un **espejismo**.
 
 La sólida infraestructura de las zonas altamente urbanizadas "promedia hacia arriba", borrando estadísticamente a las comunidades rurales y periféricas. Véase en la gráfica "Promedio Oficial vs Realidad Municipal".
 
-> *"Cuando se discrimina o se ocultan los datos a gran escala, se invisibiliza la carencia y se violan derechos humanos fundamentales."*
+```{=html}
+<blockquote class="sidebar-quote">
+  "Cuando se discrimina o se ocultan los datos a gran escala, se invisibiliza la carencia y se violan derechos humanos fundamentales."
+</blockquote>
+```
 
 Para encontrar la verdad profundizamos en los **microdatos de 2,469 municipios** de la República Mexicana.
 
-::: {.callout-note appearance="simple" icon=false}
-**Nota metodológica:** Los datos de la gráfica adyacente provienen de cruzar los microdatos del Censo de Población y Vivienda (INEGI, 2020) para la clasificación sociodemográfica (Rural/Urbana), con los indicadores municipales de cobertura hídrica de la CONAGUA.
-:::
+```{=html}
+<div class="sidebar-note">
+  <strong>Nota metodológica:</strong> Los datos de la gráfica adyacente provienen de cruzar los microdatos del Censo de Población y Vivienda (INEGI, 2020) para la clasificación sociodemográfica (Rural/Urbana), con los indicadores municipales de cobertura hídrica de la CONAGUA.
+</div>
+```
 
 ## Column {width=70%}
 
 ### Row
 
-```{python}
-#| component: valuebox
-#| title: "Promedio Nacional Oficial (SIODS)"
-dict(
-  icon = "droplet-fill",
-  color = "#e3f2fd", # Azul muy suave (tema agua) para separarlo del fondo blanco
-  value = "64%"
-)
-```
+```{=html}
+<div class="stat-cards-container fade-up">
 
-```{python}
-#| component: valuebox
-#| title: "Nivel de Detalle Oficial"
-dict(
-  icon = "map",
-  color = "info",
-  value = "Regional"
-)
-```
+  <div class="stat-card-v2 accent-blue">
+    <div class="stat-card-icon"><i class="bi bi-droplet-fill"></i></div>
+    <div class="stat-card-body">
+      <div class="stat-card-label">Promedio Nacional Oficial (SIODS)</div>
+      <div class="stat-value text-blue" data-count="64" data-suf="%">0</div>
+    </div>
+  </div>
 
-```{python}
-#| component: valuebox
-#| title: "Municipios Analizados"
-dict(
-  icon = "geo-alt-fill",
-  color = "success",
-  value = "2,469"
-)
+  <div class="stat-card-v2 accent-slate">
+    <div class="stat-card-icon"><i class="bi bi-map-fill"></i></div>
+    <div class="stat-card-body">
+      <div class="stat-card-label">Nivel de Detalle Oficial</div>
+      <div class="stat-value" style="color: var(--color-dark);">Regional</div>
+    </div>
+  </div>
+
+  <div class="stat-card-v2 accent-green">
+    <div class="stat-card-icon"><i class="bi bi-geo-alt-fill"></i></div>
+    <div class="stat-card-body">
+      <div class="stat-card-label">Municipios Analizados</div>
+      <div class="stat-value text-green" data-count="2469">0</div>
+    </div>
+  </div>
+
+</div>
 ```
 
 ### Row {height=80%}
@@ -100,15 +116,21 @@ fig_espejismo = px.histogram(
     category_orders={'clasificacion_rural': ['Rural', 'Urbano']},
     color_discrete_map={'Urbano': COLOR_URBANO, 'Rural': COLOR_RURAL},
     nbins=40,
-    labels={'carencia_agua_conagua_pct': '% de Habitantes Sin Agua Entubada', 'clasificacion_rural': 'Clasificación', 'count': 'Cantidad de Municipios'},
-    opacity=0.75
+    labels={'carencia_agua_conagua_pct': '% de Habitantes Sin Agua Entubada', 'clasificacion_rural': 'Clasificación', 'count': 'No. de municipios'},
+    opacity=0.75,
+    log_y=True,
+    marginal="rug" # Muestra marcas individuales para visibilizar la cola
 )
 
-_ = fig_espejismo.update_traces(xbins=dict(start=0, size=5))
+_ = fig_espejismo.update_traces(
+    xbins=dict(start=0, size=5),
+    hovertemplate="Clasificación=%{data.name}<br>% de Habitantes Sin Agua Entubada=%{x}<br>No. de municipios=%{y}<extra></extra>",
+    selector=dict(type="histogram")
+)
 
 _ = fig_espejismo.update_layout(
     font=dict(family="Inter, sans-serif", size=12),
-    yaxis_title="Cantidad de Municipios",
+    yaxis_title="Cantidad de Municipios<br>(Escala Logarítmica)",
     xaxis_title="Porcentaje de Población Sin Agua Entubada (CONAGUA)",
     barmode='group',
     bargap=0.1, # Espacio entre los grupos para mejor estética
@@ -155,19 +177,33 @@ fig_espejismo
 
 ## Column {.sidebar width=30%}
 
-### La Realidad Demográfica
+```{=html}
+<div class="sidebar-section sidebar-header">
+  <h3 class="sidebar-title"><b>La Realidad Demográfica de la República Mexicana</b></h3>
+</div>
+```
 
-El Censo de Población y Vivienda 2020 del INEGI revela una dualidad paralizante: aunque solo una minoría de los mexicanos vive en zonas rurales (localidades de menos de 2,500 habitantes), **más del 55% de los municipios del país** tienen esta clasificación. 
+El Censo de Población y Vivienda 2020 del INEGI revela una dualidad paralizante: aunque solo el 17% de los mexicanos vive en zonas rurales<span onclick="document.getElementById('nota-rural').scrollIntoView({behavior: 'smooth'});" style="cursor: pointer; text-decoration: none; color: inherit;">¹</span>, este porcentaje equivale a **21,497,173 personas, más del 55% de los municipios del país** tienen esta clasificación. 
 
-Esta inmensa dispersión geográfica representa el verdadero obstáculo logístico y político para el ODS 6. Entubar agua para 10,000 personas agrupadas en una sola colonia urbana es rápido y políticamente rentable. Llevar agua a 50 comunidades dispersas en la sierra requiere una voluntad política y una inversión diametralmente mayores. 
+Esta inmensa dispersión geográfica representa el verdadero obstáculo logístico y político para el ODS 6. Entubar agua para 10,000 personas agrupadas en una sola colonia urbana es rápido y políticamente rentable. Llevar agua a 50 comunidades dispersas en zonas rurales requiere una voluntad política y una inversión diametralmente mayores. 
 
 La lejanía se convierte en un castigo: las políticas públicas priorizan el volumen sobre la equidad, dejando atrás a quienes ya están geográficamente aislados. La distancia física se ha traducido en distancia social.
 
-> **Dilema Central:** ¿Rentabilidad Política o Equidad Social?
+```{=html}
+<blockquote class="sidebar-quote">
+  "<strong>Dilema Central:</strong> ¿Rentabilidad Política o Equidad Social?"
+</blockquote>
 
-::: {.callout-note appearance="simple" icon=false}
-**Nota metodológica:** La clasificación de "Municipio Rural" se asigna si más del 50% de su población vive en localidades con menos de 2,500 habitantes, según el INEGI (Censo 2020).
-:::
+<p class="sidebar-footnote" id="nota-rural">
+  <a href="https://cuentame.inegi.org.mx/descubre/poblacion/rural_urbana/" target="_blank"><sup>1</sup> Se consideran rurales las localidades con menos de 2,500 habitantes, según el INEGI (2020).</a>
+</p>
+
+<div class="sidebar-note">
+  <p><strong>Nota metodológica:</strong></p>
+  <p>En este análisis, la clasificación de municipios como rurales no se realiza de manera individual, sino a partir de un criterio agregado a nivel estatal. Se considera que un estado es predominantemente rural cuando más del 50% de sus municipios tienen menos de 2,500 habitantes; en ese caso, todos los municipios del estado se clasifican como rurales, independientemente de su tamaño poblacional individual.</p>
+  <p>Este enfoque busca <strong>visibilizar la predominancia territorial de lo rural</strong>, que a menudo queda oculta cuando el análisis se basa únicamente en el volumen de población. Aunque la población rural representa una proporción minoritaria del total nacional, la estructura municipal del país muestra que lo rural sigue siendo mayoritario en términos territoriales, lo que plantea desafíos distintos en materia de infraestructura y acceso a servicios.</p>
+</div>
+```
 
 ## Column {width=25%}
 
@@ -177,6 +213,14 @@ La lejanía se convierte en un castigo: las políticas públicas priorizan el vo
 # Contar municipios por clasificación
 municipios_count = df['clasificacion_rural'].value_counts().reset_index()
 municipios_count.columns = ['Clasificación', 'Número de Municipios']
+
+# Calcular población total por clasificación
+pob_por_clasif = df.groupby('clasificacion_rural')['poblacion_total'].sum().reset_index()
+pob_por_clasif.columns = ['Clasificación', 'Población Total']
+municipios_count = municipios_count.merge(pob_por_clasif, on='Clasificación')
+
+# Formatear población con comas para legibilidad
+municipios_count['Pob. Formateada'] = municipios_count['Población Total'].apply(lambda x: f"{int(x):,}")
 
 # Crear gráfico de pastel
 fig = px.pie(
@@ -188,11 +232,26 @@ fig = px.pie(
     hole=0.4
 )
 
+# Inyectar customdata manualmente (px.pie no maneja custom_data como px.bar)
+total_pob = municipios_count['Población Total'].sum()
+municipios_count['% Población'] = (municipios_count['Población Total'] / total_pob * 100).round(1)
+
+# Crear lookup para sincronizar con el orden interno de px.pie
+lookup = {}
+for _, row in municipios_count.iterrows():
+    hover_extra = f"Habitantes: {row['Pob. Formateada']}<br>Pob. nacional: {row['% Población']}%"
+    lookup[row['Clasificación']] = hover_extra
+
+# Leer el orden real de las rebanadas que Plotly generó
+slice_order = list(fig.data[0].labels)
+custom = [[lookup[label]] for label in slice_order]
+
 # Suprimir auto-display de expresiones intermedias
 _ = fig.update_traces(
     textposition='inside',
     textinfo='percent+label',
-    hovertemplate='<b>%{label}</b><br>Municipios: %{value}<br>Porcentaje: %{percent}<extra></extra>',
+    customdata=custom,
+    hovertemplate='<b>%{label}</b><br>Municipios: %{value}<br>Porcentaje: %{percent}<br>%{customdata[0]}<extra></extra>',
     marker=dict(line=dict(color='#ffffff', width=2))
 )
 
@@ -220,52 +279,70 @@ fig
 ```{python}
 #| title: "Municipios con Mayor Rezago de Infraestructura"
 
-from itables import show
+# 1. Filtrar y extraer los 15 casos más severos (sin importar si es rural o urbano)
+df_aislados = df.sort_values(by=['carencia_agua_conagua_pct', 'Pobreza_extrema_pct'], ascending=[False, False])
 
-# Localización al español (Estrictamente texto crudo para cumplir rúbrica de HackODS)
-language_top30 = {
-    "info": "Mostrando _TOTAL_ municipios.",
-    "paginate": {"next": "Sig \u2192", "previous": "\u2190 Ant"}
-}
+# Tomar el Top 15 y ordenar ascendente para que Plotly dibuje el mayor hasta arriba
+df_top15 = df_aislados.head(15).copy()
+df_top15 = df_top15.sort_values(by='carencia_agua_conagua_pct', ascending=True)
 
-# 1. Filtrar, ordenar y extraer los 30 casos más severos
-df_aislados = df[df['clasificacion_rural'] == 'Rural'].copy()
-df_aislados = df_aislados.sort_values(by=['carencia_agua_conagua_pct', 'Pobreza_extrema_pct'], ascending=[False, False])
+# Crear etiqueta de eje Y combinando Municipio y Estado
+df_top15['Municipio_Estado'] = df_top15['Municipio'] + ", " + df_top15['Estado']
 
-# 2. Renombrar columnas para interfaz de usuario
-df_aislados = df_aislados.rename(columns={
-    'CVEGEO': 'ID Geo',
-    'poblacion_total': 'Total Habitantes',
-    'carencia_agua_conagua_pct': '% Sin Agua',
-    'Pobreza_extrema_pct': '% Pob. Extrema'
-})
+# Formatear números para el hover
+df_top15['Total Habitantes'] = df_top15['poblacion_total'].astype(int).apply(lambda x: f"{x:,}")
+df_top15['% Sin Agua'] = df_top15['carencia_agua_conagua_pct'].round(1)
+df_top15['% Pob. Extrema'] = df_top15['Pobreza_extrema_pct'].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else "N/D")
 
-cols = ['ID Geo', 'Estado', 'Municipio', 'Total Habitantes', '% Sin Agua', '% Pob. Extrema']
-df_top30 = df_aislados[cols].head(30)
-
-# 3. Mantener formato numérico limpio (evitar strings) para garantizar que el Sort JS funcione perfecto
-df_top30['Total Habitantes'] = df_top30['Total Habitantes'].astype(int)
-df_top30['% Sin Agua'] = df_top30['% Sin Agua'].round(1)
-df_top30['% Pob. Extrema'] = df_top30['% Pob. Extrema'].round(1)
-
-# Renderizar tabla interactiva (oculta índice y buscador para máxima limpieza visual)
-show(
-    df_top30,
-    showIndex=False,
-    searching=False,
-    classes=["display", "nowrap", "compact"],
-    lengthMenu=[5, 10, 30],
-    pageLength=5,
-    dom="tip",
-    language=language_top30,
+# Generar gráfica de barras horizontales
+fig_rezago = px.bar(
+    df_top15,
+    x='% Sin Agua',
+    y='Municipio_Estado',
+    orientation='h',
+    color='clasificacion_rural',
+    color_discrete_map={'Urbano': COLOR_URBANO, 'Rural': COLOR_RURAL},
+    custom_data=['Total Habitantes', '% Pob. Extrema', 'clasificacion_rural']
 )
+
+# Mantener el orden estricto del Top 15 y ocultar leyenda innecesaria
+_ = fig_rezago.update_layout(
+    yaxis={'categoryorder': 'array', 'categoryarray': df_top15['Municipio_Estado'].tolist()},
+    showlegend=False
+)
+
+_ = fig_rezago.update_traces(
+    hovertemplate="<b>%{y}</b><br>Tipo: %{customdata[2]}<br>% Sin Agua: %{x}%<br>Habitantes: %{customdata[0]}<br>Pobreza Extrema: %{customdata[1]}<extra></extra>"
+)
+
+# Añadir línea del promedio oficial equivalente (36%)
+_ = fig_rezago.add_vline(
+    x=36.0, 
+    line_width=2, 
+    line_dash="dash", 
+    line_color="#1a1a1a"
+)
+
+_ = fig_rezago.update_layout(
+    font=dict(family="Inter, sans-serif", size=12),
+    xaxis_title="% de Población Sin Agua Entubada",
+    yaxis_title="",
+    margin=dict(l=10, r=20, t=30, b=40),
+    xaxis=dict(range=[0, 105]) # Para dar espacio a la derecha
+)
+
+fig_rezago
 ```
 
 # El mapa de la invisibilidad {.scrolling}
 
 ## Column {.sidebar width=30%}
 
-### La Trampa de Infraestructura y la Deuda de Justicia Social en México
+```{=html}
+<div class="sidebar-section sidebar-header fade-up delay-1">
+  <h3 class="sidebar-title"><b>La Trampa de Infraestructura y la Deuda de Justicia Social en México</b></h3>
+</div>
+```
 
 México se visualiza como un país con un camino firme al desarrollo. Sin embargo, detrás de los promedios nacionales o incluso estatales se esconde una factura profunda. **Se invisibilizan a los municipios que más carecen del recurso del agua potable.**
 
@@ -279,24 +356,38 @@ Al agrupar los datos por Región Hidrológico-Administrativa (RHA), el desarroll
 
 **Justicia social es infraestructura. El agua es un derecho.**
 
-> *"Si el tiempo perdido es el síntoma, la infraestructura ausente es la sentencia."*
+```{=html}
+<blockquote class="sidebar-quote fade-up delay-2">
+  "Si el tiempo perdido es el síntoma, la infraestructura ausente es la sentencia."
+</blockquote>
+```
 
 
 
 ## Column {width=70%}
 
-### Row {height=175px}
+### Row {height=120px}
 
-```{python}
-#| component: valuebox
-#| title: "Población con acceso seguro al agua"
-dict(color="blue", value="64%", icon="water")
-```
+```{=html}
+<div class="stat-cards-container fade-up">
 
-```{python}
-#| component: valuebox
-#| title: "Población sin acceso a agua potable"
-dict(color="danger", value="36%", icon="droplet-half")
+  <div class="stat-card-v2 accent-blue">
+    <div class="stat-card-icon"><i class="bi bi-water"></i></div>
+    <div class="stat-card-body">
+      <div class="stat-card-label">Población con acceso seguro al agua</div>
+      <div class="stat-value text-blue" data-count="64" data-suf="%">0</div>
+    </div>
+  </div>
+  
+  <div class="stat-card-v2 accent-slate">
+    <div class="stat-card-icon"><i class="bi bi-droplet-half"></i></div>
+    <div class="stat-card-body">
+      <div class="stat-card-label">Población sin acceso a agua potable</div>
+      <div class="stat-value text-red" data-count="36" data-suf="%">0</div>
+    </div>
+  </div>
+
+</div>
 ```
 
 ### Row {height=600px}
@@ -421,7 +512,7 @@ for trace in fig_map.data:
     if cat in hover_colors_azules:
         trace.hoverlabel = dict(bgcolor=hover_colors_azules[cat], font_color='white')
 
-fig_map
+fig_map.show(config={'displayModeBar': True})
 ```
 
 #### Column {width=50%}
@@ -730,7 +821,7 @@ fig_ongs
 
 :::
 
-# Explorador de Datos
+# Explorador de Datos {.scrolling}
 
 Microdatos de los municipios de la República Mexicana. Basada en fuentes oficiales. Para más información consulta nuestro [repositorio de datos](https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM/tree/main/datos){target="_blank"}.
 
@@ -805,16 +896,14 @@ cols_pct = [
     '% Carencia Servicios',
     '% Cobertura Agua'
 ]
-df_explorador[cols_pct] = df_explorador[cols_pct].fillna(0)
-
 df_explorador['Población'] = df_explorador['Población'].apply(
     lambda x: f"{int(x):,}".replace(",", " ") if pd.notna(x) else "N/D"
 )
-df_explorador['% Población Rural'] = df_explorador['% Población Rural'].map(lambda x: f"{x:.1f}%")
-df_explorador['% Pobreza'] = df_explorador['% Pobreza'].map(lambda x: f"{x:.2f}%")
-df_explorador['% Pobreza Extrema'] = df_explorador['% Pobreza Extrema'].map(lambda x: f"{x:.2f}%")
-df_explorador['% Carencia Servicios'] = df_explorador['% Carencia Servicios'].map(lambda x: f"{x:.2f}%")
-df_explorador['% Cobertura Agua'] = df_explorador['% Cobertura Agua'].map(lambda x: f"{x:.2f}%")
+df_explorador['% Población Rural'] = df_explorador['% Población Rural'].map(lambda x: f"{x:.1f}%" if pd.notna(x) else "N/D")
+df_explorador['% Pobreza'] = df_explorador['% Pobreza'].map(lambda x: f"{x:.2f}%" if pd.notna(x) else "N/D")
+df_explorador['% Pobreza Extrema'] = df_explorador['% Pobreza Extrema'].map(lambda x: f"{x:.2f}%" if pd.notna(x) else "N/D")
+df_explorador['% Carencia Servicios'] = df_explorador['% Carencia Servicios'].map(lambda x: f"{x:.2f}%" if pd.notna(x) else "N/D")
+df_explorador['% Cobertura Agua'] = df_explorador['% Cobertura Agua'].map(lambda x: f"{x:.2f}%" if pd.notna(x) else "N/D")
 
 # =============================================================================
 # RENDERIZADO DE TABLA INTERACTIVA
@@ -829,4 +918,59 @@ show(
     order=[[0, "asc"]],
     language=language_explorador,
 )
+```
+
+```{=html}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  /* ── Animaciones al hacer Scroll (Intersection Observer) ── */
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        e.target.querySelectorAll('[data-count]').forEach(countUp);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  // Observar todos los elementos con la clase fade-up
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+  /* ── Animación Dinámica de Contadores numéricos ── */
+  function countUp(el) {
+    if (el.dataset.counted) return;
+    el.dataset.counted = '1';
+    
+    const raw  = el.dataset.count;
+    const pre  = el.dataset.pre || '';
+    const suf  = el.dataset.suf || '';
+    const isFloat = raw.includes('.');
+    const end  = parseFloat(raw);
+    const dur  = 2000; // Duración en milisegundos
+    const t0   = performance.now();
+    
+    (function tick(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      // Función de "ease-out-quint" para que frene suavemente al final
+      const v = end * (1 - Math.pow(1 - p, 5));
+      
+      // Formateo visual (con comas si es un número muy grande, o con 1 decimal si es float)
+      let displayValue;
+      if (isFloat) {
+        displayValue = v.toFixed(1);
+      } else {
+        displayValue = Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+      
+      el.textContent = pre + displayValue + suf;
+      
+      if (p < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        el.classList.add('counted');
+      }
+    })(t0);
+  }
+});
+</script>
 ```
