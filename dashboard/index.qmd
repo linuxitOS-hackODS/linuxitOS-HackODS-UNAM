@@ -390,9 +390,7 @@ Al agrupar los datos por Región Hidrológico-Administrativa (RHA), el desarroll
 </div>
 ```
 
-### Row {height=600px}
-
-#### Column {width=50%}
+### Row {height=500px}
 
 ```{python}
 #| title: "Cobertura de Agua(%) por Estado"
@@ -438,11 +436,11 @@ df_estados_mapa['Pob_Agua_Fmt'] = df_estados_mapa['Pob_Agua'].fillna(0).apply(la
 # 5. Asignar Categorías de Riesgo
 def clasificar_vulnerabilidad(cantidad):
     if cantidad == 0:
-        return 'Óptimo o Sin Registro Crítico (0)'
+        return 'Gran cobertura de agua'
     elif 1 <= cantidad <= 3:
-        return 'Alerta Moderada (1 a 3)'
+        return 'Cobertura media de agua'
     else:
-        return 'Atención Prioritaria (4+)'
+        return 'Baja cobertura de agua'
 
 df_estados_mapa['Categoría'] = df_estados_mapa['Municipios <= 50%'].apply(clasificar_vulnerabilidad)
 
@@ -452,9 +450,9 @@ with open('../datos/Estado_lite.json', 'r', encoding='utf-8') as f:
 
 # Colores en tonos azules
 color_map_azules = {
-    'Óptimo o Sin Registro Crítico (0)': '#d4e6f1',
-    'Alerta Moderada (1 a 3)': '#3498db',
-    'Atención Prioritaria (4+)': '#154360'
+    'Gran cobertura de agua': '#154360',   # azul profundo (abundancia)
+    'Cobertura media de agua': '#5dade2',  # azul equilibrado (normal)
+    'Baja cobertura de agua': '#d6eaf8',   # azul muy claro (escasez)
 }
 
 # 7. Renderizar Mapa Choropleth
@@ -464,7 +462,7 @@ fig_map = px.choropleth(
     locations='clvedo',
     featureidkey='properties.clvedo', 
     color='Categoría',
-    category_orders={'Categoría': ['Óptimo o Sin Registro Crítico (0)', 'Alerta Moderada (1 a 3)', 'Atención Prioritaria (4+)']},
+    category_orders={'Categoría': ['Gran cobertura de agua', 'Cobertura media de agua', 'Baja cobertura de agua']},
     color_discrete_map=color_map_azules,
     hover_name='estado',
     custom_data=['Categoría', 'Municipios <= 50%', 'Municipios 50-70%', 'Municipios > 70%', 'Pob_Total_Fmt', 'Pob_Agua_Fmt']
@@ -503,9 +501,9 @@ _ = fig_map.update_layout(
 
 # Hover tooltip color
 hover_colors_azules = {
-    'Óptimo o Sin Registro Crítico (0)': '#85c1e9',
-    'Alerta Moderada (1 a 3)': '#2874a6',
-    'Atención Prioritaria (4+)': '#154360'
+    'Gran cobertura de agua': '#154360',
+    'Cobertura media de agua': '#2874a6',
+    'Baja cobertura de agua': '#85c1e9',
 }
 for trace in fig_map.data:
     cat = trace.name
@@ -515,36 +513,31 @@ for trace in fig_map.data:
 fig_map.show(config={'displayModeBar': True})
 ```
 
-#### Column {width=50%}
+### Row {height=450px}
 
 ```{python}
 #| title: "Detalle Municipal con acceso al agua"
 from itables import show
+import pandas as pd
 
-# 1. Seleccionamos datos e instanciamos copia
-df_detalle = df_cobertura[[
-    'Entidad', 
-    'Municipio', 
-    'Población', 
-    'Población Rural', 
-    'Población Urbana', 
-    'Población  con agua entubada en vivienda o predio'
-]].copy()
+# Preparar el dataframe seleccionando Entidad y Municipio
+df_municipios = df_cobertura[['Entidad', 'Municipio', 'Población Cobertura(%)']].copy()
 
-# 2. Orden Alfabético Ascendente (Estado y después Municipio)
-df_detalle = df_detalle.sort_values(by=['Entidad', 'Municipio'], ascending=[True, True])
+# Nos aseguramos de que sea numérico y eliminamos vacíos
+df_municipios['Población Cobertura(%)'] = pd.to_numeric(df_municipios['Población Cobertura(%)'], errors='coerce')
+df_municipios = df_municipios.dropna(subset=['Población Cobertura(%)'])
 
-# 3. Renombrar para mayor legibilidad UI
-df_detalle.columns = [
-    'Estado', 'Municipio', 'Pobl. Total', 'Pobl. Rural', 'Pobl. Urbana', 'Pobl. con Agua'
-]
+# Ordenamos de forma ascendente basado en la cobertura
+df_municipios = df_municipios.sort_values(by='Población Cobertura(%)', ascending=True)
 
-# 4. Formato numérico seguro (sin NaN que rompan el sort de itables)
-columnas_numericas = ['Pobl. Total', 'Pobl. Rural', 'Pobl. Urbana', 'Pobl. con Agua']
-for col in columnas_numericas:
-    df_detalle[col] = df_detalle[col].fillna(0).astype(int)
+# Redondeamos a un decimal para mayor limpieza en la UI
+df_municipios['Población Cobertura(%)'] = df_municipios['Población Cobertura(%)'].round(1)
 
-# Localización al español (Estrictamente texto crudo para cumplir rúbrica de HackODS)
+# Filtramos las columnas a mostrar y renombrar
+df_interactivo = df_municipios[['Entidad', 'Municipio', 'Población Cobertura(%)']]
+df_interactivo.columns = ['Estado', 'Municipio', 'Cobertura (%)']
+
+# Localización al español
 language_detalle = {
     "search": "Buscar:",
     "info": "Mostrando _TOTAL_ municipios.",
@@ -555,16 +548,19 @@ language_detalle = {
     "paginate": {"next": "Sig \u2192", "previous": "\u2190 Ant"}
 }
 
-# 5. Renderizar tabla interactiva
+# Renderizar la tabla interactiva
 show(
-    df_detalle,
+    df_interactivo,
     showIndex=False,
     searching=True,
-    classes=["display", "nowrap", "compact"],
-    lengthMenu=[10, 25, 50],
-    pageLength=14,
+    classes=["display", "cell-border", "stripe", "compact", "nowrap"],
+    lengthMenu=[10, 25, 50, 100],
+    pageLength=10,
     dom="ftip",
     language=language_detalle,
+    columnDefs=[
+        {"className": "dt-center", "targets": [2]}  # Centrar el porcentaje
+    ]
 )
 ```
 
