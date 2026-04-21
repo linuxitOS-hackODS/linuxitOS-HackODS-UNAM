@@ -582,3 +582,33 @@ table tbody td {
   font-weight: 700;
   margin-right: 0.15rem;
 }
+
+/* ═══════════════════════════════════════
+   HEADER / NAVBAR COMPACTO
+   ═══════════════════════════════════════ */
+.navbar, .quarto-dashboard-header {
+  min-height: 40px !important;
+  padding-top: 0.2rem !important;
+  padding-bottom: 0.2rem !important;
+}
+
+.navbar-brand {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.navbar-brand img, .navbar-logo {
+  max-height: 30px !important;
+}
+
+.navbar-title {
+  font-size: 1.1rem !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.nav-link {
+  padding-top: 0.2rem !important;
+  padding-bottom: 0.2rem !important;
+  font-size: 0.9rem !important;
+}

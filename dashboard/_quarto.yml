@@ -8,8 +8,6 @@ website:
   navbar:
     logo: img/hackodslogo.png
     background: primary
-    left:
-      - text: "Radiografía Nacional de Infraestructura Hídrica y Pobreza"
     right:
       - text: "Equipo linuxitOS"
         href: https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM
