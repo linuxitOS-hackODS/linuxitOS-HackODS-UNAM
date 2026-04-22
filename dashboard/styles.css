@@ -38,10 +38,74 @@ p,
   /* Fondo claro */
 }
 
-/* Estilo para los value boxes */
-.valuebox {
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+/* Estilo para los value boxes — Layout horizontal: Ícono izq. + Texto der. */
+.valuebox,
+.bslib-value-box {
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  overflow: hidden !important;
+}
+
+/* Forzar layout horizontal: ícono a la izquierda */
+.bslib-value-box .value-box-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+}
+
+/* Showcase (ícono): columna izquierda compacta */
+.bslib-value-box .value-box-showcase {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.5rem 0.6rem !important;
+  min-width: 50px !important;
+  max-width: 60px !important;
+  flex-shrink: 0 !important;
+}
+
+.bslib-value-box .value-box-showcase .bi {
+  font-size: 2rem !important;
+}
+
+/* Área de contenido: título arriba, valor grande abajo */
+.bslib-value-box .value-box-area {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  padding: 0.5rem 1rem 0.5rem 0 !important;
+  flex-grow: 1 !important;
+}
+
+.bslib-value-box .value-box-title {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  margin-bottom: 0.1rem !important;
+  opacity: 0.85;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+.bslib-value-box .value-box-value {
+  font-family: 'Inter', sans-serif !important;
+  font-size: clamp(1.8rem, 3vw, 2.6rem) !important;
+  font-weight: 900 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Value boxes con fondo oscuro: texto e ícono blancos */
+.bslib-value-box[style*="2c3e50"],
+.bslib-value-box[style*="2C3E50"] {
+  color: #fff !important;
+}
+
+.bslib-value-box[style*="2c3e50"] *,
+.bslib-value-box[style*="2C3E50"] * {
+  color: #fff !important;
 }
 
 /* Estilo para las tarjetas (cards) */
@@ -388,36 +452,31 @@ table tbody td {
   color: #fff !important;
 }
 
-/* Efecto de resplandor para los contadores al terminar */
-.stat-value.counted {
-  text-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-  transition: text-shadow 0.8s ease;
+/* Animaciones CSS puras (sin JavaScript) */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Animaciones al Hacer Scroll */
-.fade-up {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+.executive-subtitle,
+.stat-cards-container,
+.context-cards-container {
+  animation: fadeInUp 0.8s ease-out both;
 }
 
-.fade-up.visible {
-  opacity: 1;
-  transform: translateY(0);
+/* Retrasos en Cascada (CSS puro) */
+.stat-cards-container {
+  animation-delay: 0.15s;
 }
 
-/* Retrasos en Cascada (Stagger) */
-.delay-1 {
-  transition-delay: 0.15s;
-}
-
-.delay-2 {
-  transition-delay: 0.3s;
-}
-
-.delay-3 {
-  transition-delay: 0.45s;
+.context-cards-container {
+  animation-delay: 0.3s;
 }
 
 /* Tipografía de Liderazgo */
@@ -719,19 +778,25 @@ table tbody td {
 }
 
 /* Subtítulo Ejecutivo */
-.executive-subtitle {
-  text-align: center;
+.executive-subtitle,
+.executive-subtitle p,
+.executive-subtitle .subtitle-heading,
+.card-body .executive-subtitle,
+.card-body .executive-subtitle p {
+  text-align: center !important;
   max-width: 900px;
-  margin: 0 auto 1.5rem auto;
   padding: 0 1rem;
 }
 
-.executive-subtitle h3 {
-  font-family: 'Merriweather', Georgia, serif;
-  font-size: 1.18rem;
-  font-weight: 800;
-  color: #000000;
+.executive-subtitle .subtitle-heading {
+  display: block;
+  font-family: 'Merriweather', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a1a1a;
   margin-bottom: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .executive-subtitle p {
@@ -779,7 +844,8 @@ table tbody td {
   border-left: 5px solid #B91C1C;
 }
 
-.context-card h4 {
+.context-card .card-heading {
+  display: block;
   font-family: 'Merriweather', serif;
   font-size: 1.15rem;
   color: #1a1a1a;

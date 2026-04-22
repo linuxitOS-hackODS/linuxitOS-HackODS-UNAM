@@ -2,8 +2,7 @@
 title: "Agua y Pobreza: La Trampa Rural"
 subtitle: "Cruce ODS 1 (Fin de la Pobreza) y ODS 6 (Agua Limpia y Saneamiento)"
 format: 
-  dashboard:
-    include-after-body: animations.html
+  dashboard
 listing:
   id: ongs-directorio
   contents: ../datos_ongs.yml
@@ -36,40 +35,37 @@ COLOR_URBANO = '#3498db'
 
 ## Row
 
-```{=html}
-<div class="executive-subtitle fade-up">
-  <h3>La Estructura de la Pobreza: La Brecha Hídrica en México</h3>
-  <p>El cruce entre el <strong>ODS 1 (Fin de Pobreza)</strong> y el <strong>ODS 6 (Agua Limpia y Saneamiento)</strong> no es una simple estadística; es una <strong>condena estructural</strong>. La pobreza va más allá de la falta de ingresos; es la ausencia de los servicios básicos que permiten vivir con dignidad.</p>
-</div>
+### Column {width=55%}
 
-<div class="stat-cards-container fade-up delay-1">
+::: {.executive-subtitle}
+[La Estructura de la Pobreza: La Brecha Hídrica en México]{.subtitle-heading}
 
-  <div class="stat-card-v2 accent-blue">
-    <div class="stat-card-icon"><i class="bi bi-droplet-fill"></i></div>
-    <div class="stat-card-body">
-      <div class="stat-card-label">Cobertura Nacional Oficial (SIODS)</div>
-      <div class="stat-value text-blue" data-count="64" data-suf="%">0</div>
-    </div>
-  </div>
+El cruce entre el **ODS 1 (Fin de Pobreza)** y el **ODS 6 (Agua Limpia y Saneamiento)** no es una simple estadística; es una **condena estructural**. La pobreza va más allá de la falta de ingresos; es la ausencia de los servicios básicos que permiten vivir con dignidad.
+:::
 
-  <div class="stat-card-v2 accent-red">
-    <div class="stat-card-icon"><i class="bi bi-houses-fill"></i></div>
-    <div class="stat-card-body">
-      <div class="stat-card-label">Municipios que son Rurales</div>
-      <div class="stat-value" data-count="55" data-suf="%">0</div>
-    </div>
-  </div>
+### Column {width=15%}
 
-  <div class="stat-card-v2 accent-slate">
-    <div class="stat-card-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
-    <div class="stat-card-body">
-      <div class="stat-card-label">Mayor Carencia de Agua en el Campo</div>
-      <div class="stat-value">4.6x</div>
-    </div>
-  </div>
+::: {.valuebox icon="droplet-fill" color="#e3f2fd"}
+Cobertura Nacional Oficial (SIODS)
 
-</div>
-```
+64%
+:::
+
+### Column {width=15%}
+
+::: {.valuebox icon="houses-fill" color="#e74c3c"}
+Municipios que son Rurales
+
+55%
+:::
+
+### Column {width=15%}
+
+::: {.valuebox icon="exclamation-triangle-fill" color="#2c3e50"}
+Mayor Carencia de Agua en el Campo
+
+4.6x
+:::
 
 ## Row {height=600px}
 
@@ -243,19 +239,22 @@ fig
 
 ### Column {width=25%}
 
-```{=html}
-<div class="context-cards-container fade-up delay-2">
-  <div class="context-card card-blue">
-    <h4>La Ilusión Nacional</h4>
-    <p>México reporta un <strong>64% de acceso a agua segura</strong> a nivel nacional. Sin embargo, las grandes ciudades "promedian hacia arriba", borrando a las comunidades rurales y periféricas. Al analizar los microdatos, la estadística se derrumba. <strong>Invisibilizar la carencia es violar un derecho humano.</strong></p>
-  </div>
+::: {.context-cards-container}
 
-  <div class="context-card card-red">
-    <h4>La Realidad Demográfica</h4>
-    <p>Solo el <strong>17% de los mexicanos</strong> vive en zonas rurales, pero esto representa <strong>más del 55% de los municipios</strong> del país. Si medimos por equidad territorial y no por densidad, la vida rural abarca la mayor parte de México.</p>
-  </div>
-</div>
-```
+::: {.context-card .card-blue}
+[La Ilusión Nacional]{.card-heading}
+
+México reporta un **64% de acceso a agua segura** a nivel nacional. Sin embargo, las grandes ciudades "promedian hacia arriba", borrando a las comunidades rurales y periféricas. Al analizar los microdatos, la estadística se derrumba. **Invisibilizar la carencia es violar un derecho humano.**
+:::
+
+::: {.context-card .card-red}
+[La Realidad Demográfica]{.card-heading}
+
+Solo el **17% de los mexicanos** vive en zonas rurales, pero esto representa **más del 55% de los municipios** del país. Si medimos por equidad territorial y no por densidad, la vida rural abarca la mayor parte de México.
+:::
+
+:::
+
 ## Row {height=800px}
 
 ```{python}
@@ -432,27 +431,21 @@ fig_rezago
 
 ## Row {height=120px}
 
-```{=html}
-<div class="stat-cards-container fade-up">
+::: {.stat-cards-container}
 
-  <div class="stat-card-v2 accent-blue">
-    <div class="stat-card-icon"><i class="bi bi-water"></i></div>
-    <div class="stat-card-body">
-      <div class="stat-card-label">Población con acceso seguro al agua</div>
-      <div class="stat-value text-blue" data-count="64" data-suf="%">0</div>
-    </div>
-  </div>
-  
-  <div class="stat-card-v2 accent-slate">
-    <div class="stat-card-icon"><i class="bi bi-droplet-half"></i></div>
-    <div class="stat-card-body">
-      <div class="stat-card-label">Población sin acceso a agua potable</div>
-      <div class="stat-value text-red" data-count="36" data-suf="%">0</div>
-    </div>
-  </div>
+::: {.valuebox icon="water" color="#e3f2fd"}
+Población con acceso seguro al agua
 
-</div>
-```
+64%
+:::
+
+::: {.valuebox icon="droplet-half" color="#2c3e50"}
+Población sin acceso a agua potable
+
+36%
+:::
+
+:::
 
 ## Row {height=500px}
 
