@@ -1,8 +1,10 @@
 ---
 title: "Agua y Pobreza: La Trampa Rural"
 subtitle: "Cruce ODS 1 (Fin de la Pobreza) y ODS 6 (Agua Limpia y Saneamiento)"
-format: 
+format:
   dashboard
+resources:
+  - data/municipios_scatter.json
 listing:
   id: ongs-directorio
   contents: ../datos_ongs.yml
@@ -16,6 +18,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
 import os
+import pathlib
 
 # Configurar renderer: Dejamos que Quarto maneje el widget nativamente.
 # Forzar pio.renderers rompe el ResizeObserver interno de Quarto Dashboards y causa leyendas encimadas.
@@ -27,6 +30,30 @@ df = pd.read_csv(data_path, dtype={'CVEGEO': str})
 # Configuración de colores consistente con el CSS
 COLOR_RURAL = '#e74c3c'
 COLOR_URBANO = '#3498db'
+
+# Preparar dataset para el scatter interactivo (consumido por OJS via FileAttachment)
+df_scatter = df.copy()
+df_scatter['severidad'] = (df_scatter['carencia_agua_conagua_pct'] + df_scatter['Pobreza_extrema_pct']).round(1)
+
+_cols_ojs = ['Municipio', 'Estado', 'RHA', 'poblacion_total', 'clasificacion_rural',
+             'severidad', 'carencia_agua_conagua_pct', 'Pobreza_extrema_pct']
+df_ojs = df_scatter[_cols_ojs].copy()
+df_ojs['poblacion_total'] = df_ojs['poblacion_total'].fillna(0).astype(int)
+df_ojs['carencia_agua_conagua_pct'] = df_ojs['carencia_agua_conagua_pct'].fillna(0).round(1)
+df_ojs['Pobreza_extrema_pct'] = df_ojs['Pobreza_extrema_pct'].fillna(0).round(1)
+df_ojs['RHA'] = df_ojs['RHA'].fillna('N/D')
+df_ojs['Municipio'] = df_ojs['Municipio'].fillna('').astype(str)
+df_ojs['Estado'] = df_ojs['Estado'].fillna('').astype(str)
+df_ojs['clasificacion_rural'] = df_ojs['clasificacion_rural'].fillna('N/D').astype(str)
+
+# Persistir JSON para que OJS lo consuma con FileAttachment (patrón canónico para Quarto Dashboards)
+pathlib.Path('data').mkdir(exist_ok=True)
+df_ojs.to_json('data/municipios_scatter.json', orient='records', force_ascii=False)
+```
+
+```{ojs}
+//| output: false
+municipios_scatter = FileAttachment("data/municipios_scatter.json").json()
 ```
 
 # La Ilusión Nacional {.scrolling}
@@ -255,112 +282,151 @@ Solo el **17% de los mexicanos** vive en zonas rurales, pero esto representa **m
 
 :::
 
-## Row {height=800px}
+## Row {height=550px}
 
-```{python}
-#| title: "A mayor carencia de agua, mayor pobreza extrema (2,469 Municipios)"
+### Column {width=25%}
 
-# Crear índice de severidad (suma normalizada de ambos ejes)
-df_scatter = df.copy()
-df_scatter['severidad'] = df_scatter['carencia_agua_conagua_pct'] + df_scatter['Pobreza_extrema_pct']
+::: {.context-cards-container .h-100}
 
-# Escala de color continua: verde (bienestar) → ámbar (alerta) → rojo oscuro (crisis)
-escala_severidad = [
-    [0, '#27ae60'],      # Verde — baja carencia, baja pobreza
-    [0.35, '#f39c12'],   # Ámbar — zona media
-    [0.65, '#e74c3c'],   # Rojo — alta severidad
-    [1, '#7f1d1d']       # Rojo oscuro — crisis extrema
-]
+::: {.context-card .card-amber .h-100}
+[El Veredicto Matemático]{.card-heading}
 
-# Scatter con burbujas de tamaño fijo para visibilizar los casos extremos
-fig_scatter = px.scatter(
-    df_scatter,
-    x='carencia_agua_conagua_pct',
-    y='Pobreza_extrema_pct',
-    color='severidad',
-    hover_name='Municipio',
-    hover_data={
-        'Estado': True,
-        'RHA': True,
-        'poblacion_total': ':,',
-        'clasificacion_rural': True,
-        'severidad': ':.1f',
-        'carencia_agua_conagua_pct': ':.1f',
-        'Pobreza_extrema_pct': ':.1f'
-    },
-    color_continuous_scale=escala_severidad,
-    labels={
-        'carencia_agua_conagua_pct': '% Sin Agua Entubada',
-        'Pobreza_extrema_pct': '% Pobreza Extrema',
-        'poblacion_total': 'Población',
-        'clasificacion_rural': 'Clasificación',
-        'severidad': 'Índice de Severidad',
-        'RHA': 'RHA'
-    },
-    opacity=0.8
-)
+[4.6×]{.stat-highlight}
+[Mayor carencia de agua en el campo]{.stat-label}
 
-# Estética premium: tamaño fijo y borde blanco semitransparente
-_ = fig_scatter.update_traces(
-    marker=dict(
-        size=8,  # Todas las burbujas del mismo tamaño
-        line=dict(width=1, color='rgba(255,255,255,0.4)')
-    ),
-    selector=dict(mode='markers')
-)
+[2×]{.stat-highlight}
+[Mayor pobreza extrema rural]{.stat-label}
 
-# Anotar los Top 5 municipios más severos con flechas para evitar encimarse
-top5 = df_scatter.nlargest(5, 'severidad')
-offsets = [
-    (0, -45),   # San José Tenango: arriba
-    (-30, -50), # Chalchihuitán: arriba izquierda
-    (40, -10),  # Oxchuc: derecha
-    (-40, 20),  # Santa María Chilchotla: abajo izquierda
-    (10, 40)    # Copalillo: abajo
-]
+Cruzar el Censo con la infraestructura **desmiente la "Ilusión Nacional"**. La carencia de agua entubada es **4.6 veces mayor** en el campo, y la pobreza extrema es **el doble**. La pobreza tiene una dirección postal olvidada por el presupuesto.
+:::
 
-for i, (_, row) in enumerate(top5.iterrows()):
-    ax, ay = offsets[i % len(offsets)]
-    _ = fig_scatter.add_annotation(
-        x=row['carencia_agua_conagua_pct'],
-        y=row['Pobreza_extrema_pct'],
-        text=f"<b>{row['Municipio']}</b><br>{row['Estado']}",
-        showarrow=True,
-        arrowhead=0,
-        arrowwidth=1,
-        arrowcolor='#888',
-        ax=ax,
-        ay=ay,
-        font=dict(size=10, color='#2c3e50', family='Inter, sans-serif'),
-        align='center',
-        bgcolor='rgba(255,255,255,0.9)',
-        bordercolor='#ddd',
-        borderwidth=1,
-        borderpad=3
-    )
+:::
 
-# Layout final y limpieza visual
-_ = fig_scatter.update_layout(
-    template='plotly_white',  # Fondo limpio para resaltar los colores
-    xaxis_title="% Sin Agua Entubada (CONAGUA)",
-    yaxis_title="% en Pobreza Extrema (CONEVAL)",
-    font=dict(family="Inter, sans-serif", size=11, color='#2c3e50'),
-    coloraxis_colorbar=dict(
-    title=dict(
-        text="Índice de Severidad",
-        side="right"          # ← aquí, dentro de title=dict(...)
-    ),
-    thickness=12,
-    len=0.5,
-    yanchor="middle",
-    y=0.5,
-    x=1.02
-    ),
-    margin=dict(t=20, b=50, l=60, r=40)
-)
+### Column {width=75%}
 
-fig_scatter
+::: {.card title="A mayor carencia de agua, mayor pobreza extrema (2,469 Municipios)"}
+
+```{ojs}
+{
+  // Single-cell approach: input + chart en un solo contenedor.
+  const searchInput = html`<input type="text" placeholder="Ej. Oaxaca, Guerrero..."
+    style="padding: 0.5rem 0.65rem; border: 1px solid #d1d5db; border-radius: 6px;
+           font-family: Inter, sans-serif; font-size: 0.95rem;
+           width: min(400px, 100%); outline: none;
+           transition: border-color 0.2s, box-shadow 0.2s;">`;
+           
+  searchInput.addEventListener("focus", () => {
+    searchInput.style.borderColor = "#78350F";
+    searchInput.style.boxShadow = "0 0 0 3px rgba(120, 53, 15, 0.12)";
+  });
+  
+  searchInput.addEventListener("blur", () => {
+    searchInput.style.borderColor = "#d1d5db";
+    searchInput.style.boxShadow = "none";
+  });
+
+  const searchRow = html`<label style="display:flex; gap:0.75rem; align-items:center;
+    font-family:Inter, sans-serif; font-weight:600; color:#1a1a1a;
+    font-size:0.95rem; margin:0; padding:0; flex-wrap:wrap;">
+    <span>Busca tu municipio:</span>${searchInput}</label>`;
+
+  // --- SOLUCIÓN AL BUCLE INFINITO ---
+  // 1. Un wrapper 'relative' que define el espacio y obedece a Quarto.
+  const chartWrapper = html`<div style="flex:1; position:relative; min-height:420px; width:100%; margin-top:0.5rem;"></div>`;
+  
+  // 2. Un chartEl 'absolute' que llena el wrapper pero NO puede expandirlo.
+  const chartEl = html`<div style="position:absolute; top:0; left:0; right:0; bottom:0; overflow:hidden;"></div>`;
+  chartWrapper.append(chartEl);
+
+  const container = html`<div style="display:flex; flex-direction:column;
+    height:100%; width:100%; padding:0.25rem 0;"></div>`;
+    
+  container.append(searchRow, chartWrapper);
+
+  function render() {
+    const q = searchInput.value.trim().toLowerCase();
+    const hasSearch = q !== "";
+    const ok = d =>
+      (d.Municipio || "").toLowerCase().includes(q) ||
+      (d.Estado || "").toLowerCase().includes(q);
+      
+    const activos = hasSearch ? municipios_scatter.filter(ok) : municipios_scatter;
+    const inactivos = hasSearch ? municipios_scatter.filter(d => !ok(d)) : [];
+    
+    // Tomamos las dimensiones del contenedor anclado. 
+    // Como tiene position: absolute, sus dimensiones son 100% estables.
+    const w = chartEl.clientWidth || 800;
+    // Restamos 45px a la altura para hacerle espacio a la leyenda superior
+    // y evitar que el SVG empuje el eje de las X fuera del área visible.
+    const h = (chartEl.clientHeight || 420) - 45;
+
+    chartEl.replaceChildren(Plot.plot({
+      width: w,
+      height: h,
+      marginLeft: 60,
+      marginBottom: 50,
+      x: { label: "% Sin Agua Entubada (CONAGUA)", grid: true },
+      y: { label: "% en Pobreza Extrema (CONEVAL)", grid: true },
+      color: {
+        type: "linear",
+        domain: [0, 35, 65, 100],
+        range: ["#27ae60", "#f39c12", "#e74c3c", "#7f1d1d"],
+        label: "Índice de Severidad",
+        legend: true
+      },
+      marks: [
+        Plot.dot(inactivos, {
+          x: "carencia_agua_conagua_pct",
+          y: "Pobreza_extrema_pct",
+          fill: "#cccccc",
+          opacity: 0.15,
+          r: 4
+        }),
+        Plot.dot(activos, {
+          x: "carencia_agua_conagua_pct",
+          y: "Pobreza_extrema_pct",
+          fill: "severidad",
+          stroke: "rgba(255,255,255,0.4)",
+          strokeWidth: 1,
+          r: 4,
+          opacity: 0.85
+        }),
+        Plot.tip(activos, Plot.pointer({
+          x: "carencia_agua_conagua_pct",
+          y: "Pobreza_extrema_pct",
+          fill: "severidad",
+          title: d => [
+            `${d.Municipio}, ${d.Estado}`,
+            `RHA: ${d.RHA}`,
+            `Población: ${d.poblacion_total.toLocaleString("es-MX")}`,
+            `Clasificación: ${d.clasificacion_rural}`,
+            `Índice Severidad: ${d.severidad}`,
+            `% Sin Agua: ${d.carencia_agua_conagua_pct}%`,
+            `% Pobreza Extrema: ${d.Pobreza_extrema_pct}%`
+          ].join("\n")
+        }))
+      ]
+    }));
+  }
+
+  searchInput.addEventListener("input", render);
+  
+  // Render inicial 
+  requestAnimationFrame(() => requestAnimationFrame(render));
+  
+  // El ResizeObserver ahora vigila el 'chartWrapper'.
+  // Al no ser afectado por el SVG de Plotly, es completamente inmune al bucle de crecimiento.
+  const ro = new ResizeObserver(() => render());
+  ro.observe(chartWrapper);
+  invalidation.then(() => ro.disconnect());
+  
+  return container;
+}
 ```
+
+:::
+
+
 
 
 # La Realidad Demográfica
@@ -871,5 +937,7 @@ show(
     language=language_explorador,
 )
 ```
+
+
 
 

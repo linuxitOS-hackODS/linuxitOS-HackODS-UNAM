@@ -121,6 +121,22 @@ p,
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
+.card p,
+.card li,
+.card-body p,
+.card-body li {
+  font-size: clamp(0.7rem, 0.6vw + 0.4rem, 0.95rem);
+}
+
+.card h1,
+.card h2,
+.card h3,
+.card h4,
+.card h5,
+.card h6 {
+  font-size: clamp(0.9rem, 0.8vw + 0.5rem, 1.25rem);
+}
+
 /* Estilo para callouts en márgenes */
 .column-margin {
   font-size: 0.9em;
@@ -458,6 +474,7 @@ table tbody td {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -711,7 +728,8 @@ table tbody td {
   padding-bottom: 0.2rem !important;
   position: sticky !important;
   top: 0;
-  z-index: 1050; /* Z-index de Bootstrap para navbar fixed */
+  z-index: 1050;
+  /* Z-index de Bootstrap para navbar fixed */
 }
 
 .navbar-brand {
@@ -788,6 +806,17 @@ table tbody td {
   padding: 0 1rem;
 }
 
+.executive-subtitle {
+  margin-top: 0 !important;
+}
+
+/* Alinear el contenido hacia arriba dentro de la tarjeta de Quarto */
+.card-body:has(.executive-subtitle) {
+  justify-content: flex-start !important;
+  padding-top: 1.5rem !important;
+  /* Margen superior idéntico al gap inferior */
+}
+
 .executive-subtitle .subtitle-heading {
   display: block;
   font-family: 'Merriweather', serif;
@@ -819,6 +848,7 @@ table tbody td {
   gap: 1.5rem;
   width: 100%;
   height: 100%;
+  min-height: 100%;
   justify-content: center;
 }
 
@@ -826,9 +856,16 @@ table tbody td {
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 16px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  padding: 1.25rem 1.75rem 1.5rem 1.75rem;
-  /* Ajuste para simetría: Top más ajustado, Bottom con más aire */
+  padding: clamp(0.75rem, 1vw, 1.25rem) clamp(1rem, 1.5vw, 1.75rem);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow-y: auto;
+  overflow-x: hidden;
+  
+  /* Permite que la tarjeta se estire para llenar el 100% de la altura de su columna */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
 }
 
 .context-card:hover {
@@ -844,28 +881,117 @@ table tbody td {
   border-left: 5px solid #B91C1C;
 }
 
+.context-card.card-amber {
+  border-left: 5px solid #78350F;
+  background: linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(254,243,199,0.35) 100%);
+}
+
+.context-card.card-amber .card-heading {
+  color: #78350F;
+}
+
+.context-card.card-amber p strong {
+  color: #92400E;
+  font-weight: 700;
+}
+
+.context-card.card-amber .stat-highlight {
+  display: block;
+  font-family: 'Merriweather', serif;
+  font-size: clamp(1.8rem, 2.5vw, 2.6rem);
+  font-weight: 900;
+  color: #78350F;
+  line-height: 1;
+  margin: 0.5rem 0 0.1rem 0;
+}
+
+.context-card.card-amber .stat-label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.6rem, 0.55vw + 0.3rem, 0.78rem);
+  color: #92400E;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+/* Cuando .card-amber está sola en su contenedor (fila del scatter),
+   estira a altura completa para emparejar con el card del scatter al lado. */
+.context-cards-container:has(> .card-amber:only-child) {
+  justify-content: stretch;
+  height: 100%;
+}
+
+.context-cards-container > .card-amber:only-child {
+  flex: 1 1 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* FIX ROBUSTO: Quarto Dashboard asigna grid-template-rows: max-content
+   (inline style) al bslib-grid de columnas markdown-only, lo que impide
+   que .card-amber llene la altura del row. Override con !important. */
+
+/* Target 1: selector por combinator directo */
+.bslib-grid:has(> .card > .card-body > .context-cards-container > .card-amber) {
+  grid-template-rows: minmax(3em, 1fr) !important;
+}
+
+/* Target 2: selector por atributo inline (caso edge browser) */
+.bslib-grid[style*="max-content"]:has(.card-amber) {
+  grid-template-rows: minmax(3em, 1fr) !important;
+}
+
+/* Target 3: asegurar que card padre también estire a 100% del grid row */
+.bslib-grid:has(.card-amber) > .card {
+  height: 100% !important;
+}
+
+.bslib-grid:has(.card-amber) > .card > .card-body {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
 .context-card .card-heading {
   display: block;
   font-family: 'Merriweather', serif;
-  font-size: 1.15rem;
+  font-size: clamp(0.75rem, 0.8vw + 0.4rem, 1.15rem);
   color: #1a1a1a;
   font-weight: 700;
   margin-top: 0 !important;
   padding-top: 0 !important;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.1rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  line-height: 1.3;
 }
 
 .context-card p {
   font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
+  font-size: clamp(0.65rem, 0.6vw + 0.35rem, 0.9rem);
   color: #4B5563;
-  line-height: 1.6;
+  line-height: 1.45;
   margin-bottom: 0;
 }
 
 .context-card p strong {
   color: #1a1a1a;
   font-weight: 600;
+}
+
+/* Scatter interactivo: Quarto Dashboard asigna html-fill-item (flex: 1 1 auto)
+   a .cell-output.cell-output-display, causando que el input de búsqueda expanda
+   su celda y genere espacio muerto. Override a flex: 0 0 auto. */
+.cell-output.cell-output-display.html-fill-item:has(form[class^="oi-"]) {
+  flex: 0 0 auto !important;
+  min-height: unset !important;
+}
+
+.cell-output.cell-output-display:has(form[class^="oi-"]) .observablehq {
+  margin: 0 !important;
+  padding: 0.25rem 0 !important;
 }
