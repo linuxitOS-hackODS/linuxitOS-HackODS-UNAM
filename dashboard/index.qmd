@@ -30,82 +30,50 @@ COLOR_RURAL = '#e74c3c'
 COLOR_URBANO = '#3498db'
 ```
 
-# La Ilusión Nacional
+# La Ilusión Nacional {.scrolling}
 
-## Column {.sidebar width=30%}
+
+
+## Row
 
 ```{=html}
-<div class="sidebar-section sidebar-header">
-  <h3 class="sidebar-title"><b>El Corazón de Nuestra Historia</b></h3>
-  <div class="ods-tags">
-    <span class="ods-tag ods1">ODS 1. Fin de la Pobreza</span>
-    <span class="ods-tag ods6">ODS 6. Agua Limpia y Saneamiento</span>
-  </div>
+<div class="executive-subtitle fade-up">
+  <h3>La Estructura de la Pobreza: La Brecha Hídrica en México</h3>
+  <p>El cruce entre el <strong>ODS 1 (Fin de Pobreza)</strong> y el <strong>ODS 6 (Agua Limpia y Saneamiento)</strong> no es una simple estadística; es una <strong>condena estructural</strong>. La pobreza va más allá de la falta de ingresos; es la ausencia de los servicios básicos que permiten vivir con dignidad.</p>
 </div>
-```
 
-El cruce entre el *ODS 1 (Fin de la Pobreza)* y el *ODS 6 (Agua Limpia y Saneamiento)* no es una simple correlación estadística; es la radiografía de **una condena estructural**.
-
-Nuestra premisa fundamental, respaldada por la ONU: **la pobreza va más allá de la falta de ingresos; es la carencia de los servicios básicos que permiten una vida digna.**
-
-```{=html}
-<hr class="sidebar-divider">
-<h4 class="sidebar-subtitle"><b>La Ilusión Nacional</b></h4>
-```
-
-La Republica Mexicana reporta a la comunidad internacional que aproximadamente el **64% de la población** cuenta con agua potable gestionada de forma segura para el año 2020<sup class="sidebar-cite"><a href="https://agenda2030.mx/ODSind.html?ind=ODS006000050010&cveind=54&cveCob=99&lang=es#/Indicator" target="_blank" class="sidebar-ref">SIODS</a></sup>. Sin embargo, cuando observamos los datos a nivel municipal, la estadística a gran escala se convierte en un **espejismo**.
-
-La sólida infraestructura de las zonas altamente urbanizadas "promedia hacia arriba", borrando estadísticamente a las comunidades rurales y periféricas. Véase en la gráfica "Promedio Oficial vs Realidad Municipal".
-
-```{=html}
-<blockquote class="sidebar-quote">
-  "Cuando se discrimina o se ocultan los datos a gran escala, se invisibiliza la carencia y se violan derechos humanos fundamentales."
-</blockquote>
-```
-
-Para encontrar la verdad profundizamos en los **microdatos de 2,469 municipios** de la República Mexicana.
-
-```{=html}
-<div class="sidebar-note">
-  <strong>Nota metodológica:</strong> Los datos de la gráfica adyacente provienen de cruzar los microdatos del Censo de Población y Vivienda (INEGI, 2020) para la clasificación sociodemográfica (Rural/Urbana), con los indicadores municipales de cobertura hídrica de la CONAGUA.
-</div>
-```
-
-## Column {width=70%}
-
-### Row
-
-```{=html}
-<div class="stat-cards-container fade-up">
+<div class="stat-cards-container fade-up delay-1">
 
   <div class="stat-card-v2 accent-blue">
     <div class="stat-card-icon"><i class="bi bi-droplet-fill"></i></div>
     <div class="stat-card-body">
-      <div class="stat-card-label">Promedio Nacional Oficial (SIODS)</div>
+      <div class="stat-card-label">Cobertura Nacional Oficial (SIODS)</div>
       <div class="stat-value text-blue" data-count="64" data-suf="%">0</div>
     </div>
   </div>
 
-  <div class="stat-card-v2 accent-slate">
-    <div class="stat-card-icon"><i class="bi bi-map-fill"></i></div>
+  <div class="stat-card-v2 accent-red">
+    <div class="stat-card-icon"><i class="bi bi-houses-fill"></i></div>
     <div class="stat-card-body">
-      <div class="stat-card-label">Nivel de Detalle Oficial</div>
-      <div class="stat-value" style="color: var(--color-dark);">Regional</div>
+      <div class="stat-card-label">Municipios que son Rurales</div>
+      <div class="stat-value" data-count="55" data-suf="%">0</div>
     </div>
   </div>
 
-  <div class="stat-card-v2 accent-green">
-    <div class="stat-card-icon"><i class="bi bi-geo-alt-fill"></i></div>
+  <div class="stat-card-v2 accent-slate">
+    <div class="stat-card-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
     <div class="stat-card-body">
-      <div class="stat-card-label">Municipios Analizados</div>
-      <div class="stat-value text-green" data-count="2469">0</div>
+      <div class="stat-card-label">Mayor Carencia de Agua en el Campo</div>
+      <div class="stat-value">4.6x</div>
     </div>
   </div>
 
 </div>
 ```
 
-### Row {height=80%}
+## Row {height=600px}
+
+### Column {width=50%}
 
 ```{python}
 #| title: "Promedio Oficial vs Realidad Municipal"
@@ -170,8 +138,8 @@ _ = fig_espejismo.update_layout(
         orientation="h", 
         yanchor="bottom", 
         y=1.02, 
-        xanchor="right", 
-        x=1,
+        xanchor="left", 
+        x=-0.1,
         entrywidth=50, # Fuerza el ancho de los elementos sin calcular BBox
         bgcolor="rgba(255,255,255,0.8)"
     ),
@@ -204,42 +172,10 @@ _ = fig_espejismo.add_annotation(
 fig_espejismo
 ```
 
-# La Realidad Demográfica
-
-## Column {.sidebar width=30%}
-
-```{=html}
-<div class="sidebar-section sidebar-header">
-  <h3 class="sidebar-title"><b>La Realidad Demográfica de la República Mexicana</b></h3>
-</div>
-```
-
-El Censo de Población y Vivienda 2020 del INEGI revela una dualidad paralizante: aunque solo el 17% de los mexicanos vive en zonas rurales<span onclick="document.getElementById('nota-rural').scrollIntoView({behavior: 'smooth'});" style="cursor: pointer; text-decoration: none; color: inherit;">¹</span>, este porcentaje equivale a **21,497,173 personas, más del 55% de los municipios del país** tienen esta clasificación. 
-
-Esta inmensa dispersión geográfica representa el verdadero obstáculo logístico y político para el ODS 6. Entubar agua para 10,000 personas agrupadas en una sola colonia urbana es rápido y políticamente rentable. Llevar agua a 50 comunidades dispersas en zonas rurales requiere una voluntad política y una inversión diametralmente mayores. 
-
-La lejanía se convierte en un castigo: las políticas públicas priorizan el volumen sobre la equidad, dejando atrás a quienes ya están geográficamente aislados. La distancia física se ha traducido en distancia social.
-
-```{=html}
-<blockquote class="sidebar-quote">
-  "<strong>Dilema Central:</strong> ¿Rentabilidad Política o Equidad Social?"
-</blockquote>
-
-<p class="sidebar-footnote" id="nota-rural">
-  <a href="https://cuentame.inegi.org.mx/descubre/poblacion/rural_urbana/" target="_blank"><sup>1</sup> Se consideran rurales las localidades con menos de 2,500 habitantes, según el INEGI (2020).</a>
-</p>
-
-<div class="sidebar-note">
-  <p><strong>Nota metodológica:</strong></p>
-  <p>En este análisis, la clasificación de municipios como rurales no se realiza de manera individual, sino a partir de un criterio agregado a nivel estatal. Se considera que un estado es predominantemente rural cuando más del 50% de sus municipios tienen menos de 2,500 habitantes; en ese caso, todos los municipios del estado se clasifican como rurales, independientemente de su tamaño poblacional individual.</p>
-  <p>Este enfoque busca <strong>visibilizar la predominancia territorial de lo rural</strong>, una realidad que a menudo queda oculta cuando el análisis se centra únicamente en las zonas de alta densidad geográfica. Si bien los grandes centros urbanos tienen un gran volumen de habitantes, la estructura municipal del país demuestra que la vida rural abarca la mayor parte del territorio nacional. Esta inmensa presencia territorial exige replantear los desafíos en la infraestructura y acceso a servicios desde la equidad, no desde la densidad.</p>
-</div>
-```
-
-## Column {width=25%}
+### Column {width=25%}
 
 ```{python}
-#| title: "Distribución de Municipios"
+#| title: "Distribución de Municipios a Nivel Nacional"
 
 # Contar municipios por clasificación
 municipios_count = df['clasificacion_rural'].value_counts().reset_index()
@@ -305,7 +241,132 @@ _ = fig.update_layout(
 fig
 ```
 
-## Column {width=45%}
+### Column {width=25%}
+
+```{=html}
+<div class="context-cards-container fade-up delay-2">
+  <div class="context-card card-blue">
+    <h4>La Ilusión Nacional</h4>
+    <p>México reporta un <strong>64% de acceso a agua segura</strong> a nivel nacional. Sin embargo, las grandes ciudades "promedian hacia arriba", borrando a las comunidades rurales y periféricas. Al analizar los microdatos, la estadística se derrumba. <strong>Invisibilizar la carencia es violar un derecho humano.</strong></p>
+  </div>
+
+  <div class="context-card card-red">
+    <h4>La Realidad Demográfica</h4>
+    <p>Solo el <strong>17% de los mexicanos</strong> vive en zonas rurales, pero esto representa <strong>más del 55% de los municipios</strong> del país. Si medimos por equidad territorial y no por densidad, la vida rural abarca la mayor parte de México.</p>
+  </div>
+</div>
+```
+## Row {height=800px}
+
+```{python}
+#| title: "A mayor carencia de agua, mayor pobreza extrema (2,469 Municipios)"
+
+# Crear índice de severidad (suma normalizada de ambos ejes)
+df_scatter = df.copy()
+df_scatter['severidad'] = df_scatter['carencia_agua_conagua_pct'] + df_scatter['Pobreza_extrema_pct']
+
+# Escala de color continua: verde (bienestar) → ámbar (alerta) → rojo oscuro (crisis)
+escala_severidad = [
+    [0, '#27ae60'],      # Verde — baja carencia, baja pobreza
+    [0.35, '#f39c12'],   # Ámbar — zona media
+    [0.65, '#e74c3c'],   # Rojo — alta severidad
+    [1, '#7f1d1d']       # Rojo oscuro — crisis extrema
+]
+
+# Scatter con burbujas de tamaño fijo para visibilizar los casos extremos
+fig_scatter = px.scatter(
+    df_scatter,
+    x='carencia_agua_conagua_pct',
+    y='Pobreza_extrema_pct',
+    color='severidad',
+    hover_name='Municipio',
+    hover_data={
+        'Estado': True,
+        'RHA': True,
+        'poblacion_total': ':,',
+        'clasificacion_rural': True,
+        'severidad': ':.1f',
+        'carencia_agua_conagua_pct': ':.1f',
+        'Pobreza_extrema_pct': ':.1f'
+    },
+    color_continuous_scale=escala_severidad,
+    labels={
+        'carencia_agua_conagua_pct': '% Sin Agua Entubada',
+        'Pobreza_extrema_pct': '% Pobreza Extrema',
+        'poblacion_total': 'Población',
+        'clasificacion_rural': 'Clasificación',
+        'severidad': 'Índice de Severidad',
+        'RHA': 'RHA'
+    },
+    opacity=0.8
+)
+
+# Estética premium: tamaño fijo y borde blanco semitransparente
+_ = fig_scatter.update_traces(
+    marker=dict(
+        size=8,  # Todas las burbujas del mismo tamaño
+        line=dict(width=1, color='rgba(255,255,255,0.4)')
+    ),
+    selector=dict(mode='markers')
+)
+
+# Anotar los Top 5 municipios más severos con flechas para evitar encimarse
+top5 = df_scatter.nlargest(5, 'severidad')
+offsets = [
+    (0, -45),   # San José Tenango: arriba
+    (-30, -50), # Chalchihuitán: arriba izquierda
+    (40, -10),  # Oxchuc: derecha
+    (-40, 20),  # Santa María Chilchotla: abajo izquierda
+    (10, 40)    # Copalillo: abajo
+]
+
+for i, (_, row) in enumerate(top5.iterrows()):
+    ax, ay = offsets[i % len(offsets)]
+    _ = fig_scatter.add_annotation(
+        x=row['carencia_agua_conagua_pct'],
+        y=row['Pobreza_extrema_pct'],
+        text=f"<b>{row['Municipio']}</b><br>{row['Estado']}",
+        showarrow=True,
+        arrowhead=0,
+        arrowwidth=1,
+        arrowcolor='#888',
+        ax=ax,
+        ay=ay,
+        font=dict(size=10, color='#2c3e50', family='Inter, sans-serif'),
+        align='center',
+        bgcolor='rgba(255,255,255,0.9)',
+        bordercolor='#ddd',
+        borderwidth=1,
+        borderpad=3
+    )
+
+# Layout final y limpieza visual
+_ = fig_scatter.update_layout(
+    template='plotly_white',  # Fondo limpio para resaltar los colores
+    xaxis_title="% Sin Agua Entubada (CONAGUA)",
+    yaxis_title="% en Pobreza Extrema (CONEVAL)",
+    font=dict(family="Inter, sans-serif", size=11, color='#2c3e50'),
+    coloraxis_colorbar=dict(
+    title=dict(
+        text="Índice de Severidad",
+        side="right"          # ← aquí, dentro de title=dict(...)
+    ),
+    thickness=12,
+    len=0.5,
+    yanchor="middle",
+    y=0.5,
+    x=1.02
+    ),
+    margin=dict(t=20, b=50, l=60, r=40)
+)
+
+fig_scatter
+```
+
+
+# La Realidad Demográfica
+
+## Row
 
 ```{python}
 #| title: "Municipios con Mayor Rezago de Infraestructura"
@@ -367,37 +428,9 @@ fig_rezago
 
 # El mapa de la invisibilidad {.scrolling}
 
-## Column {.sidebar width=30%}
-
-```{=html}
-<div class="sidebar-section sidebar-header fade-up delay-1">
-  <h3 class="sidebar-title"><b>La Trampa de Infraestructura y la Deuda de Justicia Social en México</b></h3>
-</div>
-```
-
-México se visualiza como un país con un camino firme al desarrollo. Sin embargo, detrás de los promedios nacionales o incluso estatales se esconde una factura profunda. **Se invisibilizan a los municipios que más carecen del recurso del agua potable.**
-
-Los datos de CONEVAL y CONAGUA no mienten, existe una correlación entre la causa de la pobreza con la falta del agua.
-La falta de infraestructura no es solo un problema técnico; es un ladrón de tiempo. **El tiempo que mujeres y niños dedican a acarrear agua es tiempo robado a la educación y al trabajo remunerado.**
-
-Para entender por qué en la actualidad una llave de agua sigue siendo un privilegio, debemos elevar la mirada del municipio al sistema. Al pasar del dato municipal a la administración por cuencas, la correlación se vuelve veredicto: **La pobreza en México tiene una dirección postal olvidada por el presupuesto nacional.**
-
-Al agrupar los datos por Región Hidrológico-Administrativa (RHA), el desarrollo del país se desmorona. Sin importar la zona, sea el árido norte o el lluvioso sur, el abandono de las zonas rurales es una constante sistémica.
-**La intersección de los ODS 1 y 6 nos dicta una verdad incómoda: ningún apoyo económico ni programa social erradicará la pobreza si no hay una llave de agua potable en casa.** La infraestructura hídrica no es solo ingeniería; es el pilar más básico de la justicia social.
-
-**Justicia social es infraestructura. El agua es un derecho.**
-
-```{=html}
-<blockquote class="sidebar-quote fade-up delay-2">
-  "Si el tiempo perdido es el síntoma, la infraestructura ausente es la sentencia."
-</blockquote>
-```
 
 
-
-## Column {width=70%}
-
-### Row {height=120px}
+## Row {height=120px}
 
 ```{=html}
 <div class="stat-cards-container fade-up">
@@ -421,7 +454,7 @@ Al agrupar los datos por Región Hidrológico-Administrativa (RHA), el desarroll
 </div>
 ```
 
-### Row {height=500px}
+## Row {height=500px}
 
 ```{python}
 #| title: "Cobertura de Agua(%) por Estado"
@@ -544,7 +577,7 @@ for trace in fig_map.data:
 fig_map.show(config={'displayModeBar': True})
 ```
 
-### Row {height=450px}
+## Row {height=450px}
 
 ```{python}
 #| title: "Detalle Municipal con acceso al agua"
@@ -595,114 +628,8 @@ show(
 )
 ```
 
-### Row {height=800px}
 
-```{python}
-#| title: "A mayor carencia de agua, mayor pobreza extrema (2,469 Municipios)"
-
-# Crear índice de severidad (suma normalizada de ambos ejes)
-df_scatter = df.copy()
-df_scatter['severidad'] = df_scatter['carencia_agua_conagua_pct'] + df_scatter['Pobreza_extrema_pct']
-
-# Escala de color continua: verde (bienestar) → ámbar (alerta) → rojo oscuro (crisis)
-escala_severidad = [
-    [0, '#27ae60'],      # Verde — baja carencia, baja pobreza
-    [0.35, '#f39c12'],   # Ámbar — zona media
-    [0.65, '#e74c3c'],   # Rojo — alta severidad
-    [1, '#7f1d1d']       # Rojo oscuro — crisis extrema
-]
-
-# Scatter con burbujas de tamaño fijo para visibilizar los casos extremos
-fig_scatter = px.scatter(
-    df_scatter,
-    x='carencia_agua_conagua_pct',
-    y='Pobreza_extrema_pct',
-    color='severidad',
-    hover_name='Municipio',
-    hover_data={
-        'Estado': True,
-        'RHA': True,
-        'poblacion_total': ':,',
-        'clasificacion_rural': True,
-        'severidad': ':.1f',
-        'carencia_agua_conagua_pct': ':.1f',
-        'Pobreza_extrema_pct': ':.1f'
-    },
-    color_continuous_scale=escala_severidad,
-    labels={
-        'carencia_agua_conagua_pct': '% Sin Agua Entubada',
-        'Pobreza_extrema_pct': '% Pobreza Extrema',
-        'poblacion_total': 'Población',
-        'clasificacion_rural': 'Clasificación',
-        'severidad': 'Índice de Severidad',
-        'RHA': 'RHA'
-    },
-    opacity=0.8
-)
-
-# Estética premium: tamaño fijo y borde blanco semitransparente
-_ = fig_scatter.update_traces(
-    marker=dict(
-        size=8,  # Todas las burbujas del mismo tamaño
-        line=dict(width=1, color='rgba(255,255,255,0.4)')
-    ),
-    selector=dict(mode='markers')
-)
-
-# Anotar los Top 5 municipios más severos con flechas para evitar encimarse
-top5 = df_scatter.nlargest(5, 'severidad')
-offsets = [
-    (0, -45),   # San José Tenango: arriba
-    (-30, -50), # Chalchihuitán: arriba izquierda
-    (40, -10),  # Oxchuc: derecha
-    (-40, 20),  # Santa María Chilchotla: abajo izquierda
-    (10, 40)    # Copalillo: abajo
-]
-
-for i, (_, row) in enumerate(top5.iterrows()):
-    ax, ay = offsets[i % len(offsets)]
-    _ = fig_scatter.add_annotation(
-        x=row['carencia_agua_conagua_pct'],
-        y=row['Pobreza_extrema_pct'],
-        text=f"<b>{row['Municipio']}</b><br>{row['Estado']}",
-        showarrow=True,
-        arrowhead=0,
-        arrowwidth=1,
-        arrowcolor='#888',
-        ax=ax,
-        ay=ay,
-        font=dict(size=10, color='#2c3e50', family='Inter, sans-serif'),
-        align='center',
-        bgcolor='rgba(255,255,255,0.9)',
-        bordercolor='#ddd',
-        borderwidth=1,
-        borderpad=3
-    )
-
-# Layout final y limpieza visual
-_ = fig_scatter.update_layout(
-    template='plotly_white',  # Fondo limpio para resaltar los colores
-    xaxis_title="% Sin Agua Entubada (CONAGUA)",
-    yaxis_title="% en Pobreza Extrema (CONEVAL)",
-    font=dict(family="Inter, sans-serif", size=11, color='#2c3e50'),
-    coloraxis_colorbar=dict(
-    title=dict(
-        text="Índice de Severidad",
-        side="right"          # ← aquí, dentro de title=dict(...)
-    ),
-    thickness=12,
-    len=0.5,
-    yanchor="middle",
-    y=0.5,
-    x=1.02
-    ),
-    margin=dict(t=20, b=50, l=60, r=40)
-)
-
-fig_scatter
-```
-
-### Row {height=550px}
+## Row {height=550px}
 
 ::: {.card}
 #### La Comprobación Matemática (El Veredicto Final)
@@ -721,47 +648,9 @@ Al agrupar los datos y cruzar el Censo INEGI 2020 con la carencia de agua de CON
 
 # Acción Positiva
 
-## Column {.sidebar width=30%}
 
-### El Agua como Motor de Cambio
 
-Pero la estadística no es destino. **Hay quienes están cambiando el mapa.** Donde el presupuesto oficial no ha llegado, la sociedad civil y la innovación social han dado un paso al frente. No estamos esperando a que el futuro llegue; lo estamos construyendo: **pozo a pozo, tanque a tanque, gota a gota.**
-
-***
-
-### Fundación Gonzalo Río Arronte
-**El Motor de la Infraestructura**
-
-Es el músculo financiero y estratégico detrás de cientos de proyectos de agua en México. Su enfoque no se limita a aportar recursos, sino a asegurar que la infraestructura sea sostenible y técnicamente sólida, cerrando la brecha que el presupuesto público ha dejado abierta en las zonas de mayor estrés hídrico.
-
-***
-
-### CEMDA
-**La Voz de la Justicia**
-
-Porque la infraestructura sin derechos es frágil. CEMDA defiende el patrimonio natural y el derecho humano al agua desde el marco legal. Su labor garantiza que las comunidades rurales cuenten con defensa jurídica frente a la sobreexplotación y la contaminación, asegurando que el agua sea de la gente y para la gente.
-
-***
-
-### Cántaro Azul
-**Innovación desde la Raíz**
-
-Especialistas en transformar la realidad de las comunidades más excluidas. Mediante ecotecnias de purificación y modelos de gestión comunitaria, logran que escuelas y hogares tengan acceso a agua segura sin depender de megaobras inalcanzables.
-
-***
-
-### Alianza PNUD y FEMSA
-**La Alianza por la Resiliencia**
-
-Un esfuerzo multiactor que une la capacidad de las Naciones Unidas con la inversión social para llevar justicia hídrica al sureste mexicano. Su enfoque se basa en la "recuperación resiliente", instalando ecotecnias que permiten a las comunidades indígenas ser autosuficientes frente a crisis climáticas y sanitarias.
-
-::: {.callout-note appearance="simple" icon=false}
-**En conjunto**, estas organizaciones han demostrado que la acción social focalizada puede cerrar la brecha que el presupuesto público ha dejado abierta. El mapa muestra dónde están actuando.
-:::
-
-## Column {width=70%}
-
-### Row {height=70%}
+## Row {height=70%}
 
 ```{python}
 #| title: "ONGs con impacto en infraestructura hídrica en México"
@@ -881,7 +770,7 @@ _ = fig_ongs.update_layout(
 fig_ongs
 ```
 
-### Row {height=30%}
+## Row {height=30%}
 
 ::: {.card}
 
