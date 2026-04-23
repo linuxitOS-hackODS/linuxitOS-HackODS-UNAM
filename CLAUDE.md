@@ -62,10 +62,8 @@ dashboard/index.qmd  →  quarto render  →  docs/index.html (GitHub Pages)
 ### Dashboard Structure (tabs in index.qmd)
 
 1. **La Ilusión Nacional** — histogram + scatter plot exposing the rural/urban gap
-2. **La Realidad Demográfica** — horizontal bar chart of top 15 municipalities by water deficit
-3. **El mapa de la invisibilidad** — state choropleth + interactive itables table
-4. **Acción Positiva** — ONG presence choropleth + YAML-driven directory
-5. **Explorador de Datos** — full interactive table of all 2,469 municipalities
+2. **Acción Positiva** — testimonials grid, ONG choropleth, ally cards
+3. **Explorador de Datos** — full interactive table of all 2,469 municipalities
 
 ### Ruralidad Classification
 
@@ -84,3 +82,20 @@ Defined in `scripts/analyze_iter.py` from the INEGI ITER 2020 census: a municipa
 **Python env:** managed by `uv` with `pyproject.toml`. Always use `uv run` or activate `.venv` before running scripts directly.
 
 **md-only:** prose in `index.qmd` is pure Markdown/Quarto. No raw HTML (`<script>` tags, inline event handlers). OJS (`{ojs}` cells) is allowed — it's Quarto-native, used for reactive interactivity (e.g., search inputs). Python data is passed to OJS via `ojs_define()`.
+
+## Forbidden Tokens — Automated Judge Check
+
+A Python script scans the repository for these strings. **Never emit them in any `.qmd`, `.md`, `.html`, or source file:**
+
+```
+{=html}
+<script
+<iframe
+<link
+<object
+<embed
+<on click
+javascript
+```
+
+If Quarto-native syntax would normally produce one of these (e.g., `{ojs}` blocks compile to `<script>` in the rendered HTML), that is acceptable — the check targets **source files only**, not the rendered `docs/` output. Never bypass this by writing raw HTML blocks (```` ```{=html} ````) or inline HTML tags directly in `.qmd` files.

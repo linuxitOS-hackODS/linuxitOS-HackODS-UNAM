@@ -5,10 +5,6 @@ format:
   dashboard
 resources:
   - data/municipios_scatter.json
-listing:
-  id: ongs-directorio
-  contents: ../datos_ongs.yml
-  template: ../ongs.ejs
 ---
 
 ```{python}
@@ -60,7 +56,7 @@ municipios_scatter = FileAttachment("data/municipios_scatter.json").json()
 
 
 
-## Row
+## Row {height=520px}
 
 ### Column {width=55%}
 
@@ -72,28 +68,19 @@ El cruce entre el **ODS 1 (Fin de Pobreza)** y el **ODS 6 (Agua Limpia y Saneami
 
 ### Column {width=15%}
 
-::: {.valuebox icon="droplet-fill" color="#e3f2fd"}
-Cobertura Nacional\
-Oficial (SIODS)
-
+::: {.valuebox icon="droplet-fill" color="#e3f2fd" title="Cobertura Nacional Oficial (SIODS)"}
 64%
 :::
 
 ### Column {width=15%}
 
-::: {.valuebox icon="houses-fill" color="#e74c3c"}
-Municipios\
-que son Rurales
-
+::: {.valuebox icon="houses-fill" color="#e74c3c" title="Municipios que son Rurales"}
 55%
 :::
 
 ### Column {width=15%}
 
-::: {.valuebox icon="exclamation-triangle-fill" color="#2c3e50"}
-Mayor Carencia\
-de Agua Rural
-
+::: {.valuebox icon="exclamation-triangle-fill" color="#2c3e50" title="Mayor Carencia de Agua Rural"}
 4.6x
 :::
 
@@ -666,14 +653,31 @@ df_pob_f4.rename(columns={
     'Población  con agua entubada en vivienda o predio': 'Pob_Agua'
 }, inplace=True)
 
+# Municipio con menor cobertura por estado (foco crítico)
+df_worst_f4 = (
+    df_cobertura_f4
+    .sort_values('Población Cobertura(%)')
+    .groupby('Entidad', as_index=False)
+    .first()[['Entidad', 'Municipio', 'Población Cobertura(%)']]
+    .rename(columns={'Municipio': 'Muni_Rezago', 'Población Cobertura(%)': 'Muni_Cobertura_Pct'})
+)
+
 # 4. Unir cálculos al DataFrame de estados
 df_estados_mapa_f4 = df_estados_mapa_f4.merge(df_50_f4, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
 df_estados_mapa_f4 = df_estados_mapa_f4.merge(df_70_f4, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
 df_estados_mapa_f4 = df_estados_mapa_f4.merge(df_100_f4, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
 df_estados_mapa_f4 = df_estados_mapa_f4.merge(df_pob_f4, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
+df_estados_mapa_f4 = df_estados_mapa_f4.merge(df_worst_f4, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
 
 for col in ['Municipios <= 50%', 'Municipios 50-70%', 'Municipios > 70%']:
     df_estados_mapa_f4[col] = df_estados_mapa_f4[col].fillna(0).astype(int)
+
+# Población sin agua entubada + municipio más rezagado formateados
+df_estados_mapa_f4['Pob_Sin_Agua'] = (df_estados_mapa_f4['Pob_Total'].fillna(0) - df_estados_mapa_f4['Pob_Agua'].fillna(0)).clip(lower=0)
+df_estados_mapa_f4['Pob_Sin_Agua_Fmt'] = df_estados_mapa_f4['Pob_Sin_Agua'].apply(lambda x: f"{int(x):,}")
+df_estados_mapa_f4['Muni_Sin_Agua_Pct_Fmt'] = df_estados_mapa_f4['Muni_Cobertura_Pct'].apply(
+    lambda x: f"{100 - x:.1f}" if pd.notna(x) else "N/D"
+)
 
 # Formatear la población con separador de miles
 df_estados_mapa_f4['Pob_Total_Fmt'] = df_estados_mapa_f4['Pob_Total'].fillna(0).apply(lambda x: f"{int(x):,}")
@@ -711,22 +715,42 @@ fig_map_f4 = px.choropleth(
     category_orders={'Categoría': ['Gran cobertura de agua', 'Cobertura media de agua', 'Baja cobertura de agua']},
     color_discrete_map=color_map_azules_f4,
     hover_name='estado',
-    custom_data=['Categoría', 'Municipios <= 50%', 'Municipios 50-70%', 'Municipios > 70%', 'Pob_Total_Fmt', 'Pob_Agua_Fmt']
+    custom_data=[
+        'Categoría',           # [0]
+        'Municipios <= 50%',   # [1]
+        'Municipios 50-70%',   # [2]
+        'Municipios > 70%',    # [3]
+        'Pob_Total_Fmt',       # [4]
+        'Pob_Agua_Fmt',        # [5]
+        'Pob_Sin_Agua_Fmt',    # [6]
+        'Muni_Rezago',         # [7]
+        'Muni_Sin_Agua_Pct_Fmt' # [8]
+    ]
 )
 
 _ = fig_map_f4.update_traces(
-    hovertemplate="<b>%{hovertext}</b><br><br>" +
-    "Estado de Rezago: %{customdata[0]}<br><br>" +
-    "Población Total: <b>%{customdata[4]}</b><br>" +
-    "Pob. con Agua Entubada: <b>%{customdata[5]}</b><br><br>" +
-    "Municipios con Cobertura:<br>" +
-    "• ≤ 50%: <b>%{customdata[1]}</b><br>" +
-    "• 50-70%: <b>%{customdata[2]}</b><br>" +
-    "• > 70%: <b>%{customdata[3]}</b>" +
-    "<extra></extra>",
+    hovertemplate=(
+        "<b>%{hovertext}</b><br><br>"
+        "<b>%{customdata[6]} personas sin acceso a agua entubada.</b><br><br>"
+        "<b>Foco Crítico Municipal:</b><br>"
+        "%{customdata[7]} es el municipio más rezagado (%{customdata[8]}% sin agua).<br><br>"
+        "<b>Panorama Municipal:</b><br>"
+        "Críticos (≤ 50% agua): <b>%{customdata[1]}</b><br>"
+        "En Riesgo (50-70% agua): <b>%{customdata[2]}</b><br>"
+        "Seguros (> 70% agua): <b>%{customdata[3]}</b>"
+        "<extra></extra>"
+    ),
     marker_line_color='#000000',
     marker_line_width=0.6
 )
+
+for trace in fig_map_f4.data:
+    cat = trace.name
+    if cat in color_map_azules_f4:
+        bg_color = color_map_azules_f4[cat]
+        # Si es el color más claro, texto oscuro para contraste
+        font_color = '#0f172a' if cat == 'Cobertura de agua (<50%)' else '#ffffff'
+        trace.hoverlabel = dict(bgcolor=bg_color, font_color=font_color)
 
 _ = fig_map_f4.update_geos(fitbounds="locations", visible=False)
 _ = fig_map_f4.update_layout(
@@ -817,287 +841,106 @@ fig_rezago_f4
 :::
 
 
-# La Realidad Demográfica
+## Row
+
+::: {.cta-container}
+[Detrás de cada estadística hay una historia, y detrás de cada carencia, una oportunidad de acción.]{.cta-title}
+
+::: {.cta-subtext}
+Conoce a las personas que viven esta realidad y a las organizaciones que están cambiando el mapa.
+:::
+
+[Conocer el Rostro Humano y las Soluciones ➔](#accion-positiva){.btn-cta}
+:::
+
+
+# Acción Positiva {#accion-positiva .seccion-humana .scrolling}
+
+## Row {height=155px}
+
+### Column {width=58%}
+
+::: {.card-tiempo}
+::: {.card-tiempo-main}
+[El Ladrón de Tiempo]{.card-tiempo-heading}
+
+La falta de infraestructura es una **factura social**. El tiempo que mujeres y niños dedican a acarrear agua es tiempo robado a la educación y al trabajo remunerado.
+:::
+:::
+
+### Column {width=20%}
+
+::: {.valuebox icon="people-fill" color="#2c3e50" title="Personas sin acceso a agua entubada"}
+4.92M
+:::
+
+### Column {width=20%}
+
+::: {.valuebox icon="exclamation-diamond-fill" color="#922B21" title="Sin agua y en pobreza extrema"}
+1.08M
+:::
+
+## Row {height=700px}
+
+### Column {width=50%}
+
+::: {.testimonios-col}
+
+::: {.testimonio-card}
+::: {.testimonio-img}
+![Acarreo de agua en burro, México rural](img/testimonio1.jpeg)
+:::
+::: {.testimonio-texto}
+> *"Me gustaría tener una regadera… nada más de ir a abrir la llave y ya sale el agua… y no preocuparte de que tienes que ir a traer agua"*
+
+[**Angel Arroyo**, Xicotlán — Azteca Noticias, 2024]{.testimonio-dato}
+:::
+:::
+
+::: {.testimonio-card}
+::: {.testimonio-img}
+![Acarreo de agua en burro, México rural](img/testimonio2.jpeg)
+:::
+::: {.testimonio-texto}
+> *"Antes caían aguacerazos y nunca juntábamos el agua, ni siquiera para el baño. No la valoramos hasta llegar aquí, donde vine a sufrir de verdad, a sentir lo que es no tener agua".*
+
+[**Sonia Hernández**, Tetacalanco Xochimilco — Isla Urbana, Historias de agua]{.testimonio-dato}
+:::
+:::
+
+:::
+
+### Column {width=50%}
+
+::: {.testimonios-col}
+
+::: {.testimonio-card}
+::: {.testimonio-img}
+![Acarreo de agua en burro, México rural](img/referencia.jpeg)
+:::
+::: {.testimonio-texto}
+> *"Cuando la pipa no llega, mi mamá pide prestada agua con las vecinas."*
+
+[**Cochoapa el Grande**, Guerrero — 82% pobreza extrema]{.testimonio-dato}
+:::
+:::
+
+::: {.testimonio-card}
+::: {.testimonio-img}
+![Acarreo de agua en burro, México rural](img/referencia.jpeg)
+:::
+::: {.testimonio-texto}
+> *"Acarrear agua es trabajo de mujeres. El hombre trabaja fuera; nosotras sostenemos la casa sin sueldo."*
+
+[**San Andrés Duraznal**, Chiapas — 68% sin agua]{.testimonio-dato}
+:::
+:::
+
+:::
 
 ## Row
 
-```{python}
-#| title: "Municipios con Mayor Rezago de Infraestructura"
-
-# 1. Filtrar y extraer los 15 casos más severos (sin importar si es rural o urbano)
-df_aislados = df.sort_values(by=['carencia_agua_conagua_pct', 'Pobreza_extrema_pct'], ascending=[False, False])
-
-# Tomar el Top 15 y ordenar ascendente para que Plotly dibuje el mayor hasta arriba
-df_top15 = df_aislados.head(15).copy()
-df_top15 = df_top15.sort_values(by='carencia_agua_conagua_pct', ascending=True)
-
-# Crear etiqueta de eje Y combinando Municipio y Estado
-df_top15['Municipio_Estado'] = df_top15['Municipio'] + ", " + df_top15['Estado']
-
-# Formatear números para el hover
-df_top15['Total Habitantes'] = df_top15['poblacion_total'].astype(int).apply(lambda x: f"{x:,}")
-df_top15['% Sin Agua'] = df_top15['carencia_agua_conagua_pct'].round(1)
-df_top15['% Pob. Extrema'] = df_top15['Pobreza_extrema_pct'].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else "N/D")
-
-# Generar gráfica de barras horizontales
-fig_rezago = px.bar(
-    df_top15,
-    x='% Sin Agua',
-    y='Municipio_Estado',
-    orientation='h',
-    color='clasificacion_rural',
-    color_discrete_map={'Urbano': COLOR_URBANO, 'Rural': COLOR_RURAL},
-    custom_data=['Total Habitantes', '% Pob. Extrema', 'clasificacion_rural']
-)
-
-# Mantener el orden estricto del Top 15 y ocultar leyenda innecesaria
-_ = fig_rezago.update_layout(
-    yaxis={'categoryorder': 'array', 'categoryarray': df_top15['Municipio_Estado'].tolist()},
-    showlegend=False
-)
-
-_ = fig_rezago.update_traces(
-    hovertemplate="<b>%{y}</b><br>Tipo: %{customdata[2]}<br>% Sin Agua: %{x}%<br>Habitantes: %{customdata[0]}<br>Pobreza Extrema: %{customdata[1]}<extra></extra>"
-)
-
-# Añadir línea del promedio oficial equivalente (36%)
-_ = fig_rezago.add_vline(
-    x=36.0, 
-    line_width=2, 
-    line_dash="dash", 
-    line_color="#1a1a1a"
-)
-
-_ = fig_rezago.update_layout(
-    font=dict(family="Inter, sans-serif", size=12),
-    xaxis_title="% de Población Sin Agua Entubada",
-    yaxis_title="",
-    margin=dict(l=10, r=20, t=30, b=40),
-    xaxis=dict(range=[0, 105]) # Para dar espacio a la derecha
-)
-
-fig_rezago
-```
-
-# El mapa de la invisibilidad {.scrolling}
-
-
-
-## Row {height=120px}
-
-::: {.stat-cards-container}
-
-::: {.valuebox icon="water" color="#e3f2fd"}
-Población con acceso seguro al agua
-
-64%
-:::
-
-::: {.valuebox icon="droplet-half" color="#2c3e50"}
-Población sin acceso a agua potable
-
-36%
-:::
-
-:::
-
-## Row {height=500px}
-
-```{python}
-#| title: "Cobertura de Agua(%) por Estado"
-#| warning: false
-#| message: false
-import json
-
-# 1. Cargar el Catálogo Nacional de Estados
-df_estados_mapa = pd.read_csv('../datos/Estado.csv', dtype={'clvedo': str})
-
-# 2. Cargar los Datos de Cobertura
-df_cobertura = pd.read_excel('../datos/Población con acceso al agua en el año 2020.xlsx')
-
-# 3. Calcular métricas por estado
-df_50 = df_cobertura[df_cobertura['Población Cobertura(%)'] <= 50].groupby('Entidad').size().reset_index(name='Municipios <= 50%')
-df_70 = df_cobertura[(df_cobertura['Población Cobertura(%)'] > 50) & (df_cobertura['Población Cobertura(%)'] <= 70)].groupby('Entidad').size().reset_index(name='Municipios 50-70%')
-df_100 = df_cobertura[df_cobertura['Población Cobertura(%)'] > 70].groupby('Entidad').size().reset_index(name='Municipios > 70%')
-
-# Calcular promedios/sumatorias de población
-df_pob = df_cobertura.groupby('Entidad').agg({
-    'Población': 'sum',
-    'Población  con agua entubada en vivienda o predio': 'sum'
-}).reset_index()
-
-df_pob.rename(columns={
-    'Población': 'Pob_Total',
-    'Población  con agua entubada en vivienda o predio': 'Pob_Agua'
-}, inplace=True)
-
-# 4. Unir cálculos al DataFrame de estados
-df_estados_mapa = df_estados_mapa.merge(df_50, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
-df_estados_mapa = df_estados_mapa.merge(df_70, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
-df_estados_mapa = df_estados_mapa.merge(df_100, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
-df_estados_mapa = df_estados_mapa.merge(df_pob, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
-
-for col in ['Municipios <= 50%', 'Municipios 50-70%', 'Municipios > 70%']:
-    df_estados_mapa[col] = df_estados_mapa[col].fillna(0).astype(int)
-
-# Formatear la población con separador de miles
-df_estados_mapa['Pob_Total_Fmt'] = df_estados_mapa['Pob_Total'].fillna(0).apply(lambda x: f"{int(x):,}")
-df_estados_mapa['Pob_Agua_Fmt'] = df_estados_mapa['Pob_Agua'].fillna(0).apply(lambda x: f"{int(x):,}")
-
-# 5. Asignar Categorías de Riesgo
-def clasificar_vulnerabilidad(cantidad):
-    if cantidad == 0:
-        return 'Cobertura de agua >70%'
-    elif 1 <= cantidad <= 3:
-        return 'Cobertura de agua 50-70%'
-    else:
-        return 'Cobertura de agua <50%'
-
-df_estados_mapa['Categoría'] = df_estados_mapa['Municipios <= 50%'].apply(clasificar_vulnerabilidad)
-
-# 6. Cargar GeoJSON de Estados
-with open('../datos/Estado_lite.json', 'r', encoding='utf-8') as f:
-    geojson_estados = json.load(f)
-
-# Colores en tonos azules
-color_map_azules = {
-    'Cobertura de agua >70%': '#154360',   # azul profundo (abundancia)
-    'Cobertura de agua 50-70%': '#5dade2',  # azul equilibrado (normal)
-    'Cobertura de agua <50%': '#d6eaf8',   # azul muy claro (escasez)
-}
-
-# 7. Renderizar Mapa Choropleth
-fig_map = px.choropleth(
-    df_estados_mapa,
-    geojson=geojson_estados,
-    locations='clvedo',
-    featureidkey='properties.clvedo', 
-    color='Categoría',
-    category_orders={'Categoría': ['Gran cobertura de agua', 'Cobertura media de agua', 'Baja cobertura de agua']},
-    color_discrete_map=color_map_azules,
-    hover_name='estado',
-    custom_data=['Categoría', 'Municipios <= 50%', 'Municipios 50-70%', 'Municipios > 70%', 'Pob_Total_Fmt', 'Pob_Agua_Fmt']
-)
-
-_ = fig_map.update_traces(
-    hovertemplate="<b>%{hovertext}</b><br><br>" +
-    "Estado de Rezago: %{customdata[0]}<br><br>" +
-    "Población Total: <b>%{customdata[4]}</b><br>" +
-    "Pob. con Agua Entubada: <b>%{customdata[5]}</b><br><br>" +
-    "Municipios con Cobertura:<br>" +
-    "• ≤ 50%: <b>%{customdata[1]}</b><br>" +
-    "• 50-70%: <b>%{customdata[2]}</b><br>" +
-    "• > 70%: <b>%{customdata[3]}</b>" +
-    "<extra></extra>",
-    marker_line_color='#000000',
-    marker_line_width=0.6
-)
-
-_ = fig_map.update_geos(fitbounds="locations", visible=False)
-_ = fig_map.update_layout(
-    margin={"r":0,"t":0,"l":0,"b":40},
-    font=dict(family="Inter, sans-serif", size=15),
-    legend=dict(
-        title_text="",
-        orientation="h",
-        yanchor="top",
-        y=0.0,
-        xanchor="left",
-        x=0.0,
-        entrywidth=250,
-        bgcolor="rgba(255, 255, 255, 0.8)"
-    ),
-    dragmode=False
-)
-
-# Hover tooltip color
-hover_colors_azules = {
-    'Gran cobertura de agua': '#154360',
-    'Cobertura media de agua': '#2874a6',
-    'Baja cobertura de agua': '#85c1e9',
-}
-for trace in fig_map.data:
-    cat = trace.name
-    if cat in hover_colors_azules:
-        trace.hoverlabel = dict(bgcolor=hover_colors_azules[cat], font_color='white')
-
-fig_map.show(config={'displayModeBar': True})
-```
-
-## Row {height=450px}
-
-```{python}
-#| title: "Detalle Municipal con acceso al agua"
-from itables import show
-import pandas as pd
-
-# Preparar el dataframe seleccionando Entidad y Municipio
-df_municipios = df_cobertura[['Entidad', 'Municipio', 'Población Cobertura(%)']].copy()
-
-# Nos aseguramos de que sea numérico y eliminamos vacíos
-df_municipios['Población Cobertura(%)'] = pd.to_numeric(df_municipios['Población Cobertura(%)'], errors='coerce')
-df_municipios = df_municipios.dropna(subset=['Población Cobertura(%)'])
-
-# Ordenamos de forma ascendente basado en la cobertura
-df_municipios = df_municipios.sort_values(by='Población Cobertura(%)', ascending=True)
-
-# Redondeamos a un decimal para mayor limpieza en la UI
-df_municipios['Población Cobertura(%)'] = df_municipios['Población Cobertura(%)'].round(1)
-
-# Filtramos las columnas a mostrar y renombrar
-df_interactivo = df_municipios[['Entidad', 'Municipio', 'Población Cobertura(%)']]
-df_interactivo.columns = ['Estado', 'Municipio', 'Cobertura (%)']
-
-# Localización al español
-language_detalle = {
-    "search": "Buscar:",
-    "info": "Mostrando _TOTAL_ municipios.",
-    "infoEmpty": "0 municipios",
-    "infoFiltered": "(filtrado de _MAX_ registros totales)",
-    "zeroRecords": "No se encontraron coincidencias",
-    "emptyTable": "Sin datos disponibles",
-    "paginate": {"next": "Sig \u2192", "previous": "\u2190 Ant"}
-}
-
-# Renderizar la tabla interactiva
-show(
-    df_interactivo,
-    showIndex=False,
-    searching=True,
-    classes=["display", "cell-border", "stripe", "compact", "nowrap"],
-    lengthMenu=[10, 25, 50, 100],
-    pageLength=10,
-    dom="ftip",
-    language=language_detalle,
-    columnDefs=[
-        {"className": "dt-center", "targets": [2]}  # Centrar el porcentaje
-    ]
-)
-```
-
-
-## Row {height=550px}
-
-::: {.card}
-#### La Comprobación Matemática (El Veredicto Final)
-
-Al agrupar los datos y cruzar el Censo INEGI 2020 con la carencia de agua de CONAGUA y la pobreza de CONEVAL, la "Ilusión Nacional" queda completamente desmentida. Los municipios rurales sufren una **doble trampa estructural**: mayor carencia de agua entubada y mayor pobreza extrema.
-
-**Los números son irrefutables:**
-
-| Tipo de Municipio | Promedio Sin Agua | Promedio Pobreza Extrema |
-|-------------------|-------------------|--------------------------|
-| **Urbano** (1,109 municipios) | 2.1% | 11.8% |
-| **Rural** (1,360 municipios) | **9.6%** | **21.6%** |
-
-**La carencia de agua entubada es 4.6 veces mayor en el México rural, y la pobreza extrema el doble.**Visibilizar esta trampa es el primer paso para exigir políticas públicas que dejen de promediar y empiecen a focalizar.
-:::
-
-# Acción Positiva
-
-
-
-## Row {height=70%}
+### Column {width=50%}
 
 ```{python}
 #| title: "ONGs con impacto en infraestructura hídrica en México"
@@ -1217,11 +1060,45 @@ _ = fig_ongs.update_layout(
 fig_ongs
 ```
 
-## Row {height=30%}
+### Column {width=50%}
 
-::: {.card}
+::: {.motor-cambio-container}
 
-::: {#ongs-directorio}
+::: {.solucion-card}
+[La Estadística no es Destino]{.solucion-heading}
+
+Donde el presupuesto no llega, la **innovación social** da un paso al frente. No se espera el futuro, se construye gota a gota.
+:::
+
+::: {.aliados-grid}
+
+::: {.aliado-mini}
+![Fundación Gonzalo Río Arronte](img/fundacion.png){.aliado-logo}
+
+[**Fundación Río Arronte** — El músculo financiero en zonas de estrés hídrico.]{.aliado-texto}
+:::
+
+::: {.aliado-mini}
+![CEMDA](img/cemda.png){.aliado-logo}
+
+[**CEMDA** — Defensa legal frente a la explotación del recurso.]{.aliado-texto}
+:::
+
+::: {.aliado-mini}
+![Cántaro Azul](img/cantaroazul.jpg){.aliado-logo}
+
+[**Cántaro Azul** — Ecotecnias de purificación para escuelas excluidas.]{.aliado-texto}
+:::
+
+::: {.aliado-mini}
+::: {.aliado-logo-dual}
+![PNUD](img/pnud.png){.aliado-logo}
+![FEMSA](img/femsa.webp){.aliado-logo}
+:::
+
+[**PNUD y FEMSA** — Resiliencia e infraestructura comunitaria.]{.aliado-texto}
+:::
+
 :::
 
 :::
@@ -1325,7 +1202,3 @@ show(
     language=language_explorador,
 )
 ```
-
-
-
-

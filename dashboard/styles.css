@@ -89,22 +89,28 @@ p,
   line-height: 1.4 !important;
 }
 
-.bslib-value-box .value-box-value {
+.bslib-value-box .value-box-value,
+.bslib-value-box .value-box-value p {
   font-family: 'Inter', sans-serif !important;
   font-size: clamp(1.8rem, 3vw, 2.6rem) !important;
   font-weight: 900 !important;
   line-height: 1.1 !important;
   letter-spacing: -0.02em !important;
+  margin: 0 !important;
 }
 
 /* Value boxes con fondo oscuro: texto e ícono blancos */
 .bslib-value-box[style*="2c3e50"],
-.bslib-value-box[style*="2C3E50"] {
+.bslib-value-box[style*="2C3E50"],
+.bslib-value-box[style*="922B21"],
+.bslib-value-box[style*="922b21"] {
   color: #fff !important;
 }
 
 .bslib-value-box[style*="2c3e50"] *,
-.bslib-value-box[style*="2C3E50"] * {
+.bslib-value-box[style*="2C3E50"] *,
+.bslib-value-box[style*="922B21"] *,
+.bslib-value-box[style*="922b21"] * {
   color: #fff !important;
 }
 
@@ -1030,10 +1036,557 @@ table tbody td {
    ═══════════════════════════════════════ */
 .quarto-dashboard-content,
 .bslib-page-dashboard {
-  padding-top: 0.3rem !important; /* Reduce el espacio por defecto de Quarto */
+  padding-top: 0.3rem !important;
+  /* Reduce el espacio por defecto de Quarto */
 }
 
-.quarto-dashboard-content > .bslib-grid {
+.quarto-dashboard-content>.bslib-grid {
   margin-top: 0 !important;
   padding-top: 0 !important;
+}
+
+/* ═══════════════════════════════════════
+   BLOQUE CTA — PUENTE NARRATIVO
+   ═══════════════════════════════════════ */
+
+.cta-container {
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(243, 156, 18, 0.18);
+  border-radius: 16px;
+  padding: 3.5rem 2.5rem;
+  text-align: center;
+  margin-top: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  animation: fadeInUp 0.8s ease-out both;
+  animation-delay: 0.15s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Warm accent bar at top — data→humanity transition signal */
+.cta-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #f39c12 30%, #e74c3c 70%, transparent);
+  border-radius: 0 0 3px 3px;
+}
+
+.cta-title {
+  font-family: 'Merriweather', serif;
+  font-size: clamp(1.15rem, 1.6vw + 0.4rem, 1.85rem);
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  margin: 0 auto 1rem auto;
+  max-width: 680px;
+}
+
+.cta-subtext {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(0.9rem, 0.75vw + 0.4rem, 1.05rem);
+  color: #4B5563;
+  max-width: 520px;
+  margin: 0 auto 2.25rem auto;
+  line-height: 1.75;
+}
+
+.btn-cta {
+  display: inline-block !important;
+  width: auto !important;
+  background: #1E3A8A;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  padding: 0.8rem 2.2rem;
+  border-radius: 50px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 0.3s ease, transform 0.25s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.28);
+}
+
+.btn-cta:hover {
+  background: #2c3e50;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(243, 156, 18, 0.3), 0 4px 12px rgba(30, 58, 138, 0.18);
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+/* ═══════════════════════════════════════
+   SECCIÓN 2 — EL ROSTRO HUMANO Y LA ACCIÓN
+   (Fondo terroso/cálido para marcar el viraje data→humano)
+   ═══════════════════════════════════════ */
+.seccion-humana,
+#accion-positiva {
+  background-color: #FAFAF9 !important;
+}
+
+.seccion-humana .bslib-grid,
+.seccion-humana .card:not(.bslib-value-box) {
+  background-color: transparent !important;
+}
+
+/* ── Fila 5 · Testimonios ── */
+
+/* Wrapper por columna: 2 cards de misma altura */
+.testimonios-col {
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  height: 100%;
+  min-height: 0;
+}
+
+.testimonio-card {
+  min-height: 0;
+  height: 100%;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.03);
+  display: grid;
+  grid-template-columns: 60% 30%;
+  column-gap: 5%;
+  justify-content: start;
+  align-items: stretch;
+  /* Déjalo en stretch, es vital para que la imagen toque los bordes */
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+}
+
+/* Quarto: limitar override solo al grid inmediato que contiene testimonios */
+.bslib-grid:has(> .card > .card-body > .testimonios-col) {
+  grid-template-rows: minmax(3em, 1fr) !important;
+}
+
+.bslib-grid[style*="max-content"]:has(> .card > .card-body > .testimonios-col) {
+  grid-template-rows: minmax(3em, 1fr) !important;
+}
+
+.bslib-grid:has(> .card > .card-body > .testimonios-col) > .card,
+.bslib-grid:has(> .card > .card-body > .testimonios-col) > .card > .card-body {
+  height: 100% !important;
+}
+
+.testimonio-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.testimonio-img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  background-color: #f8f9fa;
+}
+
+.testimonio-img > * {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.testimonio-img figure,
+.testimonio-img .quarto-figure,
+.testimonio-img p {
+  position: absolute;
+  inset: 0;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100%;
+  width: 100%;
+}
+
+.testimonio-img figcaption,
+.testimonio-img .figure-caption {
+  display: none !important;
+}
+
+.testimonio-img img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  max-width: none !important;
+  height: 100% !important;
+  object-fit: cover;
+  display: block;
+  margin: 0 !important;
+}
+
+/* Override Bootstrap .img-fluid (height:auto) dentro de testimonios */
+.testimonio-img .img-fluid.figure-img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover;
+}
+
+/* Texto: fluye naturalmente, la tarjeta crece con él */
+.testimonio-texto {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.85rem 1rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Quote */
+.testimonio-card blockquote {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.testimonio-card blockquote p {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(0.66rem, 0.34vw + 0.4rem, 0.82rem);
+  color: #111827;
+  font-weight: 500;
+  line-height: 1.42;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.testimonio-dato {
+  display: block;
+  flex-shrink: 0;
+  padding-top: 0.6rem;
+  margin-top: 0.4rem;
+  border-top: 1px solid rgba(231, 76, 60, 0.15);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.71rem;
+  font-weight: 600;
+  color: var(--color-rural);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.testimonio-dato strong {
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+/* card-tiempo: strip outer card-body padding para relleno flush */
+.card-body:has(> .card-tiempo) {
+  padding: 0 !important;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+/* En la fila del card-tiempo, escalar valuebox para que quepa en 155px */
+.bslib-grid:has(.card-tiempo) .bslib-value-box .value-box-value {
+  font-size: clamp(1.7rem, 2.6vw, 2.4rem) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.bslib-grid:has(.card-tiempo) .bslib-value-box .value-box-title {
+  font-size: clamp(0.58rem, 0.75vw, 0.72rem) !important;
+  font-weight: 700 !important;
+}
+
+.bslib-grid:has(.card-tiempo) .bslib-value-box .value-box-showcase .bi {
+  font-size: 1.9rem !important;
+}
+
+.bslib-grid:has(.card-tiempo) .bslib-value-box .value-box-showcase {
+  min-width: 48px !important;
+  max-width: 58px !important;
+}
+
+/* ── Fila 5 · Card "El Ladrón de Tiempo" ── */
+.card-tiempo {
+  background-color: rgba(255, 255, 255, 0.97);
+  border: 1px solid rgba(44, 62, 80, 0.16);
+  border-left: 5px solid #2c3e50;
+  border-radius: 16px;
+  padding: 1.75rem 2.25rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.8s ease-out both;
+  animation-delay: 0.15s;
+  width: 100%;
+}
+
+/* Accent bar — reversed terracota→orange (urgency-first) */
+.card-tiempo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #2c3e50 0%, rgba(44, 62, 80, 0.3) 70%, transparent 100%);
+}
+
+.card-tiempo-heading {
+  display: block;
+  font-family: 'Merriweather', serif;
+  font-size: clamp(0.95rem, 1.1vw + 0.3rem, 1.35rem);
+  font-weight: 900;
+  color: #2c3e50;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  flex-shrink: 0;
+}
+
+/* Agrupa heading + párrafo — ocupa el espacio disponible y permite saltos de línea */
+.card-tiempo-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.card-tiempo p {
+  font-family: 'Lora', Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(0.95rem, 0.8vw + 0.55rem, 1.15rem);
+  line-height: 1.75;
+  color: #34495e;
+  margin: 0;
+  white-space: normal;
+  word-break: break-word;
+  letter-spacing: 0.01em;
+}
+
+.card-tiempo p strong {
+  color: #1a1a1a;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.card-tiempo-remate {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #4B5563;
+  border-left: 2px solid rgba(231, 76, 60, 0.3);
+  padding-left: 1.4rem;
+  flex-shrink: 0;
+  max-width: 240px;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* ── Fila 6 · Motor de Cambio (derecha) ── */
+
+/* FIX ROBUSTO: mismo patrón que card-indigo para que la columna se estire
+   a la altura del mapa ONG al lado izquierdo. */
+.bslib-grid:has(> .card > .card-body > .motor-cambio-container) {
+  grid-template-rows: minmax(3em, 1fr) !important;
+}
+
+.bslib-grid[style*="max-content"]:has(.motor-cambio-container) {
+  grid-template-rows: minmax(3em, 1fr) !important;
+}
+
+.bslib-grid:has(.motor-cambio-container) > .card {
+  height: 100% !important;
+}
+
+.bslib-grid:has(.motor-cambio-container) > .card > .card-body {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.motor-cambio-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  min-height: 100%;
+  flex: 1;
+  padding: 0.25rem;
+}
+
+.solucion-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid rgba(44, 62, 80, 0.16);
+  border-left: 5px solid #2c3e50;
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem 1.6rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  animation: fadeInUp 0.8s ease-out both;
+  animation-delay: 0.1s;
+}
+
+/* Comilla decorativa gigante */
+.solucion-card::before {
+  content: '\201C';
+  position: absolute;
+  top: -1.8rem;
+  left: 0.6rem;
+  font-size: 10rem;
+  font-family: 'Merriweather', serif;
+  font-weight: 900;
+  color: rgba(44, 62, 80, 0.08);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Barra de acento superior navy → transparente */
+.solucion-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #2c3e50 0%, rgba(44, 62, 80, 0.3) 70%, transparent 100%);
+  z-index: 1;
+}
+
+.solucion-heading {
+  display: block;
+  position: relative;
+  z-index: 1;
+  font-family: 'Merriweather', serif;
+  font-size: clamp(0.88rem, 0.95vw + 0.35rem, 1.18rem);
+  font-weight: 900;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.55rem;
+  line-height: 1.25;
+}
+
+.solucion-card p {
+  position: relative;
+  z-index: 1;
+  font-family: 'Lora', Georgia, serif;
+  font-size: clamp(0.8rem, 0.55vw + 0.42rem, 0.98rem);
+  color: #4B5563;
+  line-height: 1.65;
+  margin: 0;
+  font-style: normal;
+}
+
+.solucion-card p strong {
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+/* Grid de aliados (mini-cards) */
+.aliados-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 0.6rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.aliado-mini {
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid rgba(50, 68, 85, 0.1);
+  border-left: 4px solid #324455;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(50, 68, 85, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  min-height: 0;
+  height: 100%;
+}
+
+.aliado-mini:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(50, 68, 85, 0.13);
+}
+
+.aliado-mini p {
+  margin: 0 !important;
+}
+
+.aliado-mini img.aliado-logo,
+.aliado-mini .aliado-logo {
+  height: 54px !important;
+  width: auto !important;
+  max-width: 100% !important;
+  min-width: unset;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.aliado-mini figcaption,
+.aliado-mini .figure-caption {
+  display: none !important;
+}
+
+.aliado-logo-dual {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.aliado-logo-dual img.aliado-logo {
+  height: 38px !important;
+  width: auto !important;
+  min-width: unset;
+}
+
+.aliado-texto {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.66rem, 0.42vw + 0.36rem, 0.80rem);
+  color: #4B5563;
+  line-height: 1.4;
+  display: block;
+}
+
+.aliado-texto strong {
+  display: block;
+  color: #324455;
+  font-weight: 700;
+  font-size: clamp(0.75rem, 0.5vw + 0.4rem, 0.88rem);
+  margin-bottom: 0.1rem;
 }
