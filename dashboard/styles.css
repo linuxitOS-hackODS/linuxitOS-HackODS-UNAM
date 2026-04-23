@@ -79,14 +79,14 @@ p,
 
 .bslib-value-box .value-box-title {
   font-family: 'Inter', sans-serif !important;
-  font-size: 0.65rem !important;
+  font-size: 0.56rem !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.05em !important;
+  letter-spacing: 0.04em !important;
   margin-bottom: 0.1rem !important;
   opacity: 0.85;
-  white-space: nowrap !important;
-  overflow: visible !important;
+  white-space: pre-line !important;
+  line-height: 1.4 !important;
 }
 
 .bslib-value-box .value-box-value {
@@ -860,7 +860,7 @@ table tbody td {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow-y: auto;
   overflow-x: hidden;
-  
+
   /* Permite que la tarjeta se estire para llenar el 100% de la altura de su columna */
   display: flex;
   flex-direction: column;
@@ -881,49 +881,59 @@ table tbody td {
   border-left: 5px solid #B91C1C;
 }
 
-.context-card.card-amber {
-  border-left: 5px solid #78350F;
-  background: linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(254,243,199,0.35) 100%);
+.context-card.card-indigo {
+  border-left: 5px solid #312E81;
+  background-color: rgba(255, 255, 255, 0.95);
 }
 
-.context-card.card-amber .card-heading {
-  color: #78350F;
+.context-card.card-slate {
+  border-left: 5px solid #1E293B;
+  background-color: rgba(255, 255, 255, 0.95);
 }
 
-.context-card.card-amber p strong {
-  color: #92400E;
+.context-card.card-indigo .card-heading,
+.context-card.card-slate .card-heading {
+  color: #1a1a1a;
+}
+
+.context-card.card-indigo p strong,
+.context-card.card-slate p strong {
+  color: #1a1a1a;
   font-weight: 700;
 }
 
-.context-card.card-amber .stat-highlight {
+.context-card.card-indigo .stat-highlight,
+.context-card.card-slate .stat-highlight {
   display: block;
   font-family: 'Merriweather', serif;
-  font-size: clamp(1.8rem, 2.5vw, 2.6rem);
+  font-size: clamp(1.7rem, 2.3vw, 2.5rem);
   font-weight: 900;
-  color: #78350F;
-  line-height: 1;
-  margin: 0.5rem 0 0.1rem 0;
+  color: #1a1a1a;
+  line-height: 1.15;
+  margin: 0.5rem 0 0.8rem 0;
+  letter-spacing: -0.01em;
 }
 
-.context-card.card-amber .stat-label {
+.context-card.card-indigo .stat-label,
+.context-card.card-slate .stat-label {
   display: block;
   font-family: 'Inter', sans-serif;
   font-size: clamp(0.6rem, 0.55vw + 0.3rem, 0.78rem);
-  color: #92400E;
+  color: #4B5563;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   font-weight: 600;
   margin-bottom: 0.75rem;
 }
 
-/* Cuando .card-amber está sola en su contenedor (fila del scatter),
+/* Cuando .card-indigo está sola en su contenedor (fila del scatter),
    estira a altura completa para emparejar con el card del scatter al lado. */
-.context-cards-container:has(> .card-amber:only-child) {
+.context-cards-container:has(> .card-indigo:only-child) {
   justify-content: stretch;
   height: 100%;
 }
 
-.context-cards-container > .card-amber:only-child {
+.context-cards-container>.card-indigo:only-child {
   flex: 1 1 auto;
   height: 100%;
   display: flex;
@@ -933,24 +943,43 @@ table tbody td {
 
 /* FIX ROBUSTO: Quarto Dashboard asigna grid-template-rows: max-content
    (inline style) al bslib-grid de columnas markdown-only, lo que impide
-   que .card-amber llene la altura del row. Override con !important. */
+   que .card-indigo llene la altura del row. Override con !important. */
 
 /* Target 1: selector por combinator directo */
-.bslib-grid:has(> .card > .card-body > .context-cards-container > .card-amber) {
+.bslib-grid:has(> .card > .card-body > .context-cards-container > .card-indigo) {
   grid-template-rows: minmax(3em, 1fr) !important;
 }
 
 /* Target 2: selector por atributo inline (caso edge browser) */
-.bslib-grid[style*="max-content"]:has(.card-amber) {
+.bslib-grid[style*="max-content"]:has(.card-indigo) {
   grid-template-rows: minmax(3em, 1fr) !important;
 }
 
 /* Target 3: asegurar que card padre también estire a 100% del grid row */
-.bslib-grid:has(.card-amber) > .card {
+.bslib-grid:has(.card-indigo)>.card {
   height: 100% !important;
 }
 
-.bslib-grid:has(.card-amber) > .card > .card-body {
+.bslib-grid:has(.card-indigo)>.card>.card-body {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Misma lógica para La Ilusión Nacional + La Realidad Demográfica (card-blue) */
+.bslib-grid:has(> .card > .card-body > .context-cards-container > .card-blue) {
+  grid-template-rows: minmax(3em, 1fr) !important;
+}
+
+.bslib-grid[style*="max-content"]:has(.card-blue) {
+  grid-template-rows: minmax(3em, 1fr) !important;
+}
+
+.bslib-grid:has(.card-blue)>.card {
+  height: 100% !important;
+}
+
+.bslib-grid:has(.card-blue)>.card>.card-body {
   height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
@@ -994,4 +1023,17 @@ table tbody td {
 .cell-output.cell-output-display:has(form[class^="oi-"]) .observablehq {
   margin: 0 !important;
   padding: 0.25rem 0 !important;
+}
+
+/* ═══════════════════════════════════════
+   AJUSTE DE ESPACIADO SUPERIOR (HEADER AL CONTENIDO)
+   ═══════════════════════════════════════ */
+.quarto-dashboard-content,
+.bslib-page-dashboard {
+  padding-top: 0.3rem !important; /* Reduce el espacio por defecto de Quarto */
+}
+
+.quarto-dashboard-content > .bslib-grid {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
