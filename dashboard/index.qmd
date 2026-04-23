@@ -33,7 +33,7 @@ COLOR_URBANO = '#3498db'
 
 # Preparar dataset para el scatter interactivo (consumido por OJS via FileAttachment)
 df_scatter = df.copy()
-df_scatter['severidad'] = (df_scatter['carencia_agua_conagua_pct'] + df_scatter['Pobreza_extrema_pct']).round(1)
+df_scatter['severidad'] = ((df_scatter['carencia_agua_conagua_pct'] + df_scatter['Pobreza_extrema_pct']) / 2).round(1)
 
 _cols_ojs = ['Municipio', 'Estado', 'RHA', 'poblacion_total', 'clasificacion_rural',
              'severidad', 'carencia_agua_conagua_pct', 'Pobreza_extrema_pct']
@@ -73,7 +73,8 @@ El cruce entre el **ODS 1 (Fin de Pobreza)** y el **ODS 6 (Agua Limpia y Saneami
 ### Column {width=15%}
 
 ::: {.valuebox icon="droplet-fill" color="#e3f2fd"}
-Cobertura Nacional Oficial (SIODS)
+Cobertura Nacional\
+Oficial (SIODS)
 
 64%
 :::
@@ -81,7 +82,8 @@ Cobertura Nacional Oficial (SIODS)
 ### Column {width=15%}
 
 ::: {.valuebox icon="houses-fill" color="#e74c3c"}
-Municipios que son Rurales
+Municipios\
+que son Rurales
 
 55%
 :::
@@ -89,7 +91,8 @@ Municipios que son Rurales
 ### Column {width=15%}
 
 ::: {.valuebox icon="exclamation-triangle-fill" color="#2c3e50"}
-Mayor Carencia de Agua en el Campo
+Mayor Carencia\
+de Agua Rural
 
 4.6x
 :::
@@ -99,7 +102,7 @@ Mayor Carencia de Agua en el Campo
 ### Column {width=50%}
 
 ```{python}
-#| title: "Promedio Oficial vs Realidad Municipal"
+#| title: "Carencia de Agua Entubada en los 2,469 Municipios de México"
 import numpy as np
 
 # Generar histograma de Carencia de Agua
@@ -266,15 +269,15 @@ fig
 
 ### Column {width=25%}
 
-::: {.context-cards-container}
+::: {.context-cards-container .h-100}
 
-::: {.context-card .card-blue}
+::: {.context-card .card-blue .h-100}
 [La Ilusión Nacional]{.card-heading}
 
 México reporta un **64% de acceso a agua segura** a nivel nacional. Sin embargo, las grandes ciudades "promedian hacia arriba", borrando a las comunidades rurales y periféricas. Al analizar los microdatos, la estadística se derrumba. **Invisibilizar la carencia es violar un derecho humano.**
 :::
 
-::: {.context-card .card-red}
+::: {.context-card .card-red .h-100}
 [La Realidad Demográfica]{.card-heading}
 
 Solo el **17% de los mexicanos** vive en zonas rurales, pero esto representa **más del 55% de los municipios** del país. Si medimos por equidad territorial y no por densidad, la vida rural abarca la mayor parte de México.
@@ -288,7 +291,7 @@ Solo el **17% de los mexicanos** vive en zonas rurales, pero esto representa **m
 
 ::: {.context-cards-container .h-100}
 
-::: {.context-card .card-amber .h-100}
+::: {.context-card .card-indigo .h-100}
 [El Veredicto Matemático]{.card-heading}
 
 [4.6×]{.stat-highlight}
@@ -304,11 +307,10 @@ Cruzar el Censo con la infraestructura **desmiente la "Ilusión Nacional"**. La 
 
 ### Column {width=75%}
 
-::: {.card title="A mayor carencia de agua, mayor pobreza extrema (2,469 Municipios)"}
+::: {.card title="Déficit de Agua vs. Pobreza Extrema (2,469 Municipios)"}
 
 ```{ojs}
 {
-  // Single-cell approach: input + chart en un solo contenedor.
   const searchInput = html`<input type="text" placeholder="Ej. Oaxaca, Guerrero..."
     style="padding: 0.5rem 0.65rem; border: 1px solid #d1d5db; border-radius: 6px;
            font-family: Inter, sans-serif; font-size: 0.95rem;
@@ -328,20 +330,64 @@ Cruzar el Censo con la infraestructura **desmiente la "Ilusión Nacional"**. La 
   const searchRow = html`<label style="display:flex; gap:0.75rem; align-items:center;
     font-family:Inter, sans-serif; font-weight:600; color:#1a1a1a;
     font-size:0.95rem; margin:0; padding:0; flex-wrap:wrap;">
-    <span>Busca tu municipio:</span>${searchInput}</label>`;
+    <span>Busca tu municipio o entidad federativa:</span>${searchInput}</label>`;
 
-  // --- SOLUCIÓN AL BUCLE INFINITO ---
-  // 1. Un wrapper 'relative' que define el espacio y obedece a Quarto.
   const chartWrapper = html`<div style="flex:1; position:relative; min-height:420px; width:100%; margin-top:0.5rem;"></div>`;
-  
-  // 2. Un chartEl 'absolute' que llena el wrapper pero NO puede expandirlo.
   const chartEl = html`<div style="position:absolute; top:0; left:0; right:0; bottom:0; overflow:hidden;"></div>`;
   chartWrapper.append(chartEl);
 
   const container = html`<div style="display:flex; flex-direction:column;
     height:100%; width:100%; padding:0.25rem 0;"></div>`;
-    
+
   container.append(searchRow, chartWrapper);
+
+  // Tooltip HTML personalizado — Plot.tip NO soporta fill dinámico por canal
+  // (doc oficial: "tip mark does not support the standard style channels such as varying fill").
+  // Implementamos tooltip como <div> con hit-testing por búsqueda lineal O(n).
+  const tooltip = html`<div style="
+    position:absolute; pointer-events:none; opacity:0; left:0; top:0;
+    padding:0.55rem 0.8rem; border-radius:8px;
+    font-family:Inter,sans-serif; font-size:11.5px; line-height:1.55;
+    box-shadow:0 6px 20px rgba(0,0,0,0.22);
+    z-index:30; max-width:280px; white-space:nowrap;
+    transition:opacity 0.08s ease-out;
+    border:1.5px solid rgba(255,255,255,0.35);"></div>`;
+  chartWrapper.append(tooltip);
+
+  // Interpolador de color idéntico a la escala de Plot [0,35,65,100] → verde→naranja→rojo→rojo oscuro
+  function severityColor(v) {
+    const stops = [
+      [0,   [39, 174, 96]],
+      [35,  [243, 156, 18]],
+      [65,  [231, 76, 60]],
+      [100, [127, 29, 29]]
+    ];
+    v = Math.max(0, Math.min(100, v || 0));
+    for (let i = 1; i < stops.length; i++) {
+      const [s0, c0] = stops[i - 1];
+      const [s1, c1] = stops[i];
+      if (v <= s1) {
+        const t = (v - s0) / (s1 - s0);
+        const rr = Math.round(c0[0] + (c1[0] - c0[0]) * t);
+        const gg = Math.round(c0[1] + (c1[1] - c0[1])  * t);
+        const bb = Math.round(c0[2] + (c1[2] - c0[2])  * t);
+        return `rgb(${rr},${gg},${bb})`;
+      }
+    }
+    return 'rgb(127,29,29)';
+  }
+
+  // Contraste automático vía luminancia YIQ — el naranja necesita texto oscuro, el resto blanco
+  function textColorFor(bg) {
+    const [r, g, b] = bg.match(/\d+/g).map(Number);
+    const y = 0.299 * r + 0.587 * g + 0.114 * b;
+    return y > 150 ? '#0f172a' : '#ffffff';
+  }
+
+  // Estado compartido entre render() y handler de mousemove
+  // pointsWithPx: Array<{d, px, py}> — posiciones en píxeles precomputadas
+  let pointsWithPx = [];
+  let svgCache = null;
 
   function render() {
     const q = searchInput.value.trim().toLowerCase();
@@ -349,18 +395,19 @@ Cruzar el Censo con la infraestructura **desmiente la "Ilusión Nacional"**. La 
     const ok = d =>
       (d.Municipio || "").toLowerCase().includes(q) ||
       (d.Estado || "").toLowerCase().includes(q);
-      
+
     const activos = hasSearch ? municipios_scatter.filter(ok) : municipios_scatter;
     const inactivos = hasSearch ? municipios_scatter.filter(d => !ok(d)) : [];
-    
-    // Tomamos las dimensiones del contenedor anclado. 
-    // Como tiene position: absolute, sus dimensiones son 100% estables.
-    const w = chartEl.clientWidth || 800;
-    // Restamos 45px a la altura para hacerle espacio a la leyenda superior
-    // y evitar que el SVG empuje el eje de las X fuera del área visible.
-    const h = (chartEl.clientHeight || 420) - 45;
 
-    chartEl.replaceChildren(Plot.plot({
+    const top5_peores = municipios_scatter
+      .slice()
+      .sort((a, b) => (b.severidad || 0) - (a.severidad || 0))
+      .slice(0, 5);
+
+    const w = chartEl.clientWidth || 800;
+    const h = (chartEl.clientHeight || 420) - 60;
+
+    const plotFig = Plot.plot({
       width: w,
       height: h,
       marginLeft: 60,
@@ -391,35 +438,194 @@ Cruzar el Censo con la infraestructura **desmiente la "Ilusión Nacional"**. La 
           r: 4,
           opacity: 0.85
         }),
-        Plot.tip(activos, Plot.pointer({
+        Plot.arrow(top5_peores, {
+          x1: (d, i) => d.carencia_agua_conagua_pct - (27 - (i * 2)),
+          y1: (d, i) => d.Pobreza_extrema_pct + (18 - (i * 1)),
+          x2: "carencia_agua_conagua_pct",
+          y2: "Pobreza_extrema_pct",
+          bend: true,
+          stroke: "#4b5563",
+          strokeWidth: 1.5,
+          headLength: 5
+        }),
+        Plot.text(top5_peores, {
+          x: (d, i) => d.carencia_agua_conagua_pct - (27 - (i * 2)),
+          y: (d, i) => d.Pobreza_extrema_pct + (18 - (i * 1)),
+          text: d => `${d.Municipio},\n${d.Estado}`,
+          textAnchor: "end",
+          dx: -4,
+          lineHeight: 1.1,
+          fill: "#1f2937",
+          fontSize: 10,
+          fontFamily: "Inter, sans-serif",
+          fontWeight: 600,
+          stroke: "white",
+          strokeWidth: 4
+        }),
+        // Halo al hover — Plot.dot SÍ soporta fill por canal
+        Plot.dot(activos, Plot.pointer({
           x: "carencia_agua_conagua_pct",
           y: "Pobreza_extrema_pct",
           fill: "severidad",
-          title: d => [
-            `${d.Municipio}, ${d.Estado}`,
-            `RHA: ${d.RHA}`,
-            `Población: ${d.poblacion_total.toLocaleString("es-MX")}`,
-            `Clasificación: ${d.clasificacion_rural}`,
-            `Índice Severidad: ${d.severidad}`,
-            `% Sin Agua: ${d.carencia_agua_conagua_pct}%`,
-            `% Pobreza Extrema: ${d.Pobreza_extrema_pct}%`
-          ].join("\n")
+          r: 8,
+          stroke: "white",
+          strokeWidth: 2
         }))
       ]
-    }));
+    });
+
+    chartEl.replaceChildren(plotFig);
+
+    // Plot con legend:true retorna <figure> con MÚLTIPLES <svg> (legend ramp + plot).
+    // Elegimos el SVG más grande (el plot principal) — querySelector('svg') agarraba el legend.
+    let svgEl = null;
+    if (plotFig.tagName && plotFig.tagName.toLowerCase() === 'svg') {
+      svgEl = plotFig;
+    } else {
+      const svgs = plotFig.querySelectorAll('svg');
+      let maxArea = -1;
+      for (const s of svgs) {
+        const r = s.getBoundingClientRect();
+        const area = (r.width || 0) * (r.height || 0);
+        if (area > maxArea) { maxArea = area; svgEl = s; }
+      }
+      // Fallback si todos tienen dimensiones 0 (no-rendered yet): el último
+      if (!svgEl && svgs.length > 0) svgEl = svgs[svgs.length - 1];
+    }
+
+    if (!svgEl) {
+      console.warn('[scatter-tip] no SVG en plotFig');
+      pointsWithPx = [];
+      svgCache = null;
+      return;
+    }
+
+    // Extraer escalas — API oficial Plot 0.6.11: plot.scale(name).apply(value) → pixel
+    let xApply = null, yApply = null;
+    try {
+      const xs = plotFig.scale("x");
+      const ys = plotFig.scale("y");
+      if (xs && typeof xs.apply === "function") xApply = v => xs.apply(v);
+      if (ys && typeof ys.apply === "function") yApply = v => ys.apply(v);
+      if (xApply && yApply) {
+        const tx = xApply(50), ty = yApply(50);
+        if (!Number.isFinite(tx) || !Number.isFinite(ty)) { xApply = null; yApply = null; }
+      }
+    } catch (err) { /* fallback below */ }
+
+    // Fallback: reconstruir escala lineal manualmente si plot.scale falla
+    if (!xApply || !yApply) {
+      const xVals = municipios_scatter.map(d => d.carencia_agua_conagua_pct || 0);
+      const yVals = municipios_scatter.map(d => d.Pobreza_extrema_pct || 0);
+      const xMax = Math.max(...xVals);
+      const yMax = Math.max(...yVals);
+      const actualW = svgEl.clientWidth || w;
+      const actualH = svgEl.clientHeight || h;
+      const marginL = 60, marginR = 20, marginT = 20, marginB = 50;
+      xApply = v => marginL + (v / xMax) * (actualW - marginL - marginR);
+      yApply = v => (actualH - marginB) - (v / yMax) * (actualH - marginB - marginT);
+    }
+
+    // Precomputar posiciones en píxeles + filtrar NaN (si domain no matchea datos)
+    pointsWithPx = activos
+      .map(d => ({
+        d,
+        px: xApply(d.carencia_agua_conagua_pct),
+        py: yApply(d.Pobreza_extrema_pct)
+      }))
+      .filter(p => Number.isFinite(p.px) && Number.isFinite(p.py));
+
+    svgCache = svgEl;
+    svgEl.style.cursor = "crosshair";
+    // Listener backup directo en SVG por si chartWrapper pierde eventos
+    svgEl.addEventListener("mousemove", handleMouseMove);
   }
 
+  function handleMouseMove(event) {
+    if (!svgCache || pointsWithPx.length === 0) {
+      tooltip.style.opacity = 0;
+      return;
+    }
+
+    const svgRect = svgCache.getBoundingClientRect();
+    const mx = event.clientX - svgRect.left;
+    const my = event.clientY - svgRect.top;
+
+    if (mx < 0 || my < 0 || mx > svgRect.width || my > svgRect.height) {
+      tooltip.style.opacity = 0;
+      return;
+    }
+
+    // Búsqueda lineal O(n) — 2469 puntos × 60fps = 148k ops/s, trivial
+    let bestIdx = -1;
+    let bestDist = Infinity;
+    for (let i = 0; i < pointsWithPx.length; i++) {
+      const p = pointsWithPx[i];
+      const dx = p.px - mx;
+      const dy = p.py - my;
+      const dist = dx * dx + dy * dy;
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestIdx = i;
+      }
+    }
+
+    // Umbral 40px (1600 = 40²)
+    if (bestIdx < 0 || bestDist > 1600) {
+      tooltip.style.opacity = 0;
+      return;
+    }
+
+    const pt = pointsWithPx[bestIdx].d;
+
+    const bg = severityColor(pt.severidad);
+    const fg = textColorFor(bg);
+    tooltip.style.background = bg;
+    tooltip.style.color = fg;
+    tooltip.innerHTML =
+      `<div style="font-weight:700;margin-bottom:3px;">${pt.Municipio}, ${pt.Estado}</div>` +
+      `<div style="opacity:0.92;">RHA: ${pt.RHA}</div>` +
+      `<div style="opacity:0.92;">Población: ${pt.poblacion_total.toLocaleString("es-MX")}</div>` +
+      `<div style="opacity:0.92;">Clasificación: ${pt.clasificacion_rural}</div>` +
+      `<div style="margin-top:3px;font-weight:600;">Severidad: ${pt.severidad}</div>` +
+      `<div>% Sin Agua: ${pt.carencia_agua_conagua_pct}%</div>` +
+      `<div>% Pobreza Extrema: ${pt.Pobreza_extrema_pct}%</div>`;
+
+    // Medir después de set innerHTML (offsetWidth/Height funcionan con opacity:0)
+    const tipW = tooltip.offsetWidth;
+    const tipH = tooltip.offsetHeight;
+
+    // Posicionar relativo a chartWrapper (donde vive el tooltip)
+    const wrapperRect = chartWrapper.getBoundingClientRect();
+    const localX = event.clientX - wrapperRect.left;
+    const localY = event.clientY - wrapperRect.top;
+
+    let tx = localX + 14;
+    let ty = localY + 14;
+    if (tx + tipW > wrapperRect.width) tx = localX - tipW - 14;
+    if (ty + tipH > wrapperRect.height) ty = localY - tipH - 14;
+    if (tx < 0) tx = 4;
+    if (ty < 0) ty = 4;
+
+    tooltip.style.left = `${tx}px`;
+    tooltip.style.top = `${ty}px`;
+    tooltip.style.opacity = 1;
+  }
+
+  chartWrapper.addEventListener("mousemove", handleMouseMove);
+  chartWrapper.addEventListener("mouseleave", () => { tooltip.style.opacity = 0; });
+
   searchInput.addEventListener("input", render);
-  
-  // Render inicial 
   requestAnimationFrame(() => requestAnimationFrame(render));
-  
-  // El ResizeObserver ahora vigila el 'chartWrapper'.
-  // Al no ser afectado por el SVG de Plotly, es completamente inmune al bucle de crecimiento.
+
   const ro = new ResizeObserver(() => render());
   ro.observe(chartWrapper);
-  invalidation.then(() => ro.disconnect());
-  
+
+  invalidation.then(() => {
+    ro.disconnect();
+    chartWrapper.removeEventListener("mousemove", handleMouseMove);
+  });
+
   return container;
 }
 ```
@@ -427,6 +633,188 @@ Cruzar el Censo con la infraestructura **desmiente la "Ilusión Nacional"**. La 
 :::
 
 
+
+## Row {height=650px}
+
+### Column {width=55%}
+
+```{python}
+#| title: "Cobertura de Agua(%) por Estado"
+#| warning: false
+#| message: false
+import json
+
+# 1. Cargar el Catálogo Nacional de Estados
+df_estados_mapa_f4 = pd.read_csv('../datos/Estado.csv', dtype={'clvedo': str})
+
+# 2. Cargar los Datos de Cobertura
+df_cobertura_f4 = pd.read_excel('../datos/Población con acceso al agua en el año 2020.xlsx')
+
+# 3. Calcular métricas por estado
+df_50_f4 = df_cobertura_f4[df_cobertura_f4['Población Cobertura(%)'] <= 50].groupby('Entidad').size().reset_index(name='Municipios <= 50%')
+df_70_f4 = df_cobertura_f4[(df_cobertura_f4['Población Cobertura(%)'] > 50) & (df_cobertura_f4['Población Cobertura(%)'] <= 70)].groupby('Entidad').size().reset_index(name='Municipios 50-70%')
+df_100_f4 = df_cobertura_f4[df_cobertura_f4['Población Cobertura(%)'] > 70].groupby('Entidad').size().reset_index(name='Municipios > 70%')
+
+# Calcular promedios/sumatorias de población
+df_pob_f4 = df_cobertura_f4.groupby('Entidad').agg({
+    'Población': 'sum',
+    'Población  con agua entubada en vivienda o predio': 'sum'
+}).reset_index()
+
+df_pob_f4.rename(columns={
+    'Población': 'Pob_Total',
+    'Población  con agua entubada en vivienda o predio': 'Pob_Agua'
+}, inplace=True)
+
+# 4. Unir cálculos al DataFrame de estados
+df_estados_mapa_f4 = df_estados_mapa_f4.merge(df_50_f4, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
+df_estados_mapa_f4 = df_estados_mapa_f4.merge(df_70_f4, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
+df_estados_mapa_f4 = df_estados_mapa_f4.merge(df_100_f4, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
+df_estados_mapa_f4 = df_estados_mapa_f4.merge(df_pob_f4, left_on='estado', right_on='Entidad', how='left').drop(columns=['Entidad'])
+
+for col in ['Municipios <= 50%', 'Municipios 50-70%', 'Municipios > 70%']:
+    df_estados_mapa_f4[col] = df_estados_mapa_f4[col].fillna(0).astype(int)
+
+# Formatear la población con separador de miles
+df_estados_mapa_f4['Pob_Total_Fmt'] = df_estados_mapa_f4['Pob_Total'].fillna(0).apply(lambda x: f"{int(x):,}")
+df_estados_mapa_f4['Pob_Agua_Fmt'] = df_estados_mapa_f4['Pob_Agua'].fillna(0).apply(lambda x: f"{int(x):,}")
+
+# 5. Asignar Categorías de Riesgo
+def clasificar_vulnerabilidad_f4(cantidad):
+    if cantidad == 0:
+        return 'Cobertura de agua (>70%)'
+    elif 1 <= cantidad <= 3:
+        return 'Cobertura de agua (50-70%)'
+    else:
+        return 'Cobertura de agua (<50%)'
+
+df_estados_mapa_f4['Categoría'] = df_estados_mapa_f4['Municipios <= 50%'].apply(clasificar_vulnerabilidad_f4)
+
+# 6. Cargar GeoJSON de Estados
+with open('../datos/Estado_lite.json', 'r', encoding='utf-8') as f:
+    geojson_estados_f4 = json.load(f)
+
+# Colores en tonos azules
+color_map_azules_f4 = {
+    'Cobertura de agua (>70%)': '#154360',
+    'Cobertura de agua (50-70%)': '#5dade2',
+    'Cobertura de agua (<50%)': '#d6eaf8',
+}
+
+# 7. Renderizar Mapa Choropleth
+fig_map_f4 = px.choropleth(
+    df_estados_mapa_f4,
+    geojson=geojson_estados_f4,
+    locations='clvedo',
+    featureidkey='properties.clvedo',
+    color='Categoría',
+    category_orders={'Categoría': ['Gran cobertura de agua', 'Cobertura media de agua', 'Baja cobertura de agua']},
+    color_discrete_map=color_map_azules_f4,
+    hover_name='estado',
+    custom_data=['Categoría', 'Municipios <= 50%', 'Municipios 50-70%', 'Municipios > 70%', 'Pob_Total_Fmt', 'Pob_Agua_Fmt']
+)
+
+_ = fig_map_f4.update_traces(
+    hovertemplate="<b>%{hovertext}</b><br><br>" +
+    "Estado de Rezago: %{customdata[0]}<br><br>" +
+    "Población Total: <b>%{customdata[4]}</b><br>" +
+    "Pob. con Agua Entubada: <b>%{customdata[5]}</b><br><br>" +
+    "Municipios con Cobertura:<br>" +
+    "• ≤ 50%: <b>%{customdata[1]}</b><br>" +
+    "• 50-70%: <b>%{customdata[2]}</b><br>" +
+    "• > 70%: <b>%{customdata[3]}</b>" +
+    "<extra></extra>",
+    marker_line_color='#000000',
+    marker_line_width=0.6
+)
+
+_ = fig_map_f4.update_geos(fitbounds="locations", visible=False)
+_ = fig_map_f4.update_layout(
+    margin={"r":0,"t":0,"l":0,"b":40},
+    font=dict(family="Inter, sans-serif", size=15),
+    legend=dict(
+        title_text="",
+        orientation="h",
+        yanchor="top",
+        y=0.0,
+        xanchor="left",
+        x=0.0,
+        entrywidth=250,
+        bgcolor="rgba(255, 255, 255, 0.8)"
+    ),
+    dragmode=False
+)
+
+fig_map_f4
+```
+
+### Column {width=45%}
+
+```{python}
+#| title: "Municipios con Mayor Rezago de Infraestructura Hidríca"
+
+# 1. Filtrar y extraer los 15 casos más severos
+df_aislados_f4 = df.sort_values(by=['carencia_agua_conagua_pct', 'Pobreza_extrema_pct'], ascending=[False, False])
+
+# Tomar el Top 15 y ordenar ascendente
+df_top15_f4 = df_aislados_f4.head(15).copy()
+df_top15_f4 = df_top15_f4.sort_values(by='carencia_agua_conagua_pct', ascending=True)
+
+# Crear etiqueta de eje Y
+df_top15_f4['Municipio_Estado'] = df_top15_f4['Municipio'] + ", " + df_top15_f4['Estado']
+
+# Formatear números para el hover
+df_top15_f4['Total Habitantes'] = df_top15_f4['poblacion_total'].astype(int).apply(lambda x: f"{x:,}")
+df_top15_f4['% Sin Agua'] = df_top15_f4['carencia_agua_conagua_pct'].round(1)
+df_top15_f4['% Pob. Extrema'] = df_top15_f4['Pobreza_extrema_pct'].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else "N/D")
+
+# Generar gráfica de barras horizontales
+fig_rezago_f4 = px.bar(
+    df_top15_f4,
+    x='% Sin Agua',
+    y='Municipio_Estado',
+    orientation='h',
+    color='clasificacion_rural',
+    color_discrete_map={'Urbano': COLOR_URBANO, 'Rural': COLOR_RURAL},
+    custom_data=['Total Habitantes', '% Pob. Extrema', 'clasificacion_rural']
+)
+
+_ = fig_rezago_f4.update_layout(
+    yaxis={'categoryorder': 'array', 'categoryarray': df_top15_f4['Municipio_Estado'].tolist()},
+    showlegend=False
+)
+
+_ = fig_rezago_f4.update_traces(
+    hovertemplate="<b>%{y}</b><br>Tipo: %{customdata[2]}<br>% Sin Agua: %{x}%<br>Habitantes: %{customdata[0]}<br>Pobreza Extrema: %{customdata[1]}<extra></extra>"
+)
+
+_ = fig_rezago_f4.add_vline(
+    x=36.0,
+    line_width=2,
+    line_dash="dash",
+    line_color="#1a1a1a"
+)
+
+_ = fig_rezago_f4.update_layout(
+    font=dict(family="Inter, sans-serif", size=12),
+    xaxis_title="% de Población Sin Agua Entubada",
+    yaxis_title="",
+    margin=dict(l=10, r=20, t=30, b=40),
+    xaxis=dict(range=[0, 105])
+)
+
+fig_rezago_f4
+```
+
+::: {.context-cards-container .h-100}
+
+::: {.context-card .card-slate .h-100}
+[El Costo de la Lejanía]{.card-heading}
+
+[¿Rentabilidad Política o Equidad Social?]{.stat-highlight} Entubar agua en una ciudad densa es rápido y rentable. Llevarla a comunidades dispersas exige voluntad. Las políticas públicas priorizan el volumen, convirtiendo la **distancia física** en **distancia social**.
+:::
+
+:::
 
 
 # La Realidad Demográfica
@@ -559,11 +947,11 @@ df_estados_mapa['Pob_Agua_Fmt'] = df_estados_mapa['Pob_Agua'].fillna(0).apply(la
 # 5. Asignar Categorías de Riesgo
 def clasificar_vulnerabilidad(cantidad):
     if cantidad == 0:
-        return 'Gran cobertura de agua'
+        return 'Cobertura de agua >70%'
     elif 1 <= cantidad <= 3:
-        return 'Cobertura media de agua'
+        return 'Cobertura de agua 50-70%'
     else:
-        return 'Baja cobertura de agua'
+        return 'Cobertura de agua <50%'
 
 df_estados_mapa['Categoría'] = df_estados_mapa['Municipios <= 50%'].apply(clasificar_vulnerabilidad)
 
@@ -573,9 +961,9 @@ with open('../datos/Estado_lite.json', 'r', encoding='utf-8') as f:
 
 # Colores en tonos azules
 color_map_azules = {
-    'Gran cobertura de agua': '#154360',   # azul profundo (abundancia)
-    'Cobertura media de agua': '#5dade2',  # azul equilibrado (normal)
-    'Baja cobertura de agua': '#d6eaf8',   # azul muy claro (escasez)
+    'Cobertura de agua >70%': '#154360',   # azul profundo (abundancia)
+    'Cobertura de agua 50-70%': '#5dade2',  # azul equilibrado (normal)
+    'Cobertura de agua <50%': '#d6eaf8',   # azul muy claro (escasez)
 }
 
 # 7. Renderizar Mapa Choropleth
