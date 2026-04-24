@@ -1262,15 +1262,15 @@ Explora los microdatos de los **2,469 municipios** de México: pobreza, cobertur
 :::
 
 
-# AUDITORÍA DE DATOS
-
-Microdatos de los 2,469 municipios de la República Mexicana. Todas las fuentes corresponden al corte **2020** para garantizar coherencia temporal. Para más información consulta nuestro [repositorio de datos](https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM/tree/main/datos){target="_blank"}.
+# AUDITORÍA DE DATOS {#auditoria-de-datos .scrolling}
 
 ## Row
 
 ### Column {width=100%}
 
 ::: {.metodologia-bloque}
+
+Microdatos de los 2,469 municipios de la República Mexicana. Todas las fuentes corresponden al corte **2020** para garantizar coherencia temporal. Para más información consulta nuestro [repositorio de datos](https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM/tree/main/datos){target="_blank"}.
 
 #### Fuentes y cobertura
 
