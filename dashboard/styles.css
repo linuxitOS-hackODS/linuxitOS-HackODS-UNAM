@@ -743,6 +743,13 @@ table tbody td {
   padding-bottom: 0 !important;
 }
 
+/* Quarto genera me-auto en las tabs → las deja pegadas al título.
+   Override: empuja las tabs al extremo derecho del navbar. */
+#dashboard-collapse .navbar-nav {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
 .navbar-brand img,
 .navbar-logo {
   max-height: 30px !important;
