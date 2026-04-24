@@ -1600,7 +1600,7 @@ table tbody td {
 
 .aliado-mini img.aliado-logo,
 .aliado-mini .aliado-logo {
-  height: 54px !important;
+  height: 72px !important;
   width: auto !important;
   max-width: 100% !important;
   min-width: unset;
@@ -1793,6 +1793,33 @@ table tbody td {
   flex-direction: column !important;
 }
 
+/* Grid fix para .card-data — misma lógica que .card-navy */
+.bslib-grid:has(> .card > .card-body > .context-cards-container > .card-data) {
+  grid-template-rows: minmax(3em, 1fr) !important;
+}
+
+.bslib-grid[style*="max-content"]:has(.card-data) {
+  grid-template-rows: minmax(3em, 1fr) !important;
+}
+
+.bslib-grid:has(.card-data)>.card {
+  height: 100% !important;
+}
+
+.bslib-grid:has(.card-data)>.card>.card-body {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.context-card.card-data {
+  justify-content: center;
+}
+
+.context-card.card-data .btn-cta {
+  margin-top: 1.8rem;
+}
+
 /* Lista de citas dentro de .card-navy */
 .citas-lista ul {
   list-style: none;
@@ -1826,3 +1853,34 @@ table tbody td {
   color: #374151;
   font-style: italic;
 }
+
+.citas-lista li a {
+  color: #2c3e50;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(44, 62, 80, 0.3);
+  margin-left: 0.3rem;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.citas-lista li a:hover {
+  color: #1E3A8A;
+  border-bottom-color: #1E3A8A;
+}
+
+.ref-sup {
+  font-size: 0.6rem;
+  font-weight: 700;
+  vertical-align: super;
+  line-height: 0;
+  margin-left: 0.15rem;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.ref-sup:hover {
+  color: #1E3A8A;
+}
+

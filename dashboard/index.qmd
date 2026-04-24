@@ -52,6 +52,17 @@ df_ojs.to_json('data/municipios_scatter.json', orient='records', force_ascii=Fal
 municipios_scatter = FileAttachment("data/municipios_scatter.json").json()
 ```
 
+```{ojs}
+//| output: false
+{
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.ref-sup')) return;
+    const target = document.getElementById('fuentes-testimonios');
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+```
+
 # LA BRECHA ESTRUCTURAL {.scrolling}
 
 
@@ -1008,7 +1019,7 @@ La falta de infraestructura es una **factura social**. El tiempo que mujeres y n
 ::: {.testimonio-texto}
 > *"Me gustaría tener una regadera… nada más de ir a abrir la llave y ya sale el agua… y no preocuparte de que tienes que ir a traer agua"*
 
-[**Angel Arroyo**, Xicotlán — Azteca Noticias, 2024]{.testimonio-dato}
+[**Angel Arroyo**, Xicotlán — Azteca Noticias, 2024 [**1**]{.ref-sup}]{.testimonio-dato}
 :::
 :::
 
@@ -1019,7 +1030,7 @@ La falta de infraestructura es una **factura social**. El tiempo que mujeres y n
 ::: {.testimonio-texto}
 > *"Antes caían aguacerazos y nunca juntábamos el agua, ni siquiera para el baño. No la valoramos hasta llegar aquí, donde vine a sufrir de verdad, a sentir lo que es no tener agua".*
 
-[**Sonia Hernández**, Tetacalanco Xochimilco — Isla Urbana, Historias de agua]{.testimonio-dato}
+[**Sonia Hernández**, Tetacalanco Xochimilco — Isla Urbana, Historias de agua [**3**]{.ref-sup}]{.testimonio-dato}
 :::
 :::
 
@@ -1036,7 +1047,7 @@ La falta de infraestructura es una **factura social**. El tiempo que mujeres y n
 ::: {.testimonio-texto}
 > *"No se trata de la pipa. Se trata de que nosotros queremos agua potable, agua bien tratada, no el cochinero de agua que nos mandan".*
 
-[**María de Los Ángeles Martínez**, Las Higueras de Los Natoches — Espejo: Las cosas como son]{.testimonio-dato}
+[**María de Los Ángeles Martínez**, Las Higueras de Los Natoches — Espejo: Las cosas como son [**2**]{.ref-sup}]{.testimonio-dato}
 :::
 :::
 
@@ -1047,7 +1058,7 @@ La falta de infraestructura es una **factura social**. El tiempo que mujeres y n
 ::: {.testimonio-texto}
 > *"Las mujeres somos las más interesadas en resolver la falta de agua; caminamos entre cerros para llegar al manantial, cargando en la espalda 40 litros y al niño".*
 
-[**Comité del agua de mujeres**, Luquilhó, San Andrés Larráinzar, Chiapas — PNUD México, enero 2023]{.testimonio-dato}
+[**Comité del agua de mujeres**, Luquilhó, San Andrés Larráinzar, Chiapas — PNUD México, enero 2023 [**4**]{.ref-sup}]{.testimonio-dato}
 :::
 :::
 
@@ -1206,32 +1217,29 @@ Donde el presupuesto no llega, la **innovación social** da un paso al frente. N
 :::
 
 ::: {.aliado-mini}
-::: {.aliado-logo-dual}
 ![PNUD](img/pnud.png){.aliado-logo}
-![FEMSA](img/femsa.webp){.aliado-logo}
-:::
 
-[**PNUD y FEMSA** — Resiliencia e infraestructura comunitaria.]{.aliado-texto}
-:::
-
+[**PNUD** — Resiliencia e infraestructura comunitaria.]{.aliado-texto}
 :::
 
 :::
 
-## Row
+:::
+
+## Row {height=420px}
 
 ### Column {width=60%}
 
 ::: {.context-cards-container .h-100}
 
-::: {.context-card .card-navy .h-100}
+::: {.context-card .card-navy .h-100 #fuentes-testimonios}
 [Fuentes de los Testimonios]{.card-heading}
 
 ::: {.citas-lista}
-- **Testimonio 1** — Ángel Arroyo, Xicotlán. *«Me gustaría tener una regadera… nada más de ir a abrir la llave y ya sale el agua… y no preocuparte de que tienes que ir a traer agua»*. Fotografía: José Jiménez y Luis Gress / Azteca Noticias, 2024.
-- **Testimonio 2** — Sonia Hernández, Tetacalanco Xochimilco. *«Antes caían aguacerazos y nunca juntábamos el agua, ni siquiera para el baño. No la valoramos hasta llegar aquí, donde vine a sufrir de verdad, a sentir lo que es no tener agua»*. Isla Urbana, Historias de agua. Fotografía: Espejo: Las cosas como son.
-- **Testimonio 3** — María de Los Ángeles Martínez, Las Higueras de Los Natoches. *«No se trata de la pipa. Se trata de que nosotros queremos agua potable, agua bien tratada, no el cochinero de agua que nos mandan»*. Espejo: Las cosas como son. Fotografía: Isla Urbana.
-- **Testimonio 4** — Comité del agua de mujeres, Luquilhó, San Andrés Larráinzar, Chiapas. *«Las mujeres somos las más interesadas en resolver la falta de agua; caminamos entre cerros para llegar al manantial, cargando en la espalda 40 litros y al niño»*. PNUD México, enero 2023. Fotografía: PNUD México.
+- **Testimonio 1** — Ángel Arroyo, Xicotlán. *«Me gustaría tener una regadera… nada más de ir a abrir la llave y ya sale el agua… y no preocuparte de que tienes que ir a traer agua»*. Fotografía: José Jiménez y Luis Gress / Azteca Noticias, 2024. [Fuente](https://www.youtube.com/watch?v=mrqfSbxZgnU){target="_blank"}
+- **Testimonio 2** — María de Los Ángeles Martínez, Las Higueras de Los Natoches. *«No se trata de la pipa. Se trata de que nosotros queremos agua potable, agua bien tratada, no el cochinero de agua que nos mandan»*. Espejo: Las cosas como son. Fotografía: Isla Urbana. [Fuente](https://revistaespejo.com/2025/03/24/como-es-vivir-sin-agua-la-realidad-de-los-pueblos-del-norte-de-sinaloa/){target="_blank"}
+- **Testimonio 3** — Sonia Hernández, Tetacalanco Xochimilco. *«Antes caían aguacerazos y nunca juntábamos el agua, ni siquiera para el baño. No la valoramos hasta llegar aquí, donde vine a sufrir de verdad, a sentir lo que es no tener agua»*. Isla Urbana, Historias de agua. Fotografía: Espejo: Las cosas como son. [Fuente](https://islaurbana.org/historias-de-agua/){target="_blank"}
+- **Testimonio 4** — Comité del agua de mujeres, Luquilhó, San Andrés Larráinzar, Chiapas. *«Las mujeres somos las más interesadas en resolver la falta de agua; caminamos entre cerros para llegar al manantial, cargando en la espalda 40 litros y al niño»*. PNUD México, enero 2023. Fotografía: PNUD México. [Fuente](https://www.undp.org/es/mexico/noticias/mas-de-6-mil-familias-de-44-localidades-rurales-e-indigenas-en-el-sureste-de-mexico-mejoran-su-acceso-agua-y-saneamiento){target="_blank"}
 :::
 :::
 
@@ -1254,7 +1262,7 @@ Explora los microdatos de los **2,469 municipios** de México: pobreza, cobertur
 :::
 
 
-# AUDITORÍA DE DATOS
+# AUDITORÍA DE DATOS {#auditoria-de-datos}
 
 Microdatos de los municipios de la República Mexicana. Basada en fuentes oficiales. Para más información consulta nuestro [repositorio de datos](https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM/tree/main/datos){target="_blank"}.
 
