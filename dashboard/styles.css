@@ -1311,7 +1311,6 @@ table tbody td {
   font-family: 'Lora', Georgia, serif;
   font-style: italic;
   font-size: clamp(0.66rem, 0.34vw + 0.4rem, 0.82rem);
-  color: #111827;
   font-weight: 500;
   line-height: 1.42;
   margin: 0;
@@ -1321,24 +1320,30 @@ table tbody td {
   overflow: hidden;
 }
 
+.testimonio-card blockquote,
+.testimonio-card blockquote em {
+  color: #000000 !important;
+}
+
 .testimonio-dato {
   display: block;
   flex-shrink: 0;
   padding-top: 0.6rem;
   margin-top: 0.4rem;
-  border-top: 1px solid rgba(231, 76, 60, 0.15);
+  border-top: 1px solid rgba(146, 43, 33, 1);
   font-family: 'Inter', sans-serif;
   font-size: 0.71rem;
   font-weight: 600;
-  color: var(--color-rural);
+  color: #8c98a4;
+  /* gris claro */
   letter-spacing: 0.02em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.3;
 }
 
 .testimonio-dato strong {
-  color: #1a1a1a;
+  color: #2c3e50;
+  /* naranja clarito */
   font-weight: 700;
 }
 
