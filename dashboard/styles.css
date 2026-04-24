@@ -1590,3 +1590,92 @@ table tbody td {
   font-size: clamp(0.75rem, 0.5vw + 0.4rem, 0.88rem);
   margin-bottom: 0.1rem;
 }
+
+/* ── Botón ℹ Nota Metodológica · Distribución de Municipios ── */
+.btn-nota-metodologica-dist {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #1565C0;
+  color: #ffffff;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 900;
+  font-family: 'Merriweather', serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(21, 101, 192, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  z-index: 10;
+  line-height: 1;
+  padding: 0;
+}
+
+.btn-nota-metodologica-dist:hover {
+  transform: scale(1.12);
+  box-shadow: 0 5px 18px rgba(21, 101, 192, 0.6);
+  background: #1976D2;
+}
+
+/* Modal de Nota Metodológica */
+#dist-metodologia-modal .modal-content {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+}
+
+#dist-metodologia-modal .modal-header {
+  border-bottom: 2px solid rgba(44, 62, 80, 0.1);
+  padding: 1.25rem 1.5rem 0.75rem;
+}
+
+#dist-metodologia-modal .modal-footer {
+  border-top: none;
+  padding: 0.25rem 1.5rem 1.25rem;
+}
+
+.dm-titulo {
+  font-family: 'Merriweather', serif !important;
+  font-weight: 900 !important;
+  font-size: 0.95rem !important;
+  color: #2c3e50 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dm-cuerpo {
+  font-family: 'Lora', Georgia, serif !important;
+  font-size: 0.92rem !important;
+  line-height: 1.75 !important;
+  color: #34495e !important;
+  padding: 1rem 1.5rem 0.5rem !important;
+}
+
+.dm-cuerpo p {
+  margin-bottom: 1rem;
+}
+
+.dm-cuerpo p:last-child {
+  margin-bottom: 0;
+}
+
+.dm-btn-cerrar {
+  background: #2c3e50 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 0.35rem 1rem !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  transition: background 0.2s ease !important;
+}
+
+.dm-btn-cerrar:hover {
+  background: #1a2a38 !important;
+}

@@ -254,6 +254,48 @@ _ = fig.update_layout(
 fig
 ```
 
+```{ojs}
+//| output: false
+{
+  await new Promise(r => setTimeout(r, 500));
+
+  const modalEl = html`<div class="modal fade" id="dist-metodologia-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title dm-titulo">Nota Metodológica</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body dm-cuerpo">
+          <p>En este análisis, la clasificación de municipios como rurales no se realiza de manera individual, sino a partir de un criterio agregado a nivel estatal. Se considera que un estado es predominantemente rural cuando más del 50% de sus municipios tienen menos de 2,500 habitantes; en ese caso, todos los municipios del estado se clasifican como rurales, independientemente de su tamaño poblacional individual.</p>
+          <p>Este enfoque busca <strong>visibilizar la predominancia territorial de lo rural</strong>, una realidad que a menudo queda oculta cuando el análisis se centra únicamente en las zonas de alta densidad geográfica. Si bien los grandes centros urbanos tienen un gran volumen de habitantes, la estructura municipal del país demuestra que la vida rural abarca la mayor parte del territorio nacional. Esta inmensa presencia territorial exige replantear los desafíos en la infraestructura y acceso a servicios desde la equidad, no desde la densidad.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm dm-btn-cerrar" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(modalEl);
+
+  const infoBtn = html`<button
+    class="btn-nota-metodologica-dist"
+    data-bs-toggle="modal"
+    data-bs-target="#dist-metodologia-modal"
+    title="Ver nota metodológica">ℹ</button>`;
+
+  const headers = document.querySelectorAll('.card-header');
+  for (const h of headers) {
+    if (h.textContent.trim().includes('Distribución de Municipios')) {
+      const card = h.closest('.card');
+      card.style.position = 'relative';
+      card.appendChild(infoBtn);
+      break;
+    }
+  }
+}
+```
+
 ### Column {width=25%}
 
 ::: {.context-cards-container .h-100}
@@ -916,23 +958,23 @@ La falta de infraestructura es una **factura social**. El tiempo que mujeres y n
 
 ::: {.testimonio-card}
 ::: {.testimonio-img}
-![Acarreo de agua en burro, México rural](img/referencia.jpeg)
+![María de Los Ángeles Martínez, Las Higueras de Los Natoches](img/testimonio3.jpeg)
 :::
 ::: {.testimonio-texto}
-> *"Cuando la pipa no llega, mi mamá pide prestada agua con las vecinas."*
+> *"No se trata de la pipa. Se trata de que nosotros queremos agua potable, agua bien tratada, no el cochinero de agua que nos mandan".*
 
-[**Cochoapa el Grande**, Guerrero — 82% pobreza extrema]{.testimonio-dato}
+[**María de Los Ángeles Martínez**, Las Higueras de Los Natoches — Espejo: Las cosas como son]{.testimonio-dato}
 :::
 :::
 
 ::: {.testimonio-card}
 ::: {.testimonio-img}
-![Acarreo de agua en burro, México rural](img/referencia.jpeg)
+![Comité del agua de mujeres, Luquilhó, San Andrés Larráinzar, Chiapas](img/testimonio4.jpeg)
 :::
 ::: {.testimonio-texto}
-> *"Acarrear agua es trabajo de mujeres. El hombre trabaja fuera; nosotras sostenemos la casa sin sueldo."*
+> *"Las mujeres somos las más interesadas en resolver la falta de agua; caminamos entre cerros para llegar al manantial, cargando en la espalda 40 litros y al niño".*
 
-[**San Andrés Duraznal**, Chiapas — 68% sin agua]{.testimonio-dato}
+[**Comité del agua de mujeres**, Luquilhó, San Andrés Larráinzar, Chiapas — PNUD México, enero 2023]{.testimonio-dato}
 :::
 :::
 
