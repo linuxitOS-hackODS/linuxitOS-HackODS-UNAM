@@ -1,6 +1,5 @@
 ---
 title: "La Estructura de la Pobreza: La Brecha Hídrica en México"
-subtitle: "Cruce ODS 1 (Fin de la Pobreza) y ODS 6 (Agua Limpia y Saneamiento)"
 format:
   dashboard
 resources:
@@ -79,19 +78,19 @@ Cruzar la **pobreza extrema** con la **falta de agua limpia** no arroja una simp
 
 ### Column {width=15%}
 
-::: {.valuebox icon="droplet-fill" color="#e3f2fd" title="Cobertura Nacional Oficial (SIODS)"}
+::: {.valuebox icon="droplet-fill" color="#e3f2fd" title="Cobertura Nacional (SIODS)"}
 64%
 :::
 
 ### Column {width=15%}
 
-::: {.valuebox icon="houses-fill" color="#e74c3c" title="Municipios que son Rurales"}
+::: {.valuebox icon="houses-fill" color="#e74c3c" title="Municipios Rurales"}
 55%
 :::
 
 ### Column {width=15%}
 
-::: {.valuebox icon="exclamation-triangle-fill" color="#2c3e50" title="Mayor Carencia de Agua Rural"}
+::: {.valuebox icon="exclamation-triangle-fill" color="#2c3e50" title="Desigualdad Hídrica Rural"}
 4.6x
 :::
 
@@ -100,7 +99,7 @@ Cruzar la **pobreza extrema** con la **falta de agua limpia** no arroja una simp
 ### Column {width=50%}
 
 ```{python}
-#| title: "Carencia de Agua Entubada en los 2,469 Municipios de México"
+#| title: "Carencia de Agua Entubada en los 2,469 Municipios de México - 2020"
 import numpy as np
 import base64
 
@@ -228,17 +227,10 @@ def _count_to_paper(count, domain, lmin, lmax):
     return domain[0] + frac * (domain[1] - domain[0])
 
 # 5 bins más a la derecha con al menos 1 municipio (máxima carencia)
+# Bins que superan el promedio nacional oficial
 n_bins = len(bin_centers)
-target_bins = []
-for i in range(n_bins - 1, -1, -1):
-    c_r = int(counts_by_cat.get('Rural',  np.zeros(n_bins, int))[i])
-    c_u = int(counts_by_cat.get('Urbano', np.zeros(n_bins, int))[i])
-    if c_r > 0 or c_u > 0:
-        target_bins.append(i)
-    if len(target_bins) == 5:
-        break
+target_bins = [i for i, xc in enumerate(bin_centers) if xc >= carencia_oficial]
 
-# Offset x para barras agrupadas (bargap=0.1 → ±1.125 del centro del bin)
 x_off = bin_size * 0.9 / 4
 x_offsets = {'Rural': -x_off, 'Urbano': x_off}
 icon_w_data  = 1.8    # ancho en unidades x
@@ -247,6 +239,9 @@ icon_h_paper = 0.045  # alto en fracción paper (~4.5% de la figura)
 for bi in target_bins:
     xc = bin_centers[bi]
     for clasif in ['Rural', 'Urbano']:
+        # Ocultar solo el icono Rural en el primer bin para evitar que se encime con la línea punteada
+        if bi == target_bins[0] and clasif == 'Rural':
+            continue
         arr   = counts_by_cat.get(clasif, np.zeros(n_bins, int))
         count = int(arr[bi]) if bi < len(arr) else 0
         if count == 0:
@@ -272,7 +267,7 @@ fig_espejismo
 ### Column {width=25%}
 
 ```{python}
-#| title: "Distribución de Municipios a Nivel Nacional"
+#| title: "Distribución de Municipios en México - 2020"
 
 # Contar municipios por clasificación
 municipios_count = df['clasificacion_rural'].value_counts().reset_index()
@@ -420,7 +415,7 @@ Cruzar el Censo con la infraestructura **desmiente la "Ilusión Nacional"**. La 
 
 ### Column {width=75%}
 
-::: {.card title="Déficit de Agua vs. Pobreza Extrema (2,469 Municipios)"}
+::: {.card title="Déficit de Agua vs. Pobreza Extrema en México (2,469 Municipios) - 2020"}
 
 ```{ojs}
 {
@@ -752,7 +747,7 @@ Cruzar el Censo con la infraestructura **desmiente la "Ilusión Nacional"**. La 
 ### Column {width=55%}
 
 ```{python}
-#| title: "Cobertura de Agua(%) por Estado"
+#| title: "Cobertura de Agua(%) en México por Estado - 2020"
 #| warning: false
 #| message: false
 import json
@@ -901,7 +896,7 @@ fig_map_f4
 ### Column {width=45%}
 
 ```{python}
-#| title: "Municipios con Mayor Rezago de Infraestructura Hidríca"
+#| title: "Municipios con Mayor Rezago de Infraestructura Hidríca en México - 2020"
 
 # 1. Filtrar y extraer los 15 casos más severos
 df_aislados_f4 = df.sort_values(by=['carencia_agua_conagua_pct', 'Pobreza_extrema_pct'], ascending=[False, False])
@@ -976,11 +971,11 @@ fig_rezago_f4
 Conoce a las personas que viven esta realidad y a las organizaciones que están cambiando el mapa.
 :::
 
-[Conocer el Rostro Humano y las Soluciones ➔](#accion-positiva){.btn-cta}
+[Conoce las historias y las acciones ➔](#accion-positiva){.btn-cta}
 :::
 
 
-# EL ROSTRO Y LA ACCIÓN {#accion-positiva .seccion-humana .scrolling}
+# LA VOZ Y LA ACCIÓN {#accion-positiva .seccion-humana .scrolling}
 
 ## Row {height=155px}
 
@@ -988,7 +983,7 @@ Conoce a las personas que viven esta realidad y a las organizaciones que están 
 
 ::: {.card-tiempo}
 ::: {.card-tiempo-main}
-[El Ladrón de Tiempo]{.card-tiempo-heading}
+[El costo de la búsqueda del agua]{.card-tiempo-heading}
 
 La falta de infraestructura es una **factura social**. El tiempo que mujeres y niños dedican a acarrear agua es tiempo robado a la educación y al trabajo remunerado.
 :::
@@ -1069,7 +1064,7 @@ La falta de infraestructura es una **factura social**. El tiempo que mujeres y n
 ### Column {width=50%}
 
 ```{python}
-#| title: "ONGs con impacto en infraestructura hídrica en México"
+#| title: "ONGs con impacto en infraestructura hídrica en México - 2020"
 
 # 1. Cargar el Catálogo Nacional de Estados
 df_estados = pd.read_csv('../datos/Estado.csv', dtype={'clvedo': str})
@@ -1096,28 +1091,28 @@ df_agregado = df_proyectos.groupby('Estado').agg(
 df_mapa = pd.merge(df_estados, df_agregado, left_on='estado', right_on='Estado', how='left')
 
 df_mapa['Num_ONGs'] = df_mapa['Num_ONGs'].fillna(0).astype(int)
-df_mapa['Fundaciones'] = df_mapa['Fundaciones'].fillna('Sin Organizaciones Registradas')
-df_mapa['Impactos'] = df_mapa['Impactos'].fillna('Sin Intervención')
+df_mapa['Fundaciones'] = df_mapa['Fundaciones'].fillna('Otras Organizaciones')
+df_mapa['Impactos'] = df_mapa['Impactos'].fillna('Otras intervenciones')
 
 # Crear la leyenda categórica (0, 1, 2, 3+)
 def clasificar_intensidad(ong_count):
     if ong_count == 0:
-        return 'Sin Registro (0)'
+        return 'Sin dato 0'
     elif ong_count == 1:
-        return 'Presencia (1)'
+        return 'Presencia 1 ONG'
     elif ong_count == 2:
-        return 'Impacto Regional (2)'
+        return 'Presencia 2 ONGS'
     else:
-        return 'Alto Impacto (3+)'
+        return 'Alto Impacto 3+ ONGS'
 
 df_mapa['Nivel_Impacto'] = df_mapa['Num_ONGs'].apply(clasificar_intensidad)
 
 # Custom color map — gradiente de 4 niveles para tema oscuro
 color_map_ongs = {
-    'Sin Registro (0)': '#ffffff',            # Arena cálida
-    'Presencia (1)': '#aed6f1',               # Azul claro suave
-    'Impacto Regional (2)': '#3498db',        # Azul medio vibrante
-    'Alto Impacto (3+)': '#1a5276'            # Azul profundo institucional
+    'Sin dato 0': '#d9ebf7',            
+    'Presencia 1 ONG': '#aed6f1',               # Azul claro suave
+    'Presencia 2 ONGS': '#3498db',        # Azul medio vibrante
+    'Alto Impacto 3+ ONGS': '#1a5276'            # Azul profundo institucional
 }
 
 # 5. Cargar GeoJSON de Estados
@@ -1131,7 +1126,7 @@ fig_ongs = px.choropleth(
     locations='clvedo',
     featureidkey='properties.clvedo', 
     color='Nivel_Impacto',
-    category_orders={'Nivel_Impacto': ['Sin Registro (0)', 'Presencia (1)', 'Impacto Regional (2)', 'Alto Impacto (3+)']},
+    category_orders={'Nivel_Impacto': ['Sin dato 0', 'Presencia 1 ONG', 'Presencia 2 ONGS', 'Alto Impacto 3+ ONGS']},
     color_discrete_map=color_map_ongs,
     hover_name='estado',
     custom_data=['Fundaciones', 'Impactos', 'Num_ONGs']
@@ -1151,10 +1146,10 @@ _ = fig_ongs.update_traces(marker_line_color='#566573', marker_line_width=0.8)
 
 # Hover tooltip color = color de cada categoría
 hover_colors = {
-    'Sin Registro (0)': '#95a5a6',
-    'Presencia (1)': '#5dade2',
-    'Impacto Regional (2)': '#2471a3',
-    'Alto Impacto (3+)': '#1a5276'
+    'Sin dato 0': '#95a5a6',
+    'Presencia 1 ONG': '#5dade2',
+    'Presencia 2 ONGS': '#2471a3',
+    'Alto Impacto 3+ ONGS': '#1a5276'
 }
 for trace in fig_ongs.data:
     cat = trace.name
@@ -1213,7 +1208,7 @@ Donde el presupuesto no llega, la **innovación social** da un paso al frente. N
 ::: {.aliado-mini}
 ![Cántaro Azul](img/cantaroazul.jpg){.aliado-logo}
 
-[**Cántaro Azul** — Ecotecnias de purificación para escuelas excluidas.]{.aliado-texto}
+[**Cántaro Azul** — Ecotecnias de purificación.]{.aliado-texto}
 :::
 
 ::: {.aliado-mini}
@@ -1236,10 +1231,10 @@ Donde el presupuesto no llega, la **innovación social** da un paso al frente. N
 [Fuentes de los Testimonios]{.card-heading}
 
 ::: {.citas-lista}
-- **Testimonio 1** — Ángel Arroyo, Xicotlán. *«Me gustaría tener una regadera… nada más de ir a abrir la llave y ya sale el agua… y no preocuparte de que tienes que ir a traer agua»*. Fotografía: José Jiménez y Luis Gress / Azteca Noticias, 2024. [Fuente](https://www.youtube.com/watch?v=mrqfSbxZgnU){target="_blank"}
-- **Testimonio 2** — María de Los Ángeles Martínez, Las Higueras de Los Natoches. *«No se trata de la pipa. Se trata de que nosotros queremos agua potable, agua bien tratada, no el cochinero de agua que nos mandan»*. Espejo: Las cosas como son. Fotografía: Isla Urbana. [Fuente](https://revistaespejo.com/2025/03/24/como-es-vivir-sin-agua-la-realidad-de-los-pueblos-del-norte-de-sinaloa/){target="_blank"}
-- **Testimonio 3** — Sonia Hernández, Tetacalanco Xochimilco. *«Antes caían aguacerazos y nunca juntábamos el agua, ni siquiera para el baño. No la valoramos hasta llegar aquí, donde vine a sufrir de verdad, a sentir lo que es no tener agua»*. Isla Urbana, Historias de agua. Fotografía: Espejo: Las cosas como son. [Fuente](https://islaurbana.org/historias-de-agua/){target="_blank"}
-- **Testimonio 4** — Comité del agua de mujeres, Luquilhó, San Andrés Larráinzar, Chiapas. *«Las mujeres somos las más interesadas en resolver la falta de agua; caminamos entre cerros para llegar al manantial, cargando en la espalda 40 litros y al niño»*. PNUD México, enero 2023. Fotografía: PNUD México. [Fuente](https://www.undp.org/es/mexico/noticias/mas-de-6-mil-familias-de-44-localidades-rurales-e-indigenas-en-el-sureste-de-mexico-mejoran-su-acceso-agua-y-saneamiento){target="_blank"}
+- **Testimonio 1** — (Video de YouTube – Azteca Noticas) YouTube. (14 mar 2023). [Video]. YouTube. https://youtu.be/mrqfSbxZgnU»*. Fotografía: José Jiménez y Luis Gress / Azteca Noticias, 2024. [Fuente](https://www.youtube.com/watch?v=mrqfSbxZgnU){target="_blank"}
+- **Testimonio 2** — (Artículo periodístico) Hernández, C. E. (2025, marzo 24). ¿Cómo es vivir sin agua? La realidad de los pueblos del norte de Sinaloa. Revista Espejo. https://revistaespejo.com/2025/03/24/como-es-vivir-sin-agua-la-realidad-de-los-pueblos-del-norte-de-sinaloa/»*. Espejo: Las cosas como son. Fotografía: Isla Urbana. [Fuente](https://revistaespejo.com/2025/03/24/como-es-vivir-sin-agua-la-realidad-de-los-pueblos-del-norte-de-sinaloa/){target="_blank"}
+- **Testimonio 3** — (Página web / organización) Isla Urbana. (s.f.). Historias de agua. https://islaurbana.org/historias-de-agua/»*. Isla Urbana, Historias de agua. Fotografía: Espejo: Las cosas como son. [Fuente](https://islaurbana.org/historias-de-agua/){target="_blank"}
+- **Testimonio 4** — (Organismo internacional – nota web) Programa de las Naciones Unidas para el Desarrollo (PNUD). (5 ene 2023). Más de 6 mil familias de 44 localidades rurales e indígenas en el sureste de México mejoran su acceso a agua y saneamiento. https://www.undp.org/es/mexico/noticias/mas-de-6-mil-familias-de-44-localidades-rurales-e-indigenas-en-el-sureste-de-mexico-mejoran-su-acceso-agua-y-saneamiento»*. PNUD México, enero 2023. Fotografía: PNUD México. [Fuente](https://www.undp.org/es/mexico/noticias/mas-de-6-mil-familias-de-44-localidades-rurales-e-indigenas-en-el-sureste-de-mexico-mejoran-su-acceso-agua-y-saneamiento){target="_blank"}
 :::
 :::
 
@@ -1254,9 +1249,9 @@ Donde el presupuesto no llega, la **innovación social** da un paso al frente. N
 
 [Cada municipio, cada cifra, cada realidad.]{.stat-highlight}
 
-Explora los microdatos de los **2,469 municipios** de México: pobreza, cobertura de agua y clasificación rural en un solo lugar.
+Explora los microdatos de los **2,469 municipios** de México: pobreza, cobertura de agua y clasificación rural.
 
-[Explorar los Datos ➔](#auditoria-de-datos){.btn-cta}
+[Explora los Datos ➔](#auditoria-de-datos){.btn-cta}
 :::
 
 :::
