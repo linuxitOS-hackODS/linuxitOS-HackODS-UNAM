@@ -91,8 +91,11 @@ El cruce entre el **ODS 1 (Fin de Pobreza)** y el **ODS 6 (Agua Limpia y Saneami
 ```{python}
 #| title: "Carencia de Agua Entubada en los 2,469 Municipios de México"
 import numpy as np
+import base64
 
-# Generar histograma de Carencia de Agua
+bin_size = 5
+
+# ── Histograma principal (rug preservado) ───────────────────────────────────
 fig_espejismo = px.histogram(
     df,
     x='carencia_agua_conagua_pct',
@@ -100,37 +103,42 @@ fig_espejismo = px.histogram(
     category_orders={'clasificacion_rural': ['Rural', 'Urbano']},
     color_discrete_map={'Urbano': COLOR_URBANO, 'Rural': COLOR_RURAL},
     nbins=40,
-    labels={'carencia_agua_conagua_pct': '% de Habitantes Sin Agua Entubada', 'clasificacion_rural': 'Clasificación', 'count': 'No. de municipios'},
+    labels={
+        'carencia_agua_conagua_pct': '% de Habitantes Sin Agua Entubada',
+        'clasificacion_rural': 'Clasificación',
+        'count': 'No. de municipios'
+    },
     opacity=0.75,
     log_y=True,
-    marginal="rug" # Muestra marcas individuales para visibilizar la cola
+    marginal="rug"
 )
 
 _ = fig_espejismo.update_traces(
-    xbins=dict(start=0, size=5),
+    xbins=dict(start=0, size=bin_size),
     selector=dict(type="histogram")
 )
 
-# Post-procesamiento: inyectar población total por bin en cada trace del histograma
-bin_size = 5
+# ── Pre-computar conteos por bin (customdata + posición de iconos) ──────────
+bin_edges = np.arange(0, df['carencia_agua_conagua_pct'].max() + bin_size + 1, bin_size)
+bin_centers = bin_edges[:-1] + bin_size / 2
+counts_by_cat = {}
+
 for trace in fig_espejismo.data:
     if trace.type != 'histogram':
         continue
-    clasif = trace.name  # 'Rural' o 'Urbano'
+    clasif = trace.name
     subset = df[df['clasificacion_rural'] == clasif]
-    # Calcular bins idénticos a los del histograma (start=0, size=5)
-    bin_edges = np.arange(0, df['carencia_agua_conagua_pct'].max() + bin_size, bin_size)
-    bin_idx = np.digitize(subset['carencia_agua_conagua_pct'].values, bin_edges) - 1
-    # Sumar población por bin
+    vals = subset['carencia_agua_conagua_pct'].dropna().values
+
+    counts, _ = np.histogram(vals, bins=bin_edges)
+    counts_by_cat[clasif] = counts
+
+    bin_idx = np.clip(np.digitize(vals, bin_edges) - 1, 0, len(counts) - 1)
     pob_por_bin = {}
     for i, pob in zip(bin_idx, subset['poblacion_total'].values):
         pob_por_bin[i] = pob_por_bin.get(i, 0) + (int(pob) if pd.notna(pob) else 0)
-    # Crear array de población formateada alineada con los bin centers
     max_bin = max(pob_por_bin.keys()) if pob_por_bin else 0
-    pob_labels = []
-    for i in range(max_bin + 1):
-        val = pob_por_bin.get(i, 0)
-        pob_labels.append(f"{val:,}")
+    pob_labels = [f"{pob_por_bin.get(i, 0):,}" for i in range(max_bin + 1)]
     trace.customdata = [[p] for p in pob_labels]
     trace.hovertemplate = (
         "Clasificación=%{data.name}<br>"
@@ -140,47 +148,112 @@ for trace in fig_espejismo.data:
         "<extra></extra>"
     )
 
+# ── Layout ──────────────────────────────────────────────────────────────────
 _ = fig_espejismo.update_layout(
     font=dict(family="Inter, sans-serif", size=12),
     yaxis_title="Cantidad de Municipios<br>(Escala Logarítmica)",
     xaxis_title="Porcentaje de Población Sin Agua Entubada (CONAGUA)",
     barmode='group',
-    bargap=0.1, # Espacio entre los grupos para mejor estética
+    bargap=0.1,
     legend=dict(
-        title_text="", # Elimina el título de la leyenda que causa conflictos
-        orientation="h", 
-        yanchor="bottom", 
-        y=1.02, 
-        xanchor="left", 
+        title_text="",
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="left",
         x=-0.1,
-        entrywidth=50, # Fuerza el ancho de los elementos sin calcular BBox
+        entrywidth=50,
         bgcolor="rgba(255,255,255,0.8)"
     ),
     margin=dict(t=50, b=50)
 )
 
-# Añadir línea del promedio de la "Ilusión Nacional"
-# Si 64% tiene agua segura, significa que 36% carece.
-carencia_oficial = 36.0 
+# ── Línea de promedio nacional ───────────────────────────────────────────────
+carencia_oficial = 36.0
 _ = fig_espejismo.add_vline(
-    x=carencia_oficial, 
-    line_width=3, 
-    line_dash="dash", 
-    line_color="black"
+    x=carencia_oficial,
+    line_width=3, line_dash="dash", line_color="black"
+)
+_ = fig_espejismo.add_annotation(
+    x=carencia_oficial, y=1.0, yref="paper",
+    text=f"Promedio Oficial Equivalente (~{carencia_oficial}% Sin Agua)",
+    showarrow=False, yshift=20,
+    font=dict(size=12, color="black", family="Inter, sans-serif"),
+    bgcolor="rgba(255, 255, 255, 0.9)", bordercolor="black", borderwidth=1
 )
 
-_ = fig_espejismo.add_annotation(
-    x=carencia_oficial, 
-    y=1.0, 
-    yref="paper",
-    text=f"Promedio Oficial Equivalente (~{carencia_oficial}% Sin Agua)",
-    showarrow=False, 
-    yshift=20,
-    font=dict(size=12, color="black", family="Inter, sans-serif"),
-    bgcolor="rgba(255, 255, 255, 0.9)",
-    bordercolor="black",
-    borderwidth=1
-)
+# ── Humanitos sobre los 5 bins de mayor carencia ────────────────────────────
+def _person_svg(color):
+    d = "M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
+    svg = (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">'
+        f'<path fill="{color}" d="{d}"/></svg>'
+    )
+    return 'data:image/svg+xml;base64,' + base64.b64encode(svg.encode()).decode()
+
+all_nonzero = [int(c) for arr in counts_by_cat.values() for c in arr if c > 0]
+max_c = max(all_nonzero) if all_nonzero else 100
+
+# Fijar rango explícito del eje log para que los paper coords sean exactos
+y_log_range = [np.log10(0.5), np.log10(max_c * 3)]
+_ = fig_espejismo.update_layout(yaxis_range=y_log_range)
+
+# Dominio paper del eje log (histograma); px.histogram+marginal="rug" fija (0, 0.7326)
+log_ax_domain = [0.0, 0.7326]
+for ax_name in ['yaxis', 'yaxis2', 'yaxis3']:
+    ax = getattr(fig_espejismo.layout, ax_name, None)
+    if ax is None:
+        continue
+    if getattr(ax, 'type', None) == 'log':
+        if ax.domain is not None:
+            log_ax_domain = list(ax.domain)
+        break
+
+lmin, lmax = y_log_range
+
+def _count_to_paper(count, domain, lmin, lmax):
+    lc = np.log10(max(count, 0.5))
+    frac = float(np.clip((lc - lmin) / (lmax - lmin), 0.0, 1.0))
+    return domain[0] + frac * (domain[1] - domain[0])
+
+# 5 bins más a la derecha con al menos 1 municipio (máxima carencia)
+n_bins = len(bin_centers)
+target_bins = []
+for i in range(n_bins - 1, -1, -1):
+    c_r = int(counts_by_cat.get('Rural',  np.zeros(n_bins, int))[i])
+    c_u = int(counts_by_cat.get('Urbano', np.zeros(n_bins, int))[i])
+    if c_r > 0 or c_u > 0:
+        target_bins.append(i)
+    if len(target_bins) == 5:
+        break
+
+# Offset x para barras agrupadas (bargap=0.1 → ±1.125 del centro del bin)
+x_off = bin_size * 0.9 / 4
+x_offsets = {'Rural': -x_off, 'Urbano': x_off}
+icon_w_data  = 1.8    # ancho en unidades x
+icon_h_paper = 0.045  # alto en fracción paper (~4.5% de la figura)
+
+for bi in target_bins:
+    xc = bin_centers[bi]
+    for clasif in ['Rural', 'Urbano']:
+        arr   = counts_by_cat.get(clasif, np.zeros(n_bins, int))
+        count = int(arr[bi]) if bi < len(arr) else 0
+        if count == 0:
+            continue
+        paper_y = _count_to_paper(count, log_ax_domain, lmin, lmax)
+        color   = COLOR_RURAL if clasif == 'Rural' else COLOR_URBANO
+        _ = fig_espejismo.add_layout_image(
+            source=_person_svg(color),
+            x=xc + x_offsets[clasif],
+            y=paper_y + 0.008,
+            xref='x',
+            yref='paper',
+            xanchor='center',
+            yanchor='bottom',
+            sizex=icon_w_data,
+            sizey=icon_h_paper,
+            layer='above'
+        )
 
 fig_espejismo
 ```
