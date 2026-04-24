@@ -67,9 +67,9 @@ municipios_scatter = FileAttachment("data/municipios_scatter.json").json()
 
 
 
-## Row {height=520px}
+## Row {height=100px}
 
-### Column {width=55%}
+### Column {width=50%}
 
 ::: {.executive-subtitle}
 [La Estructura de la Pobreza: La Brecha Hídrica en México]{.subtitle-heading}
@@ -77,19 +77,19 @@ municipios_scatter = FileAttachment("data/municipios_scatter.json").json()
 El cruce entre el **ODS 1 (Fin de Pobreza)** y el **ODS 6 (Agua Limpia y Saneamiento)** no es una simple estadística; es una **condena estructural**. La pobreza va más allá de la falta de ingresos; es la ausencia de los servicios básicos que permiten vivir con dignidad.
 :::
 
-### Column {width=15%}
+### Column {width=19%}
 
 ::: {.valuebox icon="droplet-fill" color="#e3f2fd" title="Cobertura Nacional Oficial (SIODS)"}
 64%
 :::
 
-### Column {width=15%}
+### Column {width=19%}
 
 ::: {.valuebox icon="houses-fill" color="#e74c3c" title="Municipios que son Rurales"}
 55%
 :::
 
-### Column {width=15%}
+### Column {width=19%}
 
 ::: {.valuebox icon="exclamation-triangle-fill" color="#2c3e50" title="Mayor Carencia de Agua Rural"}
 4.6x
