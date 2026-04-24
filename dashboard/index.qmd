@@ -1218,6 +1218,41 @@ Donde el presupuesto no llega, la **innovación social** da un paso al frente. N
 
 :::
 
+## Row
+
+### Column {width=60%}
+
+::: {.context-cards-container .h-100}
+
+::: {.context-card .card-navy .h-100}
+[Fuentes de los Testimonios]{.card-heading}
+
+::: {.citas-lista}
+- **Testimonio 1** — Ángel Arroyo, Xicotlán. *«Me gustaría tener una regadera… nada más de ir a abrir la llave y ya sale el agua… y no preocuparte de que tienes que ir a traer agua»*. Fotografía: José Jiménez y Luis Gress / Azteca Noticias, 2024.
+- **Testimonio 2** — Sonia Hernández, Tetacalanco Xochimilco. *«Antes caían aguacerazos y nunca juntábamos el agua, ni siquiera para el baño. No la valoramos hasta llegar aquí, donde vine a sufrir de verdad, a sentir lo que es no tener agua»*. Isla Urbana, Historias de agua. Fotografía: Espejo: Las cosas como son.
+- **Testimonio 3** — María de Los Ángeles Martínez, Las Higueras de Los Natoches. *«No se trata de la pipa. Se trata de que nosotros queremos agua potable, agua bien tratada, no el cochinero de agua que nos mandan»*. Espejo: Las cosas como son. Fotografía: Isla Urbana.
+- **Testimonio 4** — Comité del agua de mujeres, Luquilhó, San Andrés Larráinzar, Chiapas. *«Las mujeres somos las más interesadas en resolver la falta de agua; caminamos entre cerros para llegar al manantial, cargando en la espalda 40 litros y al niño»*. PNUD México, enero 2023. Fotografía: PNUD México.
+:::
+:::
+
+:::
+
+### Column {width=40%}
+
+::: {.context-cards-container .h-100}
+
+::: {.context-card .card-data .h-100}
+[Los datos cuentan la historia completa]{.card-heading}
+
+[Cada municipio, cada cifra, cada realidad.]{.stat-highlight}
+
+Explora los microdatos de los **2,469 municipios** de México: pobreza, cobertura de agua y clasificación rural en un solo lugar.
+
+[Explorar los Datos ➔](#auditoria-de-datos){.btn-cta}
+:::
+
+:::
+
 
 # AUDITORÍA DE DATOS
 
