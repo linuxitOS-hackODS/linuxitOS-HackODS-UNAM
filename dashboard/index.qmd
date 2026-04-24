@@ -1002,7 +1002,7 @@ La falta de infraestructura es una **factura social**. El tiempo que mujeres y n
 ::: {.testimonios-col}
 
 ::: {.testimonio-card}
-::: {.testimonio-img}
+::: {.testimonio-img .img-t1}
 ![Acarreo de agua en burro, México rural](img/testimonio1.jpeg)
 :::
 ::: {.testimonio-texto}
@@ -1013,7 +1013,7 @@ La falta de infraestructura es una **factura social**. El tiempo que mujeres y n
 :::
 
 ::: {.testimonio-card}
-::: {.testimonio-img}
+::: {.testimonio-img .img-t2}
 ![Acarreo de agua en burro, México rural](img/testimonio2.jpeg)
 :::
 ::: {.testimonio-texto}
@@ -1030,7 +1030,7 @@ La falta de infraestructura es una **factura social**. El tiempo que mujeres y n
 ::: {.testimonios-col}
 
 ::: {.testimonio-card}
-::: {.testimonio-img}
+::: {.testimonio-img .img-t3}
 ![María de Los Ángeles Martínez, Las Higueras de Los Natoches](img/testimonio3.jpeg)
 :::
 ::: {.testimonio-texto}
@@ -1041,7 +1041,7 @@ La falta de infraestructura es una **factura social**. El tiempo que mujeres y n
 :::
 
 ::: {.testimonio-card}
-::: {.testimonio-img}
+::: {.testimonio-img .img-t4}
 ![Comité del agua de mujeres, Luquilhó, San Andrés Larráinzar, Chiapas](img/testimonio4.jpeg)
 :::
 ::: {.testimonio-texto}

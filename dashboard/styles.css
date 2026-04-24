@@ -1176,8 +1176,8 @@ table tbody td {
   grid-template-rows: minmax(3em, 1fr) !important;
 }
 
-.bslib-grid:has(> .card > .card-body > .testimonios-col) > .card,
-.bslib-grid:has(> .card > .card-body > .testimonios-col) > .card > .card-body {
+.bslib-grid:has(> .card > .card-body > .testimonios-col)>.card,
+.bslib-grid:has(> .card > .card-body > .testimonios-col)>.card>.card-body {
   height: 100% !important;
 }
 
@@ -1195,7 +1195,7 @@ table tbody td {
   background-color: #f8f9fa;
 }
 
-.testimonio-img > * {
+.testimonio-img>* {
   width: 100% !important;
   height: 100% !important;
   margin: 0 !important;
@@ -1217,6 +1217,52 @@ table tbody td {
 .testimonio-img figcaption,
 .testimonio-img .figure-caption {
   display: none !important;
+}
+
+/* ── Hover overlay: sombra + crédito de imagen ── */
+.testimonio-img::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.35) 50%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  padding: 0.5rem 0.65rem;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.52rem, 0.35vw + 0.32rem, 0.68rem);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.testimonio-img:hover::after {
+  opacity: 1;
+}
+
+/* Créditos por imagen */
+.testimonio-img.img-t1::after {
+  content: 'Fotografía: José Jiménez y Luis Gress / Azteca Noticias';
+}
+
+.testimonio-img.img-t2::after {
+  content: 'Fotografía: Espejo: Las cosas como son';
+}
+
+.testimonio-img.img-t3::after {
+  content: 'Fotografía: Isla Urbana';
+}
+
+.testimonio-img.img-t4::after {
+  content: 'Fotografía: PNUD México';
 }
 
 .testimonio-img img {
@@ -1422,11 +1468,11 @@ table tbody td {
   grid-template-rows: minmax(3em, 1fr) !important;
 }
 
-.bslib-grid:has(.motor-cambio-container) > .card {
+.bslib-grid:has(.motor-cambio-container)>.card {
   height: 100% !important;
 }
 
-.bslib-grid:has(.motor-cambio-container) > .card > .card-body {
+.bslib-grid:has(.motor-cambio-container)>.card>.card-body {
   height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
