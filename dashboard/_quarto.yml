@@ -4,7 +4,7 @@ project:
 
 website:
   search: false
-  title: "HackODS UNAM 2026"
+  title: "HackODS UNAM"
   navbar:
     logo: img/hackodslogo.png
     background: primary

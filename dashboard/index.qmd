@@ -1,5 +1,5 @@
 ---
-title: "Agua y Pobreza: La Trampa Rural"
+title: "La Estructura de la Pobreza: La Brecha Hídrica en México"
 subtitle: "Cruce ODS 1 (Fin de la Pobreza) y ODS 6 (Agua Limpia y Saneamiento)"
 format:
   dashboard
@@ -52,7 +52,7 @@ df_ojs.to_json('data/municipios_scatter.json', orient='records', force_ascii=Fal
 municipios_scatter = FileAttachment("data/municipios_scatter.json").json()
 ```
 
-# La Ilusión Nacional {.scrolling}
+# LA BRECHA ESTRUCTURAL {.scrolling}
 
 
 
@@ -969,7 +969,7 @@ Conoce a las personas que viven esta realidad y a las organizaciones que están 
 :::
 
 
-# Acción Positiva {#accion-positiva .seccion-humana .scrolling}
+# EL ROSTRO Y LA ACCIÓN {#accion-positiva .seccion-humana .scrolling}
 
 ## Row {height=155px}
 
@@ -1219,7 +1219,7 @@ Donde el presupuesto no llega, la **innovación social** da un paso al frente. N
 :::
 
 
-# Explorador de Datos
+# AUDITORÍA DE DATOS
 
 Microdatos de los municipios de la República Mexicana. Basada en fuentes oficiales. Para más información consulta nuestro [repositorio de datos](https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM/tree/main/datos){target="_blank"}.
 
