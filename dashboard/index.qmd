@@ -1,6 +1,5 @@
 ---
 title: "La Estructura de la Pobreza: La Brecha Hídrica en México"
-subtitle: "Cruce ODS 1 (Fin de la Pobreza) y ODS 6 (Agua Limpia y Saneamiento)"
 format:
   dashboard
 resources:
@@ -63,7 +62,7 @@ municipios_scatter = FileAttachment("data/municipios_scatter.json").json()
 ::: {.executive-subtitle}
 [La Estructura de la Pobreza: La Brecha Hídrica en México]{.subtitle-heading}
 
-El cruce entre el **ODS 1 (Fin de Pobreza)** y el **ODS 6 (Agua Limpia y Saneamiento)** no es una simple estadística; es una **condena estructural**. La pobreza va más allá de la falta de ingresos; es la ausencia de los servicios básicos que permiten vivir con dignidad.
+Cruzar la **pobreza extrema** con la **falta de agua limpia** no arroja una simple estadística; expone una **condena estructural**. La pobreza va más allá de la falta de ingresos; es la ausencia de los servicios básicos que permiten vivir con dignidad. Hoy, el **promedio nacional invisibiliza** esta carencia y encubre la **trampa del México rural**.
 :::
 
 ### Column {width=15%}
@@ -151,7 +150,7 @@ for trace in fig_espejismo.data:
 # ── Layout ──────────────────────────────────────────────────────────────────
 _ = fig_espejismo.update_layout(
     font=dict(family="Inter, sans-serif", size=12),
-    yaxis_title="Cantidad de Municipios<br>(Escala Logarítmica)",
+    yaxis_title="Cantidad de Municipios<br>(Escala Exponencial)",
     xaxis_title="Porcentaje de Población Sin Agua Entubada (CONAGUA)",
     barmode='group',
     bargap=0.1,
@@ -1221,7 +1220,31 @@ Donde el presupuesto no llega, la **innovación social** da un paso al frente. N
 
 # AUDITORÍA DE DATOS
 
-Microdatos de los municipios de la República Mexicana. Basada en fuentes oficiales. Para más información consulta nuestro [repositorio de datos](https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM/tree/main/datos){target="_blank"}.
+Microdatos de los 2,469 municipios de la República Mexicana. Todas las fuentes corresponden al corte **2020** para garantizar coherencia temporal. Para más información consulta nuestro [repositorio de datos](https://github.com/linuxitOS-hackODS/linuxitOS-HackODS-UNAM/tree/main/datos){target="_blank"}.
+
+## Row
+
+### Column {width=100%}
+
+::: {.metodologia-bloque}
+
+#### Fuentes y cobertura
+
+| Fuente | Año | Variable principal | Cobertura | Limitación declarada |
+|:-------|:---:|:-------------------|:----------|:---------------------|
+| INEGI — Censo de Población y Vivienda (ITER) | 2020 | Clasificación rural/urbana por municipio | 2,469 municipios | La clasificación rural/urbana depende del umbral de 2,500 hab. por localidad; municipios en transición quedan en categoría binaria |
+| CONEVAL — Concentrado de Indicadores de Pobreza | 2020 | % Pobreza extrema, % Carencia servicios básicos | 2,469 municipios | Pobreza medida cada 2 años; no captura choques post-pandemia ocurridos en 2020 |
+| CONAGUA — Población con acceso al agua | 2020 | % Población sin agua entubada por municipio | 2,469 municipios | Mide disponibilidad de red entubada, no calidad ni continuidad del servicio; no distingue agua de pipa |
+| SIODS — Indicadores ODS 6.1.1.a | API Agenda 2030 | Cobertura nacional de agua segura (64%) | Nacional (no desagrega a municipal) | Indicador agregado; se usa solo como referencia de comparación contra microdatos CONAGUA |
+
+#### Nota metodológica
+
+La **clasificación rural/urbana** es propia: un municipio se clasifica como *Rural* si más del 50% de sus localidades tienen menos de 2,500 habitantes (INEGI ITER 2020). Esta definición prioriza la estructura territorial sobre la densidad poblacional, visibilizando que el 55% del territorio municipal es rural aunque solo el 17% de la población viva en él.
+
+El cruce de variables entre fuentes se realiza mediante clave municipal `CVEGEO` (5 dígitos). Todos los conjuntos de datos fueron filtrados al ciclo 2020 para eliminar desfases temporales. Los municipios sin dato en alguna fuente conservan el resto de sus variables; no se imputan valores.
+
+:::
+
 
 ```{python}
 
